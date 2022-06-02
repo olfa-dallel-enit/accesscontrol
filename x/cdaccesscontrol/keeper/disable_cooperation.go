@@ -98,7 +98,7 @@ func (k Keeper) OnRecvDisableCooperationPacket(ctx sdk.Context, packet channelty
 
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
-				Transaction: "send-establish-cooperation",
+				Transaction: "send-disable-cooperation",
 				Function:    "OnRecvDisableCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + domainCooperation.Label,
@@ -113,7 +113,7 @@ func (k Keeper) OnRecvDisableCooperationPacket(ctx sdk.Context, packet channelty
 				Function:    "OnRecvDisableCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + domainCooperation.Label,
-				Decision:    "Not confirmed",
+				Decision:    "Not confirmed: domain not authenticated",
 			})
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -141,7 +141,7 @@ func (k Keeper) OnRecvDisableCooperationPacket(ctx sdk.Context, packet channelty
 			Function:    "OnRecvDisableCooperationPacket",
 			Timestamp:   cast.ToString(time.Now()),
 			Details:     "Cooperation label: " + domainCooperation.Label,
-			Decision:    "Not confirmed",
+			Decision:    "Not confirmed: cooperation not found",
 		})
 	}
 
@@ -208,7 +208,7 @@ func (k Keeper) OnAcknowledgementDisableCooperationPacket(ctx sdk.Context, packe
 					Function:    "OnAcknowledgementDisableCooperationPacket",
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + domainCooperation.Label,
-					Decision:    "Not confirmed",
+					Decision:    "Not confirmed: cooperation not found ",
 				})
 			}
 		} else {
@@ -226,7 +226,7 @@ func (k Keeper) OnAcknowledgementDisableCooperationPacket(ctx sdk.Context, packe
 				Function:    "OnAcknowledgementDisableCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
-				Decision:    "Not confirmed",
+				Decision:    "Not confirmed: operation not confirmed",
 			})
 		}
 

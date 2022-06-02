@@ -16,6 +16,8 @@ func (k msgServer) SendEnableCooperation(goCtx context.Context, msg *types.MsgSe
 	// Construct the packet
 	var packet types.EnableCooperationPacketData
 
+	packet.Sender = ctx.ChainID()
+
 	// Transmit the packet
 	err := k.TransmitEnableCooperationPacket(
 		ctx,
