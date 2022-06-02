@@ -9,6 +9,48 @@ import (
 // InitGenesis initializes the capability module's state from a provided genesis
 // state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
+	// Set all the publicKey
+	for _, elem := range genState.PublicKeyList {
+		k.SetPublicKey(ctx, elem)
+	}
+
+	// Set publicKey count
+	k.SetPublicKeyCount(ctx, genState.PublicKeyCount)
+	// Set all the validity
+	for _, elem := range genState.ValidityList {
+		k.SetValidity(ctx, elem)
+	}
+
+	// Set validity count
+	k.SetValidityCount(ctx, genState.ValidityCount)
+	// Set all the certificate
+	for _, elem := range genState.CertificateList {
+		k.SetCertificate(ctx, elem)
+	}
+
+	// Set certificate count
+	k.SetCertificateCount(ctx, genState.CertificateCount)
+	// Set all the ibcConnection
+	for _, elem := range genState.IbcConnectionList {
+		k.SetIbcConnection(ctx, elem)
+	}
+
+	// Set ibcConnection count
+	k.SetIbcConnectionCount(ctx, genState.IbcConnectionCount)
+	// Set all the domain
+	for _, elem := range genState.DomainList {
+		k.SetDomain(ctx, elem)
+	}
+
+	// Set domain count
+	k.SetDomainCount(ctx, genState.DomainCount)
+	// Set all the authenticationLog
+	for _, elem := range genState.AuthenticationLogList {
+		k.SetAuthenticationLog(ctx, elem)
+	}
+
+	// Set authenticationLog count
+	k.SetAuthenticationLogCount(ctx, genState.AuthenticationLogCount)
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetPort(ctx, genState.PortId)
 	// Only try to bind to port if it is not already bound, since we may already own
@@ -30,6 +72,18 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.PortId = k.GetPort(ctx)
+	genesis.PublicKeyList = k.GetAllPublicKey(ctx)
+	genesis.PublicKeyCount = k.GetPublicKeyCount(ctx)
+	genesis.ValidityList = k.GetAllValidity(ctx)
+	genesis.ValidityCount = k.GetValidityCount(ctx)
+	genesis.CertificateList = k.GetAllCertificate(ctx)
+	genesis.CertificateCount = k.GetCertificateCount(ctx)
+	genesis.IbcConnectionList = k.GetAllIbcConnection(ctx)
+	genesis.IbcConnectionCount = k.GetIbcConnectionCount(ctx)
+	genesis.DomainList = k.GetAllDomain(ctx)
+	genesis.DomainCount = k.GetDomainCount(ctx)
+	genesis.AuthenticationLogList = k.GetAllAuthenticationLog(ctx)
+	genesis.AuthenticationLogCount = k.GetAuthenticationLogCount(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

@@ -1,13 +1,215 @@
 syntax = "proto3";
 package crossdomain.cdaccesscontrol;
 
+import "cdaccesscontrol/domain.proto";
+import "cdaccesscontrol/authentication_log.proto";
 // this line is used by starport scaffolding # proto/tx/import
+import "cdaccesscontrol/ibc_connection.proto";
+import "cdaccesscontrol/certificate.proto";
+import "cdaccesscontrol/validity.proto";
+import "cdaccesscontrol/public_key.proto";
 
 option go_package = "crossdomain/x/cdaccesscontrol/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+    rpc CreatePublicKey(MsgCreatePublicKey) returns (MsgCreatePublicKeyResponse);
+  rpc UpdatePublicKey(MsgUpdatePublicKey) returns (MsgUpdatePublicKeyResponse);
+  rpc DeletePublicKey(MsgDeletePublicKey) returns (MsgDeletePublicKeyResponse);
+rpc CreateValidity(MsgCreateValidity) returns (MsgCreateValidityResponse);
+  rpc UpdateValidity(MsgUpdateValidity) returns (MsgUpdateValidityResponse);
+  rpc DeleteValidity(MsgDeleteValidity) returns (MsgDeleteValidityResponse);
+rpc CreateCertificate(MsgCreateCertificate) returns (MsgCreateCertificateResponse);
+  rpc UpdateCertificate(MsgUpdateCertificate) returns (MsgUpdateCertificateResponse);
+  rpc DeleteCertificate(MsgDeleteCertificate) returns (MsgDeleteCertificateResponse);
+rpc CreateIbcConnection(MsgCreateIbcConnection) returns (MsgCreateIbcConnectionResponse);
+  rpc UpdateIbcConnection(MsgUpdateIbcConnection) returns (MsgUpdateIbcConnectionResponse);
+  rpc DeleteIbcConnection(MsgDeleteIbcConnection) returns (MsgDeleteIbcConnectionResponse);
+rpc CreateDomain(MsgCreateDomain) returns (MsgCreateDomainResponse);
+  rpc UpdateDomain(MsgUpdateDomain) returns (MsgUpdateDomainResponse);
+  rpc DeleteDomain(MsgDeleteDomain) returns (MsgDeleteDomainResponse);
+rpc CreateAuthenticationLog(MsgCreateAuthenticationLog) returns (MsgCreateAuthenticationLogResponse);
+  rpc UpdateAuthenticationLog(MsgUpdateAuthenticationLog) returns (MsgUpdateAuthenticationLogResponse);
+  rpc DeleteAuthenticationLog(MsgDeleteAuthenticationLog) returns (MsgDeleteAuthenticationLogResponse);
+  rpc SendAuthenticateDomain(MsgSendAuthenticateDomain) returns (MsgSendAuthenticateDomainResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
 }
 
+message MsgCreatePublicKey {
+  string creator = 1;
+  uint64 n = 2;
+  uint64 e = 3;
+}
+
+message MsgCreatePublicKeyResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdatePublicKey {
+  string creator = 1;
+  uint64 id = 2;
+  uint64 n = 3;
+  uint64 e = 4;
+}
+
+message MsgUpdatePublicKeyResponse {}
+
+message MsgDeletePublicKey {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeletePublicKeyResponse {}
+
+message MsgCreateValidity {
+  string creator = 1;
+  string notBefore = 2;
+  string notAfter = 3;
+}
+
+message MsgCreateValidityResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateValidity {
+  string creator = 1;
+  uint64 id = 2;
+  string notBefore = 3;
+  string notAfter = 4;
+}
+
+message MsgUpdateValidityResponse {}
+
+message MsgDeleteValidity {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteValidityResponse {}
+
+message MsgCreateCertificate {
+  string creator = 1;
+  PublicKey publicKey = 2;
+  Validity validity = 3;
+}
+
+message MsgCreateCertificateResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateCertificate {
+  string creator = 1;
+  uint64 id = 2;
+  PublicKey publicKey = 3;
+  Validity validity = 4;
+}
+
+message MsgUpdateCertificateResponse {}
+
+message MsgDeleteCertificate {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteCertificateResponse {}
+
+message MsgCreateIbcConnection {
+  string creator = 1;
+  string channel = 2;
+}
+
+message MsgCreateIbcConnectionResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateIbcConnection {
+  string creator = 1;
+  uint64 id = 2;
+  string channel = 3;
+}
+
+message MsgUpdateIbcConnectionResponse {}
+
+message MsgDeleteIbcConnection {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteIbcConnectionResponse {}
+
+message MsgCreateDomain {
+  string creator = 1;
+  string name = 2;
+  string domainType = 3;
+  string location = 4;
+  Certificate certificate = 5;
+  IbcConnection ibcConnection = 6;
+}
+
+message MsgCreateDomainResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateDomain {
+  string creator = 1;
+  uint64 id = 2;
+  string name = 3;
+  string domainType = 4;
+  string location = 5;
+  Certificate certificate = 6;
+  IbcConnection ibcConnection = 7;
+}
+
+message MsgUpdateDomainResponse {}
+
+message MsgDeleteDomain {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteDomainResponse {}
+
+message MsgCreateAuthenticationLog {
+  string creator = 1;
+  string transaction = 2;
+  string timestamp = 3;
+  string details = 4;
+  string decision = 5;
+  string function = 6;
+  string recipient = 7;
+}
+
+message MsgCreateAuthenticationLogResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateAuthenticationLog {
+  string creator = 1;
+  uint64 id = 2;
+  string transaction = 3;
+  string timestamp = 4;
+  string details = 5;
+  string decision = 6;
+  string function = 7;
+  string recipient = 8;
+}
+
+message MsgUpdateAuthenticationLogResponse {}
+
+message MsgDeleteAuthenticationLog {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteAuthenticationLogResponse {}
+
+message MsgSendAuthenticateDomain {
+  string creator = 1;
+  string port = 2;
+  string channelID = 3;
+  uint64 timeoutTimestamp = 4;
+}
+
+message MsgSendAuthenticateDomainResponse {
+}
 // this line is used by starport scaffolding # proto/tx/message

@@ -69,6 +69,5 @@ func (k msgServer) ConfigureLocalDomain(goCtx context.Context, msg *types.MsgCon
 		Creator: ctx.ChainID(),
 	})
 
-
 	return &types.MsgConfigureLocalDomainResponse{}, nil
 }

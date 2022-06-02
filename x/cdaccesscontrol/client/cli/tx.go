@@ -30,6 +30,25 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	cmd.AddCommand(CmdCreatePublicKey())
+	cmd.AddCommand(CmdUpdatePublicKey())
+	cmd.AddCommand(CmdDeletePublicKey())
+	cmd.AddCommand(CmdCreateValidity())
+	cmd.AddCommand(CmdUpdateValidity())
+	cmd.AddCommand(CmdDeleteValidity())
+	cmd.AddCommand(CmdCreateCertificate())
+	cmd.AddCommand(CmdUpdateCertificate())
+	cmd.AddCommand(CmdDeleteCertificate())
+	cmd.AddCommand(CmdCreateIbcConnection())
+	cmd.AddCommand(CmdUpdateIbcConnection())
+	cmd.AddCommand(CmdDeleteIbcConnection())
+	cmd.AddCommand(CmdCreateDomain())
+	cmd.AddCommand(CmdUpdateDomain())
+	cmd.AddCommand(CmdDeleteDomain())
+	cmd.AddCommand(CmdCreateAuthenticationLog())
+	cmd.AddCommand(CmdUpdateAuthenticationLog())
+	cmd.AddCommand(CmdDeleteAuthenticationLog())
+	cmd.AddCommand(CmdSendAuthenticateDomain())
 	// this line is used by starport scaffolding # 1
 
 	return cmd

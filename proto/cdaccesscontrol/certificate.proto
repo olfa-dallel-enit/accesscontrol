@@ -1,0 +1,13 @@
+syntax = "proto3";
+package crossdomain.cdaccesscontrol;
+
+option go_package = "crossdomain/x/cdaccesscontrol/types";
+import "cdaccesscontrol/public_key.proto"; 
+import "cdaccesscontrol/validity.proto"; 
+
+message Certificate {
+  uint64 id = 1;
+  PublicKey publicKey = 2; 
+  Validity validity = 3; 
+  string creator = 4;
+}

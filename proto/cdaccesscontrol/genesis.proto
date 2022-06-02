@@ -3,6 +3,12 @@ package crossdomain.cdaccesscontrol;
 
 import "gogoproto/gogo.proto";
 import "cdaccesscontrol/params.proto";
+import "cdaccesscontrol/public_key.proto";
+import "cdaccesscontrol/validity.proto";
+import "cdaccesscontrol/certificate.proto";
+import "cdaccesscontrol/ibc_connection.proto";
+import "cdaccesscontrol/domain.proto";
+import "cdaccesscontrol/authentication_log.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "crossdomain/x/cdaccesscontrol/types";
@@ -11,5 +17,17 @@ option go_package = "crossdomain/x/cdaccesscontrol/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   string port_id = 2;
+  repeated PublicKey publicKeyList = 3 [(gogoproto.nullable) = false];
+  uint64 publicKeyCount = 4;
+  repeated Validity validityList = 5 [(gogoproto.nullable) = false];
+  uint64 validityCount = 6;
+  repeated Certificate certificateList = 7 [(gogoproto.nullable) = false];
+  uint64 certificateCount = 8;
+  repeated IbcConnection ibcConnectionList = 9 [(gogoproto.nullable) = false];
+  uint64 ibcConnectionCount = 10;
+  repeated Domain domainList = 11 [(gogoproto.nullable) = false];
+  uint64 domainCount = 12;
+  repeated AuthenticationLog authenticationLogList = 13 [(gogoproto.nullable) = false];
+  uint64 authenticationLogCount = 14;
   // this line is used by starport scaffolding # genesis/proto/state
 }

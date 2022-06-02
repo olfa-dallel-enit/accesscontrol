@@ -5,6 +5,12 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "cdaccesscontrol/params.proto";
+import "cdaccesscontrol/public_key.proto";
+import "cdaccesscontrol/validity.proto";
+import "cdaccesscontrol/certificate.proto";
+import "cdaccesscontrol/ibc_connection.proto";
+import "cdaccesscontrol/domain.proto";
+import "cdaccesscontrol/authentication_log.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "crossdomain/x/cdaccesscontrol/types";
@@ -15,7 +21,67 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/crossdomain/cdaccesscontrol/params";
   }
-  // this line is used by starport scaffolding # 2
+  // Queries a PublicKey by id.
+	rpc PublicKey(QueryGetPublicKeyRequest) returns (QueryGetPublicKeyResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/public_key/{id}";
+	}
+
+	// Queries a list of PublicKey items.
+	rpc PublicKeyAll(QueryAllPublicKeyRequest) returns (QueryAllPublicKeyResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/public_key";
+	}
+
+// Queries a Validity by id.
+	rpc Validity(QueryGetValidityRequest) returns (QueryGetValidityResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/validity/{id}";
+	}
+
+	// Queries a list of Validity items.
+	rpc ValidityAll(QueryAllValidityRequest) returns (QueryAllValidityResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/validity";
+	}
+
+// Queries a Certificate by id.
+	rpc Certificate(QueryGetCertificateRequest) returns (QueryGetCertificateResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/certificate/{id}";
+	}
+
+	// Queries a list of Certificate items.
+	rpc CertificateAll(QueryAllCertificateRequest) returns (QueryAllCertificateResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/certificate";
+	}
+
+// Queries a IbcConnection by id.
+	rpc IbcConnection(QueryGetIbcConnectionRequest) returns (QueryGetIbcConnectionResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/ibc_connection/{id}";
+	}
+
+	// Queries a list of IbcConnection items.
+	rpc IbcConnectionAll(QueryAllIbcConnectionRequest) returns (QueryAllIbcConnectionResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/ibc_connection";
+	}
+
+// Queries a Domain by id.
+	rpc Domain(QueryGetDomainRequest) returns (QueryGetDomainResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/domain/{id}";
+	}
+
+	// Queries a list of Domain items.
+	rpc DomainAll(QueryAllDomainRequest) returns (QueryAllDomainResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/domain";
+	}
+
+// Queries a AuthenticationLog by id.
+	rpc AuthenticationLog(QueryGetAuthenticationLogRequest) returns (QueryGetAuthenticationLogResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/authentication_log/{id}";
+	}
+
+	// Queries a list of AuthenticationLog items.
+	rpc AuthenticationLogAll(QueryAllAuthenticationLogRequest) returns (QueryAllAuthenticationLogResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/authentication_log";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -25,6 +91,108 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetPublicKeyRequest {
+	uint64 id = 1;
+}
+
+message QueryGetPublicKeyResponse {
+	PublicKey PublicKey = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPublicKeyRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPublicKeyResponse {
+	repeated PublicKey PublicKey = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetValidityRequest {
+	uint64 id = 1;
+}
+
+message QueryGetValidityResponse {
+	Validity Validity = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllValidityRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllValidityResponse {
+	repeated Validity Validity = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetCertificateRequest {
+	uint64 id = 1;
+}
+
+message QueryGetCertificateResponse {
+	Certificate Certificate = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllCertificateRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllCertificateResponse {
+	repeated Certificate Certificate = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetIbcConnectionRequest {
+	uint64 id = 1;
+}
+
+message QueryGetIbcConnectionResponse {
+	IbcConnection IbcConnection = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllIbcConnectionRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllIbcConnectionResponse {
+	repeated IbcConnection IbcConnection = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetDomainRequest {
+	uint64 id = 1;
+}
+
+message QueryGetDomainResponse {
+	Domain Domain = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllDomainRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllDomainResponse {
+	repeated Domain Domain = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetAuthenticationLogRequest {
+	uint64 id = 1;
+}
+
+message QueryGetAuthenticationLogResponse {
+	AuthenticationLog AuthenticationLog = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllAuthenticationLogRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllAuthenticationLogResponse {
+	repeated AuthenticationLog AuthenticationLog = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // this line is used by starport scaffolding # 3

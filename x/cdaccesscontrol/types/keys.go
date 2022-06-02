@@ -31,3 +31,33 @@ var (
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+const (
+	PublicKeyKey      = "PublicKey-value-"
+	PublicKeyCountKey = "PublicKey-count-"
+)
+
+const (
+	ValidityKey      = "Validity-value-"
+	ValidityCountKey = "Validity-count-"
+)
+
+const (
+	CertificateKey      = "Certificate-value-"
+	CertificateCountKey = "Certificate-count-"
+)
+
+const (
+	IbcConnectionKey      = "IbcConnection-value-"
+	IbcConnectionCountKey = "IbcConnection-count-"
+)
+
+const (
+	DomainKey      = "Domain-value-"
+	DomainCountKey = "Domain-count-"
+)
+
+const (
+	AuthenticationLogKey      = "AuthenticationLog-value-"
+	AuthenticationLogCountKey = "AuthenticationLog-count-"
+)

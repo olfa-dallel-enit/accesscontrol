@@ -1,0 +1,16 @@
+syntax = "proto3";
+package crossdomain.cdaccesscontrol;
+
+option go_package = "crossdomain/x/cdaccesscontrol/types";
+import "cdaccesscontrol/certificate.proto"; 
+import "cdaccesscontrol/ibc_connection.proto"; 
+
+message Domain {
+  uint64 id = 1;
+  string name = 2; 
+  string domainType = 3; 
+  string location = 4; 
+  Certificate certificate = 5; 
+  IbcConnection ibcConnection = 6; 
+  string creator = 7;
+}

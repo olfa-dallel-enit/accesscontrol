@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 	"strings"
-	
+
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 

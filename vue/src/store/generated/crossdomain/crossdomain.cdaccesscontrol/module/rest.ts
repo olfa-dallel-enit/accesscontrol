@@ -9,10 +9,230 @@
  * ---------------------------------------------------------------
  */
 
+export interface CdaccesscontrolAuthenticationLog {
+  /** @format uint64 */
+  id?: string;
+  transaction?: string;
+  timestamp?: string;
+  details?: string;
+  decision?: string;
+  function?: string;
+  recipient?: string;
+  creator?: string;
+}
+
+export interface CdaccesscontrolCertificate {
+  /** @format uint64 */
+  id?: string;
+  publicKey?: CdaccesscontrolPublicKey;
+  validity?: CdaccesscontrolValidity;
+  creator?: string;
+}
+
+export interface CdaccesscontrolDomain {
+  /** @format uint64 */
+  id?: string;
+  name?: string;
+  domainType?: string;
+  location?: string;
+  certificate?: CdaccesscontrolCertificate;
+  ibcConnection?: CdaccesscontrolIbcConnection;
+  creator?: string;
+}
+
+export interface CdaccesscontrolIbcConnection {
+  /** @format uint64 */
+  id?: string;
+  channel?: string;
+  creator?: string;
+}
+
+export interface CdaccesscontrolMsgCreateAuthenticationLogResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface CdaccesscontrolMsgCreateCertificateResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface CdaccesscontrolMsgCreateDomainResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface CdaccesscontrolMsgCreateIbcConnectionResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface CdaccesscontrolMsgCreatePublicKeyResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface CdaccesscontrolMsgCreateValidityResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export type CdaccesscontrolMsgDeleteAuthenticationLogResponse = object;
+
+export type CdaccesscontrolMsgDeleteCertificateResponse = object;
+
+export type CdaccesscontrolMsgDeleteDomainResponse = object;
+
+export type CdaccesscontrolMsgDeleteIbcConnectionResponse = object;
+
+export type CdaccesscontrolMsgDeletePublicKeyResponse = object;
+
+export type CdaccesscontrolMsgDeleteValidityResponse = object;
+
+export type CdaccesscontrolMsgSendAuthenticateDomainResponse = object;
+
+export type CdaccesscontrolMsgUpdateAuthenticationLogResponse = object;
+
+export type CdaccesscontrolMsgUpdateCertificateResponse = object;
+
+export type CdaccesscontrolMsgUpdateDomainResponse = object;
+
+export type CdaccesscontrolMsgUpdateIbcConnectionResponse = object;
+
+export type CdaccesscontrolMsgUpdatePublicKeyResponse = object;
+
+export type CdaccesscontrolMsgUpdateValidityResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */
 export type CdaccesscontrolParams = object;
+
+export interface CdaccesscontrolPublicKey {
+  /** @format uint64 */
+  id?: string;
+
+  /** @format uint64 */
+  n?: string;
+
+  /** @format uint64 */
+  e?: string;
+  creator?: string;
+}
+
+export interface CdaccesscontrolQueryAllAuthenticationLogResponse {
+  AuthenticationLog?: CdaccesscontrolAuthenticationLog[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CdaccesscontrolQueryAllCertificateResponse {
+  Certificate?: CdaccesscontrolCertificate[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CdaccesscontrolQueryAllDomainResponse {
+  Domain?: CdaccesscontrolDomain[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CdaccesscontrolQueryAllIbcConnectionResponse {
+  IbcConnection?: CdaccesscontrolIbcConnection[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CdaccesscontrolQueryAllPublicKeyResponse {
+  PublicKey?: CdaccesscontrolPublicKey[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CdaccesscontrolQueryAllValidityResponse {
+  Validity?: CdaccesscontrolValidity[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CdaccesscontrolQueryGetAuthenticationLogResponse {
+  AuthenticationLog?: CdaccesscontrolAuthenticationLog;
+}
+
+export interface CdaccesscontrolQueryGetCertificateResponse {
+  Certificate?: CdaccesscontrolCertificate;
+}
+
+export interface CdaccesscontrolQueryGetDomainResponse {
+  Domain?: CdaccesscontrolDomain;
+}
+
+export interface CdaccesscontrolQueryGetIbcConnectionResponse {
+  IbcConnection?: CdaccesscontrolIbcConnection;
+}
+
+export interface CdaccesscontrolQueryGetPublicKeyResponse {
+  PublicKey?: CdaccesscontrolPublicKey;
+}
+
+export interface CdaccesscontrolQueryGetValidityResponse {
+  Validity?: CdaccesscontrolValidity;
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -20,6 +240,14 @@ export type CdaccesscontrolParams = object;
 export interface CdaccesscontrolQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: CdaccesscontrolParams;
+}
+
+export interface CdaccesscontrolValidity {
+  /** @format uint64 */
+  id?: string;
+  notBefore?: string;
+  notAfter?: string;
+  creator?: string;
 }
 
 export interface ProtobufAny {
@@ -31,6 +259,69 @@ export interface RpcStatus {
   code?: number;
   message?: string;
   details?: ProtobufAny[];
+}
+
+/**
+* message SomeRequest {
+         Foo some_parameter = 1;
+         PageRequest pagination = 2;
+ }
+*/
+export interface V1Beta1PageRequest {
+  /**
+   * key is a value returned in PageResponse.next_key to begin
+   * querying the next page most efficiently. Only one of offset or key
+   * should be set.
+   * @format byte
+   */
+  key?: string;
+
+  /**
+   * offset is a numeric offset that can be used when key is unavailable.
+   * It is less efficient than using key. Only one of offset or key should
+   * be set.
+   * @format uint64
+   */
+  offset?: string;
+
+  /**
+   * limit is the total number of results to be returned in the result page.
+   * If left empty it will default to a value to be set by each app.
+   * @format uint64
+   */
+  limit?: string;
+
+  /**
+   * count_total is set to true  to indicate that the result set should include
+   * a count of the total number of items available for pagination in UIs.
+   * count_total is only respected when offset is used. It is ignored when key
+   * is set.
+   */
+  count_total?: boolean;
+
+  /**
+   * reverse is set to true if results are to be returned in the descending order.
+   *
+   * Since: cosmos-sdk 0.43
+   */
+  reverse?: boolean;
+}
+
+/**
+* PageResponse is to be embedded in gRPC response messages where the
+corresponding request message has used PageRequest.
+
+ message SomeResponse {
+         repeated Bar results = 1;
+         PageResponse page = 2;
+ }
+*/
+export interface V1Beta1PageResponse {
+  /** @format byte */
+  next_key?: string;
+
+  /** @format uint64 */
+  total?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -225,10 +516,178 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title cdaccesscontrol/genesis.proto
+ * @title cdaccesscontrol/authentication_log.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryAuthenticationLogAll
+   * @summary Queries a list of AuthenticationLog items.
+   * @request GET:/crossdomain/cdaccesscontrol/authentication_log
+   */
+  queryAuthenticationLogAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CdaccesscontrolQueryAllAuthenticationLogResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/authentication_log`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryAuthenticationLog
+   * @summary Queries a AuthenticationLog by id.
+   * @request GET:/crossdomain/cdaccesscontrol/authentication_log/{id}
+   */
+  queryAuthenticationLog = (id: string, params: RequestParams = {}) =>
+    this.request<CdaccesscontrolQueryGetAuthenticationLogResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/authentication_log/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryCertificateAll
+   * @summary Queries a list of Certificate items.
+   * @request GET:/crossdomain/cdaccesscontrol/certificate
+   */
+  queryCertificateAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CdaccesscontrolQueryAllCertificateResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/certificate`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryCertificate
+   * @summary Queries a Certificate by id.
+   * @request GET:/crossdomain/cdaccesscontrol/certificate/{id}
+   */
+  queryCertificate = (id: string, params: RequestParams = {}) =>
+    this.request<CdaccesscontrolQueryGetCertificateResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/certificate/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDomainAll
+   * @summary Queries a list of Domain items.
+   * @request GET:/crossdomain/cdaccesscontrol/domain
+   */
+  queryDomainAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CdaccesscontrolQueryAllDomainResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/domain`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDomain
+   * @summary Queries a Domain by id.
+   * @request GET:/crossdomain/cdaccesscontrol/domain/{id}
+   */
+  queryDomain = (id: string, params: RequestParams = {}) =>
+    this.request<CdaccesscontrolQueryGetDomainResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/domain/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryIbcConnectionAll
+   * @summary Queries a list of IbcConnection items.
+   * @request GET:/crossdomain/cdaccesscontrol/ibc_connection
+   */
+  queryIbcConnectionAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CdaccesscontrolQueryAllIbcConnectionResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/ibc_connection`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryIbcConnection
+   * @summary Queries a IbcConnection by id.
+   * @request GET:/crossdomain/cdaccesscontrol/ibc_connection/{id}
+   */
+  queryIbcConnection = (id: string, params: RequestParams = {}) =>
+    this.request<CdaccesscontrolQueryGetIbcConnectionResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/ibc_connection/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *
@@ -240,6 +699,90 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<CdaccesscontrolQueryParamsResponse, RpcStatus>({
       path: `/crossdomain/cdaccesscontrol/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPublicKeyAll
+   * @summary Queries a list of PublicKey items.
+   * @request GET:/crossdomain/cdaccesscontrol/public_key
+   */
+  queryPublicKeyAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CdaccesscontrolQueryAllPublicKeyResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/public_key`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPublicKey
+   * @summary Queries a PublicKey by id.
+   * @request GET:/crossdomain/cdaccesscontrol/public_key/{id}
+   */
+  queryPublicKey = (id: string, params: RequestParams = {}) =>
+    this.request<CdaccesscontrolQueryGetPublicKeyResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/public_key/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryValidityAll
+   * @summary Queries a list of Validity items.
+   * @request GET:/crossdomain/cdaccesscontrol/validity
+   */
+  queryValidityAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CdaccesscontrolQueryAllValidityResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/validity`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryValidity
+   * @summary Queries a Validity by id.
+   * @request GET:/crossdomain/cdaccesscontrol/validity/{id}
+   */
+  queryValidity = (id: string, params: RequestParams = {}) =>
+    this.request<CdaccesscontrolQueryGetValidityResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/validity/${id}`,
       method: "GET",
       format: "json",
       ...params,

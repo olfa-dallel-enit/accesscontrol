@@ -1,4 +1,4 @@
 git add .
 git commit -a
-git commit -m "add chain configurations"
+git commit -m "add authentication"
 git push -u origin main
