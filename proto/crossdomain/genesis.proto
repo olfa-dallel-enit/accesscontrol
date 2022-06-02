@@ -1,0 +1,14 @@
+syntax = "proto3";
+package crossdomain.crossdomain;
+
+import "gogoproto/gogo.proto";
+import "crossdomain/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "crossdomain/x/crossdomain/types";
+
+// GenesisState defines the crossdomain module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
