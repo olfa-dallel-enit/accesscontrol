@@ -176,7 +176,6 @@ message MsgCreateAuthenticationLog {
   string details = 4;
   string decision = 5;
   string function = 6;
-  string recipient = 7;
 }
 
 message MsgCreateAuthenticationLogResponse {
@@ -191,7 +190,6 @@ message MsgUpdateAuthenticationLog {
   string details = 5;
   string decision = 6;
   string function = 7;
-  string recipient = 8;
 }
 
 message MsgUpdateAuthenticationLogResponse {}

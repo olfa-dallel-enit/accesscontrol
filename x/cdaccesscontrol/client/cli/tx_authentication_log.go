@@ -14,21 +14,20 @@ func CmdCreateAuthenticationLog() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-authentication-log [transaction] [timestamp] [details] [decision] [function] [recipient]",
 		Short: "Create a new authenticationLog",
-		Args:  cobra.ExactArgs(6),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			argTransaction := args[0]
 			argTimestamp := args[1]
 			argDetails := args[2]
 			argDecision := args[3]
 			argFunction := args[4]
-			argRecipient := args[5]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgCreateAuthenticationLog(clientCtx.GetFromAddress().String(), argTransaction, argTimestamp, argDetails, argDecision, argFunction, argRecipient)
+			msg := types.NewMsgCreateAuthenticationLog(clientCtx.GetFromAddress().String(), argTransaction, argTimestamp, argDetails, argDecision, argFunction)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -45,7 +44,7 @@ func CmdUpdateAuthenticationLog() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-authentication-log [id] [transaction] [timestamp] [details] [decision] [function] [recipient]",
 		Short: "Update a authenticationLog",
-		Args:  cobra.ExactArgs(7),
+		Args:  cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			id, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
@@ -62,14 +61,13 @@ func CmdUpdateAuthenticationLog() *cobra.Command {
 
 			argFunction := args[5]
 
-			argRecipient := args[6]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgUpdateAuthenticationLog(clientCtx.GetFromAddress().String(), id, argTransaction, argTimestamp, argDetails, argDecision, argFunction, argRecipient)
+			msg := types.NewMsgUpdateAuthenticationLog(clientCtx.GetFromAddress().String(), id, argTransaction, argTimestamp, argDetails, argDecision, argFunction)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

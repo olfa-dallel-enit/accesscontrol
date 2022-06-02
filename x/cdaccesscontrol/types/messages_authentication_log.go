@@ -13,7 +13,7 @@ const (
 
 var _ sdk.Msg = &MsgCreateAuthenticationLog{}
 
-func NewMsgCreateAuthenticationLog(creator string, transaction string, timestamp string, details string, decision string, function string, recipient string) *MsgCreateAuthenticationLog {
+func NewMsgCreateAuthenticationLog(creator string, transaction string, timestamp string, details string, decision string, function string) *MsgCreateAuthenticationLog {
 	return &MsgCreateAuthenticationLog{
 		Creator:     creator,
 		Transaction: transaction,
@@ -21,7 +21,6 @@ func NewMsgCreateAuthenticationLog(creator string, transaction string, timestamp
 		Details:     details,
 		Decision:    decision,
 		Function:    function,
-		Recipient:   recipient,
 	}
 }
 
@@ -56,7 +55,7 @@ func (msg *MsgCreateAuthenticationLog) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgUpdateAuthenticationLog{}
 
-func NewMsgUpdateAuthenticationLog(creator string, id uint64, transaction string, timestamp string, details string, decision string, function string, recipient string) *MsgUpdateAuthenticationLog {
+func NewMsgUpdateAuthenticationLog(creator string, id uint64, transaction string, timestamp string, details string, decision string, function string) *MsgUpdateAuthenticationLog {
 	return &MsgUpdateAuthenticationLog{
 		Id:          id,
 		Creator:     creator,
@@ -65,7 +64,6 @@ func NewMsgUpdateAuthenticationLog(creator string, id uint64, transaction string
 		Details:     details,
 		Decision:    decision,
 		Function:    function,
-		Recipient:   recipient,
 	}
 }
 

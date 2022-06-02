@@ -10,6 +10,5 @@ message AuthenticationLog {
   string details = 4; 
   string decision = 5; 
   string function = 6; 
-  string recipient = 7; 
-  string creator = 8;
+  string creator = 7;
 }

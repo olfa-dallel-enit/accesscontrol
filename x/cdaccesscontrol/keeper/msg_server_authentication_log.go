@@ -19,7 +19,6 @@ func (k msgServer) CreateAuthenticationLog(goCtx context.Context, msg *types.Msg
 		Details:     msg.Details,
 		Decision:    msg.Decision,
 		Function:    msg.Function,
-		Recipient:   msg.Recipient,
 	}
 
 	id := k.AppendAuthenticationLog(
@@ -43,7 +42,6 @@ func (k msgServer) UpdateAuthenticationLog(goCtx context.Context, msg *types.Msg
 		Details:     msg.Details,
 		Decision:    msg.Decision,
 		Function:    msg.Function,
-		Recipient:   msg.Recipient,
 	}
 
 	// Checks that the element exists
