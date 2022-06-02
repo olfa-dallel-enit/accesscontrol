@@ -6,6 +6,8 @@ export const protobufPackage = "crossdomain.cdaccesscontrol";
 export interface CdaccesscontrolPacketData {
   noData: NoData | undefined;
   /** this line is used by starport scaffolding # ibc/packet/proto/field */
+  enableCooperationPacket: EnableCooperationPacketData | undefined;
+  /** this line is used by starport scaffolding # ibc/packet/proto/field/number */
   disableCooperationPacket: DisableCooperationPacketData | undefined;
   /** this line is used by starport scaffolding # ibc/packet/proto/field/number */
   forwardCooperationDataPacket: ForwardCooperationDataPacketData | undefined;
@@ -60,10 +62,21 @@ export interface ForwardCooperationDataPacketData {}
 export interface ForwardCooperationDataPacketAck {}
 
 /** DisableCooperationPacketData defines a struct for the packet payload */
-export interface DisableCooperationPacketData {}
+export interface DisableCooperationPacketData {
+  sender: string;
+}
 
 /** DisableCooperationPacketAck defines a struct for the packet acknowledgment */
-export interface DisableCooperationPacketAck {}
+export interface DisableCooperationPacketAck {
+  confirmation: string;
+  confirmedBy: string;
+}
+
+/** EnableCooperationPacketData defines a struct for the packet payload */
+export interface EnableCooperationPacketData {}
+
+/** EnableCooperationPacketAck defines a struct for the packet acknowledgment */
+export interface EnableCooperationPacketAck {}
 
 const baseCdaccesscontrolPacketData: object = {};
 
@@ -74,6 +87,12 @@ export const CdaccesscontrolPacketData = {
   ): Writer {
     if (message.noData !== undefined) {
       NoData.encode(message.noData, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.enableCooperationPacket !== undefined) {
+      EnableCooperationPacketData.encode(
+        message.enableCooperationPacket,
+        writer.uint32(50).fork()
+      ).ldelim();
     }
     if (message.disableCooperationPacket !== undefined) {
       DisableCooperationPacketData.encode(
@@ -117,6 +136,12 @@ export const CdaccesscontrolPacketData = {
         case 1:
           message.noData = NoData.decode(reader, reader.uint32());
           break;
+        case 6:
+          message.enableCooperationPacket = EnableCooperationPacketData.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
         case 5:
           message.disableCooperationPacket = DisableCooperationPacketData.decode(
             reader,
@@ -157,6 +182,16 @@ export const CdaccesscontrolPacketData = {
       message.noData = NoData.fromJSON(object.noData);
     } else {
       message.noData = undefined;
+    }
+    if (
+      object.enableCooperationPacket !== undefined &&
+      object.enableCooperationPacket !== null
+    ) {
+      message.enableCooperationPacket = EnableCooperationPacketData.fromJSON(
+        object.enableCooperationPacket
+      );
+    } else {
+      message.enableCooperationPacket = undefined;
     }
     if (
       object.disableCooperationPacket !== undefined &&
@@ -205,6 +240,10 @@ export const CdaccesscontrolPacketData = {
     const obj: any = {};
     message.noData !== undefined &&
       (obj.noData = message.noData ? NoData.toJSON(message.noData) : undefined);
+    message.enableCooperationPacket !== undefined &&
+      (obj.enableCooperationPacket = message.enableCooperationPacket
+        ? EnableCooperationPacketData.toJSON(message.enableCooperationPacket)
+        : undefined);
     message.disableCooperationPacket !== undefined &&
       (obj.disableCooperationPacket = message.disableCooperationPacket
         ? DisableCooperationPacketData.toJSON(message.disableCooperationPacket)
@@ -238,6 +277,16 @@ export const CdaccesscontrolPacketData = {
       message.noData = NoData.fromPartial(object.noData);
     } else {
       message.noData = undefined;
+    }
+    if (
+      object.enableCooperationPacket !== undefined &&
+      object.enableCooperationPacket !== null
+    ) {
+      message.enableCooperationPacket = EnableCooperationPacketData.fromPartial(
+        object.enableCooperationPacket
+      );
+    } else {
+      message.enableCooperationPacket = undefined;
     }
     if (
       object.disableCooperationPacket !== undefined &&
@@ -1001,13 +1050,16 @@ export const ForwardCooperationDataPacketAck = {
   },
 };
 
-const baseDisableCooperationPacketData: object = {};
+const baseDisableCooperationPacketData: object = { sender: "" };
 
 export const DisableCooperationPacketData = {
   encode(
-    _: DisableCooperationPacketData,
+    message: DisableCooperationPacketData,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
     return writer;
   },
 
@@ -1023,6 +1075,9 @@ export const DisableCooperationPacketData = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.sender = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1031,35 +1086,55 @@ export const DisableCooperationPacketData = {
     return message;
   },
 
-  fromJSON(_: any): DisableCooperationPacketData {
+  fromJSON(object: any): DisableCooperationPacketData {
     const message = {
       ...baseDisableCooperationPacketData,
     } as DisableCooperationPacketData;
+    if (object.sender !== undefined && object.sender !== null) {
+      message.sender = String(object.sender);
+    } else {
+      message.sender = "";
+    }
     return message;
   },
 
-  toJSON(_: DisableCooperationPacketData): unknown {
+  toJSON(message: DisableCooperationPacketData): unknown {
     const obj: any = {};
+    message.sender !== undefined && (obj.sender = message.sender);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<DisableCooperationPacketData>
+    object: DeepPartial<DisableCooperationPacketData>
   ): DisableCooperationPacketData {
     const message = {
       ...baseDisableCooperationPacketData,
     } as DisableCooperationPacketData;
+    if (object.sender !== undefined && object.sender !== null) {
+      message.sender = object.sender;
+    } else {
+      message.sender = "";
+    }
     return message;
   },
 };
 
-const baseDisableCooperationPacketAck: object = {};
+const baseDisableCooperationPacketAck: object = {
+  confirmation: "",
+  confirmedBy: "",
+};
 
 export const DisableCooperationPacketAck = {
   encode(
-    _: DisableCooperationPacketAck,
+    message: DisableCooperationPacketAck,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.confirmation !== "") {
+      writer.uint32(10).string(message.confirmation);
+    }
+    if (message.confirmedBy !== "") {
+      writer.uint32(18).string(message.confirmedBy);
+    }
     return writer;
   },
 
@@ -1075,6 +1150,12 @@ export const DisableCooperationPacketAck = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.confirmation = reader.string();
+          break;
+        case 2:
+          message.confirmedBy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1083,24 +1164,152 @@ export const DisableCooperationPacketAck = {
     return message;
   },
 
-  fromJSON(_: any): DisableCooperationPacketAck {
+  fromJSON(object: any): DisableCooperationPacketAck {
     const message = {
       ...baseDisableCooperationPacketAck,
     } as DisableCooperationPacketAck;
+    if (object.confirmation !== undefined && object.confirmation !== null) {
+      message.confirmation = String(object.confirmation);
+    } else {
+      message.confirmation = "";
+    }
+    if (object.confirmedBy !== undefined && object.confirmedBy !== null) {
+      message.confirmedBy = String(object.confirmedBy);
+    } else {
+      message.confirmedBy = "";
+    }
     return message;
   },
 
-  toJSON(_: DisableCooperationPacketAck): unknown {
+  toJSON(message: DisableCooperationPacketAck): unknown {
+    const obj: any = {};
+    message.confirmation !== undefined &&
+      (obj.confirmation = message.confirmation);
+    message.confirmedBy !== undefined &&
+      (obj.confirmedBy = message.confirmedBy);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<DisableCooperationPacketAck>
+  ): DisableCooperationPacketAck {
+    const message = {
+      ...baseDisableCooperationPacketAck,
+    } as DisableCooperationPacketAck;
+    if (object.confirmation !== undefined && object.confirmation !== null) {
+      message.confirmation = object.confirmation;
+    } else {
+      message.confirmation = "";
+    }
+    if (object.confirmedBy !== undefined && object.confirmedBy !== null) {
+      message.confirmedBy = object.confirmedBy;
+    } else {
+      message.confirmedBy = "";
+    }
+    return message;
+  },
+};
+
+const baseEnableCooperationPacketData: object = {};
+
+export const EnableCooperationPacketData = {
+  encode(
+    _: EnableCooperationPacketData,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): EnableCooperationPacketData {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseEnableCooperationPacketData,
+    } as EnableCooperationPacketData;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): EnableCooperationPacketData {
+    const message = {
+      ...baseEnableCooperationPacketData,
+    } as EnableCooperationPacketData;
+    return message;
+  },
+
+  toJSON(_: EnableCooperationPacketData): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<DisableCooperationPacketAck>
-  ): DisableCooperationPacketAck {
+    _: DeepPartial<EnableCooperationPacketData>
+  ): EnableCooperationPacketData {
     const message = {
-      ...baseDisableCooperationPacketAck,
-    } as DisableCooperationPacketAck;
+      ...baseEnableCooperationPacketData,
+    } as EnableCooperationPacketData;
+    return message;
+  },
+};
+
+const baseEnableCooperationPacketAck: object = {};
+
+export const EnableCooperationPacketAck = {
+  encode(
+    _: EnableCooperationPacketAck,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): EnableCooperationPacketAck {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseEnableCooperationPacketAck,
+    } as EnableCooperationPacketAck;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): EnableCooperationPacketAck {
+    const message = {
+      ...baseEnableCooperationPacketAck,
+    } as EnableCooperationPacketAck;
+    return message;
+  },
+
+  toJSON(_: EnableCooperationPacketAck): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<EnableCooperationPacketAck>
+  ): EnableCooperationPacketAck {
+    const message = {
+      ...baseEnableCooperationPacketAck,
+    } as EnableCooperationPacketAck;
     return message;
   },
 };

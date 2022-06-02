@@ -65,6 +65,7 @@ export interface CdaccesscontrolDomainCooperation {
   creationTimestamp?: string;
   updateTimestamp?: string;
   creator?: string;
+  status?: string;
 }
 
 export interface CdaccesscontrolIbcConnection {
@@ -134,6 +135,8 @@ export type CdaccesscontrolMsgDeleteValidityResponse = object;
 export type CdaccesscontrolMsgSendAuthenticateDomainResponse = object;
 
 export type CdaccesscontrolMsgSendDisableCooperationResponse = object;
+
+export type CdaccesscontrolMsgSendEnableCooperationResponse = object;
 
 export type CdaccesscontrolMsgSendEstablishCooperationResponse = object;
 

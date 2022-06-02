@@ -20782,6 +20782,8 @@ paths:
                       type: string
                     creator:
                       type: string
+                    status:
+                      type: string
               pagination:
                 type: object
                 properties:
@@ -21048,6 +21050,8 @@ paths:
                   updateTimestamp:
                     type: string
                   creator:
+                    type: string
+                  status:
                     type: string
         default:
           description: An unexpected error response.
@@ -49060,6 +49064,8 @@ definitions:
         type: string
       creator:
         type: string
+      status:
+        type: string
   crossdomain.cdaccesscontrol.IbcConnection:
     type: object
     properties:
@@ -49139,6 +49145,8 @@ definitions:
   crossdomain.cdaccesscontrol.MsgSendAuthenticateDomainResponse:
     type: object
   crossdomain.cdaccesscontrol.MsgSendDisableCooperationResponse:
+    type: object
+  crossdomain.cdaccesscontrol.MsgSendEnableCooperationResponse:
     type: object
   crossdomain.cdaccesscontrol.MsgSendEstablishCooperationResponse:
     type: object
@@ -49494,6 +49502,8 @@ definitions:
             updateTimestamp:
               type: string
             creator:
+              type: string
+            status:
               type: string
       pagination:
         type: object
@@ -49972,6 +49982,8 @@ definitions:
           updateTimestamp:
             type: string
           creator:
+            type: string
+          status:
             type: string
   crossdomain.cdaccesscontrol.QueryGetDomainResponse:
     type: object

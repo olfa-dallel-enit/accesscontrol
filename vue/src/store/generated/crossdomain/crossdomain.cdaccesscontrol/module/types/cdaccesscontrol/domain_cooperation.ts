@@ -18,6 +18,7 @@ export interface DomainCooperation {
   creationTimestamp: string;
   updateTimestamp: string;
   creator: string;
+  status: string;
 }
 
 const baseDomainCooperation: object = {
@@ -29,6 +30,7 @@ const baseDomainCooperation: object = {
   creationTimestamp: "",
   updateTimestamp: "",
   creator: "",
+  status: "",
 };
 
 export const DomainCooperation = {
@@ -65,6 +67,9 @@ export const DomainCooperation = {
     }
     if (message.creator !== "") {
       writer.uint32(90).string(message.creator);
+    }
+    if (message.status !== "") {
+      writer.uint32(98).string(message.status);
     }
     return writer;
   },
@@ -108,6 +113,9 @@ export const DomainCooperation = {
           break;
         case 11:
           message.creator = reader.string();
+          break;
+        case 12:
+          message.status = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -183,6 +191,11 @@ export const DomainCooperation = {
     } else {
       message.creator = "";
     }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = String(object.status);
+    } else {
+      message.status = "";
+    }
     return message;
   },
 
@@ -211,6 +224,7 @@ export const DomainCooperation = {
     message.updateTimestamp !== undefined &&
       (obj.updateTimestamp = message.updateTimestamp);
     message.creator !== undefined && (obj.creator = message.creator);
+    message.status !== undefined && (obj.status = message.status);
     return obj;
   },
 
@@ -279,6 +293,11 @@ export const DomainCooperation = {
       message.creator = object.creator;
     } else {
       message.creator = "";
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = "";
     }
     return message;
   },

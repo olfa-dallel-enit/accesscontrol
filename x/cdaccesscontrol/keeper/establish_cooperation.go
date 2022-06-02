@@ -10,8 +10,8 @@ import (
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v2/modules/core/24-host"
 
-	"time"
 	"github.com/spf13/cast"
+	"time"
 )
 
 // TransmitEstablishCooperationPacket transmits the packet over IBC with the specified source port and source channel
@@ -80,8 +80,8 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 	found := k.FindDomainCooperationByDomainName(ctx, data.Sender)
 	if !found {
 		if k.IsAuthenticated(ctx, data.Sender) {
-			localDomainLocation, _ := k.crossdomainKeeper.GetLocalDomainLocation(ctx)
-			remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, data.Sender)
+			localDomain, _ := k.crossdomainKeeper.GetLocalDomain(ctx)
+			remoteDomain, _ := k.GetDomainByName(ctx, data.Sender)
 			k.AppendDomainCooperation(ctx, types.DomainCooperation{
 				Creator:         ctx.ChainID(),
 				Label:           ctx.ChainID() + "-" + data.Sender,
@@ -92,20 +92,12 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					DomainType: "Local",
 					IbcConnection: &types.IbcConnection{
 						Creator: ctx.ChainID(),
-						Channel: packet.DestinationChannel,
-					},
-					Location: localDomainLocation,
-				},
-				RemoteDomain: &types.Domain{
-					Creator:    ctx.ChainID(),
-					Name:       data.Sender,
-					DomainType: "Remote",
-					IbcConnection: &types.IbcConnection{
-						Creator: ctx.ChainID(),
+						Port:    packet.DestinationPort,
 						Channel: packet.SourceChannel,
 					},
-					Location: remoteDomainLocation,
+					Location: localDomain.Location,
 				},
+				RemoteDomain: &remoteDomain,
 				Validity: &types.Validity{
 					Creator:   ctx.ChainID(),
 					NotBefore: data.NotBefore + " +0000 UTC",
@@ -327,8 +319,8 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 
 		// TODO: successful acknowledgement logic
 		if packetAck.Confirmation == "Confirmed" {
-			localDomainLocation, _ := k.crossdomainKeeper.GetLocalDomainLocation(ctx)
-			remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, packetAck.ConfirmedBy)
+			localDomain, _ := k.crossdomainKeeper.GetLocalDomain(ctx)
+			remoteDomain, _ := k.GetDomainByName(ctx, packetAck.ConfirmedBy)
 			k.AppendDomainCooperation(ctx, types.DomainCooperation{
 				Creator:         ctx.ChainID(),
 				Label:           ctx.ChainID() + "-" + packetAck.ConfirmedBy,
@@ -336,23 +328,15 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 				SourceDomain: &types.Domain{
 					Creator:    ctx.ChainID(),
 					Name:       ctx.ChainID(),
-					DomainType: "Local",
+					DomainType: localDomain.DomainType,
 					IbcConnection: &types.IbcConnection{
 						Creator: ctx.ChainID(),
+						Port:    packet.SourcePort,
 						Channel: packet.SourceChannel,
 					},
-					Location: localDomainLocation,
+					Location: localDomain.Location,
 				},
-				RemoteDomain: &types.Domain{
-					Creator:    ctx.ChainID(),
-					Name:       packetAck.ConfirmedBy,
-					DomainType: "Remote",
-					IbcConnection: &types.IbcConnection{
-						Creator: ctx.ChainID(),
-						Channel: packet.DestinationChannel,
-					},
-					Location: remoteDomainLocation,
-				},
+				RemoteDomain: &remoteDomain,
 				Validity: &types.Validity{
 					Creator:   ctx.ChainID(),
 					NotBefore: data.NotBefore + " +0000 CET",
@@ -368,7 +352,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-establish-cooperation",
-				Function:	  "OnAcknowledgementEstablishCooperationPacket",
+				Function:    "OnAcknowledgementEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 				Decision:    "Confirmed",
@@ -539,7 +523,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-establish-cooperation",
-				Function:	  "OnAcknowledgementEstablishCooperationPacket",
+				Function:    "OnAcknowledgementEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 				Decision:    "Not confirmed",
@@ -547,7 +531,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-forward-cooperation-data",
-				Function:	  "OnAcknowledgementEstablishCooperationPacket",
+				Function:    "OnAcknowledgementEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 				Decision:    "Not confirmed",

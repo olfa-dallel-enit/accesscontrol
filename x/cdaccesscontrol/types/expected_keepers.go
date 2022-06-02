@@ -11,7 +11,7 @@ type CrossdomainKeeper interface {
 	// Methods imported from crossdomain should be defined here
 	GetLocalDomain(ctx sdk.Context) (val crossdomainTypes.LocalDomain, found bool)
 	GetLocalDomainCertificate(ctx sdk.Context) (val crossdomainTypes.LocalDomainCertificate, found bool)
-	GetLocalDomainLocation(ctx sdk.Context) (location string, found bool) 
+	GetLocalDomainLocation(ctx sdk.Context) (location string, found bool)
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
