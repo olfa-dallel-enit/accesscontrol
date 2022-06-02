@@ -1,13 +1,221 @@
 syntax = "proto3";
 package crossdomain.crossdomain;
 
+import "crossdomain/private_key.proto";
+import "crossdomain/local_domain_certificate.proto";
+import "crossdomain/root_certificate.proto";
+import "crossdomain/local_domain.proto";
+import "crossdomain/forward_policy.proto";
+import "crossdomain/decision_policy.proto";
+import "crossdomain/cooperation_network_features.proto";
 // this line is used by starport scaffolding # proto/tx/import
+import "crossdomain/validity.proto";
 
 option go_package = "crossdomain/x/crossdomain/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+      rpc CreatePrivateKey(MsgCreatePrivateKey) returns (MsgCreatePrivateKeyResponse);
+  rpc UpdatePrivateKey(MsgUpdatePrivateKey) returns (MsgUpdatePrivateKeyResponse);
+  rpc DeletePrivateKey(MsgDeletePrivateKey) returns (MsgDeletePrivateKeyResponse);
+  rpc CreateLocalDomainCertificate(MsgCreateLocalDomainCertificate) returns (MsgCreateLocalDomainCertificateResponse);
+  rpc UpdateLocalDomainCertificate(MsgUpdateLocalDomainCertificate) returns (MsgUpdateLocalDomainCertificateResponse);
+  rpc DeleteLocalDomainCertificate(MsgDeleteLocalDomainCertificate) returns (MsgDeleteLocalDomainCertificateResponse);
+  rpc CreateRootCertificate(MsgCreateRootCertificate) returns (MsgCreateRootCertificateResponse);
+  rpc UpdateRootCertificate(MsgUpdateRootCertificate) returns (MsgUpdateRootCertificateResponse);
+  rpc DeleteRootCertificate(MsgDeleteRootCertificate) returns (MsgDeleteRootCertificateResponse);
+  rpc CreateLocalDomain(MsgCreateLocalDomain) returns (MsgCreateLocalDomainResponse);
+  rpc UpdateLocalDomain(MsgUpdateLocalDomain) returns (MsgUpdateLocalDomainResponse);
+  rpc DeleteLocalDomain(MsgDeleteLocalDomain) returns (MsgDeleteLocalDomainResponse);
+  rpc ConfigureLocalDomain(MsgConfigureLocalDomain) returns (MsgConfigureLocalDomainResponse);
+  rpc CreateForwardPolicy(MsgCreateForwardPolicy) returns (MsgCreateForwardPolicyResponse);
+  rpc UpdateForwardPolicy(MsgUpdateForwardPolicy) returns (MsgUpdateForwardPolicyResponse);
+  rpc DeleteForwardPolicy(MsgDeleteForwardPolicy) returns (MsgDeleteForwardPolicyResponse);
+rpc CreateValidity(MsgCreateValidity) returns (MsgCreateValidityResponse);
+  rpc UpdateValidity(MsgUpdateValidity) returns (MsgUpdateValidityResponse);
+  rpc DeleteValidity(MsgDeleteValidity) returns (MsgDeleteValidityResponse);
+  rpc CreateDecisionPolicy(MsgCreateDecisionPolicy) returns (MsgCreateDecisionPolicyResponse);
+  rpc UpdateDecisionPolicy(MsgUpdateDecisionPolicy) returns (MsgUpdateDecisionPolicyResponse);
+  rpc DeleteDecisionPolicy(MsgDeleteDecisionPolicy) returns (MsgDeleteDecisionPolicyResponse);
+  rpc CreateCooperationNetworkFeatures(MsgCreateCooperationNetworkFeatures) returns (MsgCreateCooperationNetworkFeaturesResponse);
+  rpc UpdateCooperationNetworkFeatures(MsgUpdateCooperationNetworkFeatures) returns (MsgUpdateCooperationNetworkFeaturesResponse);
+  rpc DeleteCooperationNetworkFeatures(MsgDeleteCooperationNetworkFeatures) returns (MsgDeleteCooperationNetworkFeaturesResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
 }
 
+message MsgCreatePrivateKey {
+  string creator = 1;
+  string value = 3;
+}
+message MsgCreatePrivateKeyResponse {}
+
+message MsgUpdatePrivateKey {
+  string creator = 1;
+  string value = 3;
+}
+message MsgUpdatePrivateKeyResponse {}
+
+message MsgDeletePrivateKey {
+  string creator = 1;
+}
+message MsgDeletePrivateKeyResponse {}
+message MsgCreateLocalDomainCertificate {
+  string creator = 1;
+  string value = 3;
+}
+message MsgCreateLocalDomainCertificateResponse {}
+
+message MsgUpdateLocalDomainCertificate {
+  string creator = 1;
+  string value = 3;
+}
+message MsgUpdateLocalDomainCertificateResponse {}
+
+message MsgDeleteLocalDomainCertificate {
+  string creator = 1;
+}
+message MsgDeleteLocalDomainCertificateResponse {}
+message MsgCreateRootCertificate {
+  string creator = 1;
+  string value = 3;
+}
+message MsgCreateRootCertificateResponse {}
+
+message MsgUpdateRootCertificate {
+  string creator = 1;
+  string value = 3;
+}
+message MsgUpdateRootCertificateResponse {}
+
+message MsgDeleteRootCertificate {
+  string creator = 1;
+}
+message MsgDeleteRootCertificateResponse {}
+message MsgCreateLocalDomain {
+  string creator = 1;
+  string name = 3;
+  string domainType = 4;
+  string location = 5;
+}
+message MsgCreateLocalDomainResponse {}
+
+message MsgUpdateLocalDomain {
+  string creator = 1;
+  string name = 3;
+  string domainType = 4;
+  string location = 5;
+}
+message MsgUpdateLocalDomainResponse {}
+
+message MsgDeleteLocalDomain {
+  string creator = 1;
+}
+message MsgDeleteLocalDomainResponse {}
+message MsgConfigureLocalDomain {
+  string creator = 1;
+  string configurationFile = 2;
+  string localDomainCertificateFile = 3;
+  string privateKeyFile = 4;
+  string rootCertificateFile = 5;
+}
+
+message MsgConfigureLocalDomainResponse {
+}
+
+message MsgCreateForwardPolicy {
+  string creator = 1;
+  string mode = 3;
+  repeated string domainList = 4;
+  repeated string locationList = 5;
+}
+message MsgCreateForwardPolicyResponse {}
+
+message MsgUpdateForwardPolicy {
+  string creator = 1;
+  string mode = 3;
+  repeated string domainList = 4;
+  repeated string locationList = 5;
+}
+message MsgUpdateForwardPolicyResponse {}
+
+message MsgDeleteForwardPolicy {
+  string creator = 1;
+}
+message MsgDeleteForwardPolicyResponse {}
+message MsgCreateValidity {
+  string creator = 1;
+  string notBefore = 2;
+  string notAfter = 3;
+}
+
+message MsgCreateValidityResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateValidity {
+  string creator = 1;
+  uint64 id = 2;
+  string notBefore = 3;
+  string notAfter = 4;
+}
+
+message MsgUpdateValidityResponse {}
+
+message MsgDeleteValidity {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteValidityResponse {}
+
+message MsgCreateDecisionPolicy {
+  string creator = 1;
+  uint64 depth = 3;
+  uint64 cost = 4;
+  string location = 5;
+  string interest = 6;
+  Validity validity = 7;
+  string lastUpdate = 8;
+}
+message MsgCreateDecisionPolicyResponse {}
+
+message MsgUpdateDecisionPolicy {
+  string creator = 1;
+  uint64 depth = 3;
+  uint64 cost = 4;
+  string location = 5;
+  string interest = 6;
+  Validity validity = 7;
+  string lastUpdate = 8;
+}
+message MsgUpdateDecisionPolicyResponse {}
+
+message MsgDeleteDecisionPolicy {
+  string creator = 1;
+}
+message MsgDeleteDecisionPolicyResponse {}
+message MsgCreateCooperationNetworkFeatures {
+  string creator = 1;
+  uint64 depth = 3;
+  uint64 cost = 4;
+  repeated string interestList = 5;
+  repeated string locationList = 6;
+  string lastUpdate = 7;
+}
+message MsgCreateCooperationNetworkFeaturesResponse {}
+
+message MsgUpdateCooperationNetworkFeatures {
+  string creator = 1;
+  uint64 depth = 3;
+  uint64 cost = 4;
+  repeated string interestList = 5;
+  repeated string locationList = 6;
+  string lastUpdate = 7;
+}
+message MsgUpdateCooperationNetworkFeaturesResponse {}
+
+message MsgDeleteCooperationNetworkFeatures {
+  string creator = 1;
+}
+message MsgDeleteCooperationNetworkFeaturesResponse {}
 // this line is used by starport scaffolding # proto/tx/message

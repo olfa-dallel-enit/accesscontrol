@@ -5,6 +5,14 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "crossdomain/params.proto";
+import "crossdomain/private_key.proto";
+import "crossdomain/local_domain_certificate.proto";
+import "crossdomain/root_certificate.proto";
+import "crossdomain/local_domain.proto";
+import "crossdomain/forward_policy.proto";
+import "crossdomain/validity.proto";
+import "crossdomain/decision_policy.proto";
+import "crossdomain/cooperation_network_features.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "crossdomain/x/crossdomain/types";
@@ -15,7 +23,45 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/crossdomain/crossdomain/params";
   }
-  // this line is used by starport scaffolding # 2
+  // Queries a PrivateKey by index.
+	rpc PrivateKey(QueryGetPrivateKeyRequest) returns (QueryGetPrivateKeyResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/private_key";
+	}
+// Queries a LocalDomainCertificate by index.
+	rpc LocalDomainCertificate(QueryGetLocalDomainCertificateRequest) returns (QueryGetLocalDomainCertificateResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/local_domain_certificate";
+	}
+// Queries a RootCertificate by index.
+	rpc RootCertificate(QueryGetRootCertificateRequest) returns (QueryGetRootCertificateResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/root_certificate";
+	}
+// Queries a LocalDomain by index.
+	rpc LocalDomain(QueryGetLocalDomainRequest) returns (QueryGetLocalDomainResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/local_domain";
+	}
+// Queries a ForwardPolicy by index.
+	rpc ForwardPolicy(QueryGetForwardPolicyRequest) returns (QueryGetForwardPolicyResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/forward_policy";
+	}
+// Queries a Validity by id.
+	rpc Validity(QueryGetValidityRequest) returns (QueryGetValidityResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/validity/{id}";
+	}
+
+	// Queries a list of Validity items.
+	rpc ValidityAll(QueryAllValidityRequest) returns (QueryAllValidityResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/validity";
+	}
+
+// Queries a DecisionPolicy by index.
+	rpc DecisionPolicy(QueryGetDecisionPolicyRequest) returns (QueryGetDecisionPolicyResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/decision_policy";
+	}
+// Queries a CooperationNetworkFeatures by index.
+	rpc CooperationNetworkFeatures(QueryGetCooperationNetworkFeaturesRequest) returns (QueryGetCooperationNetworkFeaturesResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/cooperation_network_features";
+	}
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -27,4 +73,56 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
+message QueryGetPrivateKeyRequest {}
+
+message QueryGetPrivateKeyResponse {
+	PrivateKey PrivateKey = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetLocalDomainCertificateRequest {}
+
+message QueryGetLocalDomainCertificateResponse {
+	LocalDomainCertificate LocalDomainCertificate = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetRootCertificateRequest {}
+
+message QueryGetRootCertificateResponse {
+	RootCertificate RootCertificate = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetLocalDomainRequest {}
+
+message QueryGetLocalDomainResponse {
+	LocalDomain LocalDomain = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetForwardPolicyRequest {}
+
+message QueryGetForwardPolicyResponse {
+	ForwardPolicy ForwardPolicy = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetValidityRequest {
+	uint64 id = 1;
+}
+
+message QueryGetValidityResponse {
+	Validity Validity = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllValidityRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllValidityResponse {
+	repeated Validity Validity = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetDecisionPolicyRequest {}
+
+message QueryGetDecisionPolicyResponse {
+	DecisionPolicy DecisionPolicy = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetCooperationNetworkFeaturesRequest {}
+
+message QueryGetCooperationNetworkFeaturesResponse {
+	CooperationNetworkFeatures CooperationNetworkFeatures = 1 [(gogoproto.nullable) = false];
+}
 // this line is used by starport scaffolding # 3

@@ -1,0 +1,13 @@
+syntax = "proto3";
+package crossdomain.crossdomain;
+
+option go_package = "crossdomain/x/crossdomain/types";
+
+message CooperationNetworkFeatures {
+  uint64 depth = 1; 
+  uint64 cost = 2; 
+  repeated string interestList = 3; 
+  repeated string locationList = 4; 
+  string lastUpdate = 5; 
+  string creator = 6;
+}

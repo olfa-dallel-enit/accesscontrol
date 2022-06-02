@@ -3,6 +3,14 @@ package crossdomain.crossdomain;
 
 import "gogoproto/gogo.proto";
 import "crossdomain/params.proto";
+import "crossdomain/private_key.proto";
+import "crossdomain/local_domain_certificate.proto";
+import "crossdomain/root_certificate.proto";
+import "crossdomain/local_domain.proto";
+import "crossdomain/forward_policy.proto";
+import "crossdomain/validity.proto";
+import "crossdomain/decision_policy.proto";
+import "crossdomain/cooperation_network_features.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "crossdomain/x/crossdomain/types";
@@ -10,5 +18,14 @@ option go_package = "crossdomain/x/crossdomain/types";
 // GenesisState defines the crossdomain module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
+  PrivateKey privateKey = 2;
+  LocalDomainCertificate localDomainCertificate = 3;
+  RootCertificate rootCertificate = 4;
+  LocalDomain localDomain = 5;
+  ForwardPolicy forwardPolicy = 6;
+  repeated Validity validityList = 7 [(gogoproto.nullable) = false];
+  uint64 validityCount = 8;
+  DecisionPolicy decisionPolicy = 9;
+  CooperationNetworkFeatures cooperationNetworkFeatures = 10;
   // this line is used by starport scaffolding # genesis/proto/state
 }

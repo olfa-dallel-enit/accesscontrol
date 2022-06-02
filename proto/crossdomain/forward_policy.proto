@@ -1,0 +1,11 @@
+syntax = "proto3";
+package crossdomain.crossdomain;
+
+option go_package = "crossdomain/x/crossdomain/types";
+
+message ForwardPolicy {
+  string mode = 1; 
+  repeated string domainList = 2; 
+  repeated string locationList = 3; 
+  string creator = 4;
+}

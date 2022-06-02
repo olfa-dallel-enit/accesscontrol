@@ -100,6 +100,9 @@ import (
 
 	"crossdomain/docs"
 
+	cdaccesscontrolmodule "crossdomain/x/cdaccesscontrol"
+	cdaccesscontrolmodulekeeper "crossdomain/x/cdaccesscontrol/keeper"
+	cdaccesscontrolmoduletypes "crossdomain/x/cdaccesscontrol/types"
 	crossdomainmodule "crossdomain/x/crossdomain"
 	crossdomainmodulekeeper "crossdomain/x/crossdomain/keeper"
 	crossdomainmoduletypes "crossdomain/x/crossdomain/types"
@@ -158,6 +161,7 @@ var (
 		vesting.AppModuleBasic{},
 		monitoringp.AppModuleBasic{},
 		crossdomainmodule.AppModuleBasic{},
+		cdaccesscontrolmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -230,7 +234,9 @@ type App struct {
 	ScopedTransferKeeper   capabilitykeeper.ScopedKeeper
 	ScopedMonitoringKeeper capabilitykeeper.ScopedKeeper
 
-	CrossdomainKeeper crossdomainmodulekeeper.Keeper
+	CrossdomainKeeper           crossdomainmodulekeeper.Keeper
+	ScopedCdaccesscontrolKeeper capabilitykeeper.ScopedKeeper
+	CdaccesscontrolKeeper       cdaccesscontrolmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -268,6 +274,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, monitoringptypes.StoreKey,
 		crossdomainmoduletypes.StoreKey,
+		cdaccesscontrolmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -394,12 +401,27 @@ func New(
 	)
 	crossdomainModule := crossdomainmodule.NewAppModule(appCodec, app.CrossdomainKeeper, app.AccountKeeper, app.BankKeeper)
 
+	scopedCdaccesscontrolKeeper := app.CapabilityKeeper.ScopeToModule(cdaccesscontrolmoduletypes.ModuleName)
+	app.ScopedCdaccesscontrolKeeper = scopedCdaccesscontrolKeeper
+	app.CdaccesscontrolKeeper = *cdaccesscontrolmodulekeeper.NewKeeper(
+		appCodec,
+		keys[cdaccesscontrolmoduletypes.StoreKey],
+		keys[cdaccesscontrolmoduletypes.MemStoreKey],
+		app.GetSubspace(cdaccesscontrolmoduletypes.ModuleName),
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedCdaccesscontrolKeeper,
+		app.CrossdomainKeeper,
+	)
+	cdaccesscontrolModule := cdaccesscontrolmodule.NewAppModule(appCodec, app.CdaccesscontrolKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
 	ibcRouter.AddRoute(monitoringptypes.ModuleName, monitoringModule)
+	ibcRouter.AddRoute(cdaccesscontrolmoduletypes.ModuleName, cdaccesscontrolModule)
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
 
@@ -436,6 +458,7 @@ func New(
 		transferModule,
 		monitoringModule,
 		crossdomainModule,
+		cdaccesscontrolModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -464,6 +487,7 @@ func New(
 		paramstypes.ModuleName,
 		monitoringptypes.ModuleName,
 		crossdomainmoduletypes.ModuleName,
+		cdaccesscontrolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -488,6 +512,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		monitoringptypes.ModuleName,
 		crossdomainmoduletypes.ModuleName,
+		cdaccesscontrolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -517,6 +542,7 @@ func New(
 		feegrant.ModuleName,
 		monitoringptypes.ModuleName,
 		crossdomainmoduletypes.ModuleName,
+		cdaccesscontrolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -542,6 +568,7 @@ func New(
 		transferModule,
 		monitoringModule,
 		crossdomainModule,
+		cdaccesscontrolModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -732,6 +759,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(monitoringptypes.ModuleName)
 	paramsKeeper.Subspace(crossdomainmoduletypes.ModuleName)
+	paramsKeeper.Subspace(cdaccesscontrolmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

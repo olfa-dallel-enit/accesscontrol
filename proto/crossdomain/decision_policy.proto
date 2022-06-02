@@ -1,0 +1,15 @@
+syntax = "proto3";
+package crossdomain.crossdomain;
+
+option go_package = "crossdomain/x/crossdomain/types";
+import "crossdomain/validity.proto"; 
+
+message DecisionPolicy {
+  uint64 depth = 1; 
+  uint64 cost = 2; 
+  string location = 3; 
+  string interest = 4; 
+  Validity validity = 5; 
+  string lastUpdate = 6; 
+  string creator = 7;
+}

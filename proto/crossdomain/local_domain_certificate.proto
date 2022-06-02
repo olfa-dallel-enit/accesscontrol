@@ -1,0 +1,9 @@
+syntax = "proto3";
+package crossdomain.crossdomain;
+
+option go_package = "crossdomain/x/crossdomain/types";
+
+message LocalDomainCertificate {
+  string value = 1; 
+  string creator = 2;
+}

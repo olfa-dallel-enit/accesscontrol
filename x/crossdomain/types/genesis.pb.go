@@ -25,7 +25,16 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // GenesisState defines the crossdomain module's genesis state.
 type GenesisState struct {
-	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+	Params                     Params                      `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+	PrivateKey                 *PrivateKey                 `protobuf:"bytes,2,opt,name=privateKey,proto3" json:"privateKey,omitempty"`
+	LocalDomainCertificate     *LocalDomainCertificate     `protobuf:"bytes,3,opt,name=localDomainCertificate,proto3" json:"localDomainCertificate,omitempty"`
+	RootCertificate            *RootCertificate            `protobuf:"bytes,4,opt,name=rootCertificate,proto3" json:"rootCertificate,omitempty"`
+	LocalDomain                *LocalDomain                `protobuf:"bytes,5,opt,name=localDomain,proto3" json:"localDomain,omitempty"`
+	ForwardPolicy              *ForwardPolicy              `protobuf:"bytes,6,opt,name=forwardPolicy,proto3" json:"forwardPolicy,omitempty"`
+	ValidityList               []Validity                  `protobuf:"bytes,7,rep,name=validityList,proto3" json:"validityList"`
+	ValidityCount              uint64                      `protobuf:"varint,8,opt,name=validityCount,proto3" json:"validityCount,omitempty"`
+	DecisionPolicy             *DecisionPolicy             `protobuf:"bytes,9,opt,name=decisionPolicy,proto3" json:"decisionPolicy,omitempty"`
+	CooperationNetworkFeatures *CooperationNetworkFeatures `protobuf:"bytes,10,opt,name=cooperationNetworkFeatures,proto3" json:"cooperationNetworkFeatures,omitempty"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -68,6 +77,69 @@ func (m *GenesisState) GetParams() Params {
 	return Params{}
 }
 
+func (m *GenesisState) GetPrivateKey() *PrivateKey {
+	if m != nil {
+		return m.PrivateKey
+	}
+	return nil
+}
+
+func (m *GenesisState) GetLocalDomainCertificate() *LocalDomainCertificate {
+	if m != nil {
+		return m.LocalDomainCertificate
+	}
+	return nil
+}
+
+func (m *GenesisState) GetRootCertificate() *RootCertificate {
+	if m != nil {
+		return m.RootCertificate
+	}
+	return nil
+}
+
+func (m *GenesisState) GetLocalDomain() *LocalDomain {
+	if m != nil {
+		return m.LocalDomain
+	}
+	return nil
+}
+
+func (m *GenesisState) GetForwardPolicy() *ForwardPolicy {
+	if m != nil {
+		return m.ForwardPolicy
+	}
+	return nil
+}
+
+func (m *GenesisState) GetValidityList() []Validity {
+	if m != nil {
+		return m.ValidityList
+	}
+	return nil
+}
+
+func (m *GenesisState) GetValidityCount() uint64 {
+	if m != nil {
+		return m.ValidityCount
+	}
+	return 0
+}
+
+func (m *GenesisState) GetDecisionPolicy() *DecisionPolicy {
+	if m != nil {
+		return m.DecisionPolicy
+	}
+	return nil
+}
+
+func (m *GenesisState) GetCooperationNetworkFeatures() *CooperationNetworkFeatures {
+	if m != nil {
+		return m.CooperationNetworkFeatures
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "crossdomain.crossdomain.GenesisState")
 }
@@ -75,18 +147,38 @@ func init() {
 func init() { proto.RegisterFile("crossdomain/genesis.proto", fileDescriptor_41d901311805e565) }
 
 var fileDescriptor_41d901311805e565 = []byte{
-	// 171 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x4c, 0x2e, 0xca, 0x2f,
-	0x2e, 0x4e, 0xc9, 0xcf, 0x4d, 0xcc, 0xcc, 0xd3, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x47, 0x92, 0xd2, 0x43, 0x62, 0x4b, 0x89, 0xa4, 0xe7,
-	0xa7, 0xe7, 0x83, 0xd5, 0xe8, 0x83, 0x58, 0x10, 0xe5, 0x52, 0x12, 0xc8, 0x26, 0x15, 0x24, 0x16,
-	0x25, 0xe6, 0x42, 0x0d, 0x52, 0xf2, 0xe5, 0xe2, 0x71, 0x87, 0x98, 0x1c, 0x5c, 0x92, 0x58, 0x92,
-	0x2a, 0x64, 0xcb, 0xc5, 0x06, 0x91, 0x97, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x36, 0x92, 0xd7, 0xc3,
-	0x61, 0x93, 0x5e, 0x00, 0x58, 0x99, 0x13, 0xcb, 0x89, 0x7b, 0xf2, 0x0c, 0x41, 0x50, 0x4d, 0x4e,
-	0x96, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91, 0x1c, 0xe3, 0x84, 0xc7,
-	0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0x25, 0x8f, 0xec, 0x84, 0x0a,
-	0x7d, 0x64, 0x5e, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0xd8, 0x41, 0xc6, 0x80, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0x02, 0x89, 0x13, 0xe1, 0xf6, 0x00, 0x00, 0x00,
+	// 488 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0xc7, 0x1b, 0x56, 0x0a, 0xb8, 0x1b, 0x48, 0x16, 0x02, 0x13, 0x89, 0xb4, 0x1b, 0x13, 0x54,
+	0x1c, 0x1a, 0x69, 0x3b, 0x71, 0xe0, 0xb2, 0x4e, 0xe5, 0xb0, 0x0a, 0x26, 0x23, 0x71, 0xe0, 0x12,
+	0x99, 0xd4, 0xad, 0xac, 0x65, 0x79, 0x91, 0xe3, 0x6d, 0xf4, 0x5b, 0xf0, 0x09, 0xf8, 0x3c, 0x3b,
+	0xee, 0xc8, 0x09, 0xa1, 0xf6, 0x8b, 0xa0, 0x3a, 0x0e, 0xbc, 0x4c, 0x35, 0xe2, 0x16, 0xe7, 0xff,
+	0xff, 0xff, 0x5e, 0xf2, 0xde, 0x33, 0x79, 0x96, 0x6a, 0x28, 0xcb, 0x29, 0x9c, 0x0b, 0x95, 0xc7,
+	0x73, 0x99, 0xcb, 0x52, 0x95, 0xc3, 0x42, 0x83, 0x01, 0xfa, 0x14, 0x49, 0x43, 0xf4, 0x1c, 0x3e,
+	0x9e, 0xc3, 0x1c, 0xac, 0x27, 0x5e, 0x3f, 0x55, 0xf6, 0x90, 0x61, 0x52, 0x21, 0xb4, 0x38, 0x77,
+	0xa0, 0xf0, 0x79, 0x43, 0xd1, 0xea, 0x52, 0x18, 0x99, 0x9c, 0xc9, 0x85, 0x93, 0x5f, 0x63, 0x39,
+	0x83, 0x54, 0x64, 0x49, 0x75, 0x48, 0x52, 0xa9, 0x8d, 0x9a, 0xa9, 0x54, 0x18, 0xe9, 0xbc, 0x7b,
+	0xd8, 0xab, 0x01, 0xcc, 0x06, 0x4f, 0xe4, 0xe3, 0x39, 0xbd, 0x8f, 0xf5, 0x19, 0xe8, 0x2b, 0xa1,
+	0xa7, 0x49, 0x01, 0x99, 0x4a, 0xeb, 0x2f, 0x0a, 0xb1, 0xe3, 0x52, 0x64, 0x6a, 0xaa, 0x4c, 0xad,
+	0xed, 0x62, 0x6d, 0x2a, 0x53, 0x55, 0x2a, 0xc8, 0x9b, 0x71, 0xdc, 0xac, 0x38, 0x05, 0x28, 0xa4,
+	0x16, 0x66, 0xed, 0xca, 0xa5, 0xb9, 0x02, 0x7d, 0x96, 0xcc, 0xa4, 0x30, 0x17, 0x5a, 0xba, 0xfe,
+	0xec, 0x7d, 0xef, 0x90, 0xed, 0x77, 0x55, 0xeb, 0x3f, 0x1a, 0x61, 0x24, 0x7d, 0x4b, 0x3a, 0x55,
+	0x03, 0x59, 0xd0, 0x0f, 0x06, 0xdd, 0x83, 0xde, 0xd0, 0x33, 0x8a, 0xe1, 0xa9, 0xb5, 0x1d, 0xb5,
+	0xaf, 0x7f, 0xf6, 0x5a, 0xdc, 0x85, 0xe8, 0x88, 0x10, 0xd7, 0xe5, 0x13, 0xb9, 0x60, 0x77, 0x2c,
+	0xe2, 0x85, 0x1f, 0xf1, 0xc7, 0xca, 0x51, 0x8c, 0xce, 0xc9, 0x13, 0xdb, 0xbb, 0x63, 0xeb, 0x1a,
+	0xfd, 0xed, 0x32, 0xdb, 0xb2, 0xc0, 0xd8, 0x0b, 0x9c, 0x6c, 0x8c, 0x71, 0x0f, 0x8e, 0x72, 0xf2,
+	0x68, 0x3d, 0x48, 0x5c, 0xa1, 0x6d, 0x2b, 0x0c, 0xbc, 0x15, 0x78, 0xd3, 0xcf, 0x6f, 0x03, 0xe8,
+	0x98, 0x74, 0x51, 0x35, 0x76, 0xd7, 0xf2, 0xf6, 0xff, 0xe7, 0x8b, 0x39, 0x0e, 0xd2, 0x09, 0xd9,
+	0x71, 0x0b, 0x72, 0x6a, 0x07, 0xcc, 0x3a, 0x96, 0xf4, 0xd2, 0x4b, 0x1a, 0x63, 0x37, 0x6f, 0x86,
+	0xe9, 0x09, 0xd9, 0xae, 0x97, 0x69, 0xa2, 0x4a, 0xc3, 0xee, 0xf5, 0xb7, 0x06, 0xdd, 0x83, 0x5d,
+	0x2f, 0xec, 0x93, 0x33, 0xbb, 0xf1, 0x36, 0xc2, 0x74, 0x9f, 0xec, 0xd4, 0xe7, 0x11, 0x5c, 0xe4,
+	0x86, 0xdd, 0xef, 0x07, 0x83, 0x36, 0x6f, 0xbe, 0xa4, 0x1f, 0xc8, 0xc3, 0x7a, 0x47, 0xdd, 0x1f,
+	0x3c, 0xb0, 0x7f, 0xf0, 0xca, 0x5b, 0xf4, 0xb8, 0x61, 0xe7, 0xb7, 0xe2, 0xb4, 0x24, 0x21, 0xda,
+	0xe8, 0xf7, 0xd5, 0x42, 0x8f, 0xdd, 0x3e, 0x33, 0x62, 0xe1, 0x87, 0x5e, 0xf8, 0xc8, 0x1b, 0xe5,
+	0xff, 0xc0, 0x1e, 0xbd, 0xb9, 0x5e, 0x46, 0xc1, 0xcd, 0x32, 0x0a, 0x7e, 0x2d, 0xa3, 0xe0, 0xdb,
+	0x2a, 0x6a, 0xdd, 0xac, 0xa2, 0xd6, 0x8f, 0x55, 0xd4, 0xfa, 0xdc, 0xc3, 0x57, 0xed, 0x6b, 0x8c,
+	0x4f, 0x66, 0x51, 0xc8, 0xf2, 0x4b, 0xc7, 0x5e, 0xb1, 0xc3, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff,
+	0x6e, 0xe8, 0x07, 0x8c, 0xe8, 0x04, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -109,6 +201,109 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.CooperationNetworkFeatures != nil {
+		{
+			size, err := m.CooperationNetworkFeatures.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x52
+	}
+	if m.DecisionPolicy != nil {
+		{
+			size, err := m.DecisionPolicy.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x4a
+	}
+	if m.ValidityCount != 0 {
+		i = encodeVarintGenesis(dAtA, i, uint64(m.ValidityCount))
+		i--
+		dAtA[i] = 0x40
+	}
+	if len(m.ValidityList) > 0 {
+		for iNdEx := len(m.ValidityList) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ValidityList[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x3a
+		}
+	}
+	if m.ForwardPolicy != nil {
+		{
+			size, err := m.ForwardPolicy.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.LocalDomain != nil {
+		{
+			size, err := m.LocalDomain.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.RootCertificate != nil {
+		{
+			size, err := m.RootCertificate.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.LocalDomainCertificate != nil {
+		{
+			size, err := m.LocalDomainCertificate.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.PrivateKey != nil {
+		{
+			size, err := m.PrivateKey.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
 	{
 		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -141,6 +336,43 @@ func (m *GenesisState) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovGenesis(uint64(l))
+	if m.PrivateKey != nil {
+		l = m.PrivateKey.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if m.LocalDomainCertificate != nil {
+		l = m.LocalDomainCertificate.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if m.RootCertificate != nil {
+		l = m.RootCertificate.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if m.LocalDomain != nil {
+		l = m.LocalDomain.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if m.ForwardPolicy != nil {
+		l = m.ForwardPolicy.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.ValidityList) > 0 {
+		for _, e := range m.ValidityList {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if m.ValidityCount != 0 {
+		n += 1 + sovGenesis(uint64(m.ValidityCount))
+	}
+	if m.DecisionPolicy != nil {
+		l = m.DecisionPolicy.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if m.CooperationNetworkFeatures != nil {
+		l = m.CooperationNetworkFeatures.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
 	return n
 }
 
@@ -209,6 +441,311 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PrivateKey", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.PrivateKey == nil {
+				m.PrivateKey = &PrivateKey{}
+			}
+			if err := m.PrivateKey.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LocalDomainCertificate", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.LocalDomainCertificate == nil {
+				m.LocalDomainCertificate = &LocalDomainCertificate{}
+			}
+			if err := m.LocalDomainCertificate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RootCertificate", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.RootCertificate == nil {
+				m.RootCertificate = &RootCertificate{}
+			}
+			if err := m.RootCertificate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LocalDomain", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.LocalDomain == nil {
+				m.LocalDomain = &LocalDomain{}
+			}
+			if err := m.LocalDomain.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ForwardPolicy", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.ForwardPolicy == nil {
+				m.ForwardPolicy = &ForwardPolicy{}
+			}
+			if err := m.ForwardPolicy.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidityList", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ValidityList = append(m.ValidityList, Validity{})
+			if err := m.ValidityList[len(m.ValidityList)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValidityCount", wireType)
+			}
+			m.ValidityCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ValidityCount |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DecisionPolicy", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.DecisionPolicy == nil {
+				m.DecisionPolicy = &DecisionPolicy{}
+			}
+			if err := m.DecisionPolicy.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CooperationNetworkFeatures", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CooperationNetworkFeatures == nil {
+				m.CooperationNetworkFeatures = &CooperationNetworkFeatures{}
+			}
+			if err := m.CooperationNetworkFeatures.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

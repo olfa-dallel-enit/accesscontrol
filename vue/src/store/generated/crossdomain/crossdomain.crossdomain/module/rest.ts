@@ -9,10 +9,159 @@
  * ---------------------------------------------------------------
  */
 
+export interface CrossdomainCooperationNetworkFeatures {
+  /** @format uint64 */
+  depth?: string;
+
+  /** @format uint64 */
+  cost?: string;
+  interestList?: string[];
+  locationList?: string[];
+  lastUpdate?: string;
+  creator?: string;
+}
+
+export interface CrossdomainDecisionPolicy {
+  /** @format uint64 */
+  depth?: string;
+
+  /** @format uint64 */
+  cost?: string;
+  location?: string;
+  interest?: string;
+  validity?: CrossdomainValidity;
+  lastUpdate?: string;
+  creator?: string;
+}
+
+export interface CrossdomainForwardPolicy {
+  mode?: string;
+  domainList?: string[];
+  locationList?: string[];
+  creator?: string;
+}
+
+export interface CrossdomainLocalDomain {
+  name?: string;
+  domainType?: string;
+  location?: string;
+  creator?: string;
+}
+
+export interface CrossdomainLocalDomainCertificate {
+  value?: string;
+  creator?: string;
+}
+
+export type CrossdomainMsgConfigureLocalDomainResponse = object;
+
+export type CrossdomainMsgCreateCooperationNetworkFeaturesResponse = object;
+
+export type CrossdomainMsgCreateDecisionPolicyResponse = object;
+
+export type CrossdomainMsgCreateForwardPolicyResponse = object;
+
+export type CrossdomainMsgCreateLocalDomainCertificateResponse = object;
+
+export type CrossdomainMsgCreateLocalDomainResponse = object;
+
+export type CrossdomainMsgCreatePrivateKeyResponse = object;
+
+export type CrossdomainMsgCreateRootCertificateResponse = object;
+
+export interface CrossdomainMsgCreateValidityResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export type CrossdomainMsgDeleteCooperationNetworkFeaturesResponse = object;
+
+export type CrossdomainMsgDeleteDecisionPolicyResponse = object;
+
+export type CrossdomainMsgDeleteForwardPolicyResponse = object;
+
+export type CrossdomainMsgDeleteLocalDomainCertificateResponse = object;
+
+export type CrossdomainMsgDeleteLocalDomainResponse = object;
+
+export type CrossdomainMsgDeletePrivateKeyResponse = object;
+
+export type CrossdomainMsgDeleteRootCertificateResponse = object;
+
+export type CrossdomainMsgDeleteValidityResponse = object;
+
+export type CrossdomainMsgUpdateCooperationNetworkFeaturesResponse = object;
+
+export type CrossdomainMsgUpdateDecisionPolicyResponse = object;
+
+export type CrossdomainMsgUpdateForwardPolicyResponse = object;
+
+export type CrossdomainMsgUpdateLocalDomainCertificateResponse = object;
+
+export type CrossdomainMsgUpdateLocalDomainResponse = object;
+
+export type CrossdomainMsgUpdatePrivateKeyResponse = object;
+
+export type CrossdomainMsgUpdateRootCertificateResponse = object;
+
+export type CrossdomainMsgUpdateValidityResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */
 export type CrossdomainParams = object;
+
+export interface CrossdomainPrivateKey {
+  value?: string;
+  creator?: string;
+}
+
+export interface CrossdomainQueryAllValidityResponse {
+  Validity?: CrossdomainValidity[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CrossdomainQueryGetCooperationNetworkFeaturesResponse {
+  CooperationNetworkFeatures?: CrossdomainCooperationNetworkFeatures;
+}
+
+export interface CrossdomainQueryGetDecisionPolicyResponse {
+  DecisionPolicy?: CrossdomainDecisionPolicy;
+}
+
+export interface CrossdomainQueryGetForwardPolicyResponse {
+  ForwardPolicy?: CrossdomainForwardPolicy;
+}
+
+export interface CrossdomainQueryGetLocalDomainCertificateResponse {
+  LocalDomainCertificate?: CrossdomainLocalDomainCertificate;
+}
+
+export interface CrossdomainQueryGetLocalDomainResponse {
+  LocalDomain?: CrossdomainLocalDomain;
+}
+
+export interface CrossdomainQueryGetPrivateKeyResponse {
+  PrivateKey?: CrossdomainPrivateKey;
+}
+
+export interface CrossdomainQueryGetRootCertificateResponse {
+  RootCertificate?: CrossdomainRootCertificate;
+}
+
+export interface CrossdomainQueryGetValidityResponse {
+  Validity?: CrossdomainValidity;
+}
 
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
@@ -20,6 +169,19 @@ export type CrossdomainParams = object;
 export interface CrossdomainQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: CrossdomainParams;
+}
+
+export interface CrossdomainRootCertificate {
+  value?: string;
+  creator?: string;
+}
+
+export interface CrossdomainValidity {
+  /** @format uint64 */
+  id?: string;
+  notBefore?: string;
+  notAfter?: string;
+  creator?: string;
 }
 
 export interface ProtobufAny {
@@ -31,6 +193,69 @@ export interface RpcStatus {
   code?: number;
   message?: string;
   details?: ProtobufAny[];
+}
+
+/**
+* message SomeRequest {
+         Foo some_parameter = 1;
+         PageRequest pagination = 2;
+ }
+*/
+export interface V1Beta1PageRequest {
+  /**
+   * key is a value returned in PageResponse.next_key to begin
+   * querying the next page most efficiently. Only one of offset or key
+   * should be set.
+   * @format byte
+   */
+  key?: string;
+
+  /**
+   * offset is a numeric offset that can be used when key is unavailable.
+   * It is less efficient than using key. Only one of offset or key should
+   * be set.
+   * @format uint64
+   */
+  offset?: string;
+
+  /**
+   * limit is the total number of results to be returned in the result page.
+   * If left empty it will default to a value to be set by each app.
+   * @format uint64
+   */
+  limit?: string;
+
+  /**
+   * count_total is set to true  to indicate that the result set should include
+   * a count of the total number of items available for pagination in UIs.
+   * count_total is only respected when offset is used. It is ignored when key
+   * is set.
+   */
+  count_total?: boolean;
+
+  /**
+   * reverse is set to true if results are to be returned in the descending order.
+   *
+   * Since: cosmos-sdk 0.43
+   */
+  reverse?: boolean;
+}
+
+/**
+* PageResponse is to be embedded in gRPC response messages where the
+corresponding request message has used PageRequest.
+
+ message SomeResponse {
+         repeated Bar results = 1;
+         PageResponse page = 2;
+ }
+*/
+export interface V1Beta1PageResponse {
+  /** @format byte */
+  next_key?: string;
+
+  /** @format uint64 */
+  total?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -225,10 +450,90 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title crossdomain/genesis.proto
+ * @title crossdomain/cooperation_network_features.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryCooperationNetworkFeatures
+   * @summary Queries a CooperationNetworkFeatures by index.
+   * @request GET:/crossdomain/crossdomain/cooperation_network_features
+   */
+  queryCooperationNetworkFeatures = (params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetCooperationNetworkFeaturesResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/cooperation_network_features`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDecisionPolicy
+   * @summary Queries a DecisionPolicy by index.
+   * @request GET:/crossdomain/crossdomain/decision_policy
+   */
+  queryDecisionPolicy = (params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetDecisionPolicyResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/decision_policy`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryForwardPolicy
+   * @summary Queries a ForwardPolicy by index.
+   * @request GET:/crossdomain/crossdomain/forward_policy
+   */
+  queryForwardPolicy = (params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetForwardPolicyResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/forward_policy`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryLocalDomain
+   * @summary Queries a LocalDomain by index.
+   * @request GET:/crossdomain/crossdomain/local_domain
+   */
+  queryLocalDomain = (params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetLocalDomainResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/local_domain`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryLocalDomainCertificate
+   * @summary Queries a LocalDomainCertificate by index.
+   * @request GET:/crossdomain/crossdomain/local_domain_certificate
+   */
+  queryLocalDomainCertificate = (params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetLocalDomainCertificateResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/local_domain_certificate`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *
@@ -240,6 +545,80 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<CrossdomainQueryParamsResponse, RpcStatus>({
       path: `/crossdomain/crossdomain/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPrivateKey
+   * @summary Queries a PrivateKey by index.
+   * @request GET:/crossdomain/crossdomain/private_key
+   */
+  queryPrivateKey = (params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetPrivateKeyResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/private_key`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryRootCertificate
+   * @summary Queries a RootCertificate by index.
+   * @request GET:/crossdomain/crossdomain/root_certificate
+   */
+  queryRootCertificate = (params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetRootCertificateResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/root_certificate`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryValidityAll
+   * @summary Queries a list of Validity items.
+   * @request GET:/crossdomain/crossdomain/validity
+   */
+  queryValidityAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CrossdomainQueryAllValidityResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/validity`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryValidity
+   * @summary Queries a Validity by id.
+   * @request GET:/crossdomain/crossdomain/validity/{id}
+   */
+  queryValidity = (id: string, params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetValidityResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/validity/${id}`,
       method: "GET",
       format: "json",
       ...params,

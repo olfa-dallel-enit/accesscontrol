@@ -1,0 +1,11 @@
+syntax = "proto3";
+package crossdomain.crossdomain;
+
+option go_package = "crossdomain/x/crossdomain/types";
+
+message LocalDomain {
+  string name = 1; 
+  string domainType = 2; 
+  string location = 3; 
+  string creator = 4;
+}

@@ -19749,6 +19749,275 @@ paths:
           format: int64
       tags:
         - Query
+  /crossdomain/cdaccesscontrol/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: CrossdomainCdaccesscontrolParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/cooperation_network_features:
+    get:
+      summary: Queries a CooperationNetworkFeatures by index.
+      operationId: CrossdomainCrossdomainCooperationNetworkFeatures
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              CooperationNetworkFeatures:
+                type: object
+                properties:
+                  depth:
+                    type: string
+                    format: uint64
+                  cost:
+                    type: string
+                    format: uint64
+                  interestList:
+                    type: array
+                    items:
+                      type: string
+                  locationList:
+                    type: array
+                    items:
+                      type: string
+                  lastUpdate:
+                    type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/decision_policy:
+    get:
+      summary: Queries a DecisionPolicy by index.
+      operationId: CrossdomainCrossdomainDecisionPolicy
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              DecisionPolicy:
+                type: object
+                properties:
+                  depth:
+                    type: string
+                    format: uint64
+                  cost:
+                    type: string
+                    format: uint64
+                  location:
+                    type: string
+                  interest:
+                    type: string
+                  validity:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uint64
+                      notBefore:
+                        type: string
+                      notAfter:
+                        type: string
+                      creator:
+                        type: string
+                  lastUpdate:
+                    type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/forward_policy:
+    get:
+      summary: Queries a ForwardPolicy by index.
+      operationId: CrossdomainCrossdomainForwardPolicy
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ForwardPolicy:
+                type: object
+                properties:
+                  mode:
+                    type: string
+                  domainList:
+                    type: array
+                    items:
+                      type: string
+                  locationList:
+                    type: array
+                    items:
+                      type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/local_domain:
+    get:
+      summary: Queries a LocalDomain by index.
+      operationId: CrossdomainCrossdomainLocalDomain
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              LocalDomain:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  domainType:
+                    type: string
+                  location:
+                    type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/local_domain_certificate:
+    get:
+      summary: Queries a LocalDomainCertificate by index.
+      operationId: CrossdomainCrossdomainLocalDomainCertificate
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              LocalDomainCertificate:
+                type: object
+                properties:
+                  value:
+                    type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
   /crossdomain/crossdomain/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -19783,6 +20052,256 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/private_key:
+    get:
+      summary: Queries a PrivateKey by index.
+      operationId: CrossdomainCrossdomainPrivateKey
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              PrivateKey:
+                type: object
+                properties:
+                  value:
+                    type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/root_certificate:
+    get:
+      summary: Queries a RootCertificate by index.
+      operationId: CrossdomainCrossdomainRootCertificate
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              RootCertificate:
+                type: object
+                properties:
+                  value:
+                    type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/validity:
+    get:
+      summary: Queries a list of Validity items.
+      operationId: CrossdomainCrossdomainValidityAll
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Validity:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uint64
+                    notBefore:
+                      type: string
+                    notAfter:
+                      type: string
+                    creator:
+                      type: string
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: >-
+            reverse is set to true if results are to be returned in the
+            descending order.
+
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  '/crossdomain/crossdomain/validity/{id}':
+    get:
+      summary: Queries a Validity by id.
+      operationId: CrossdomainCrossdomainValidity
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              Validity:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uint64
+                  notBefore:
+                    type: string
+                  notAfter:
+                    type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uint64
       tags:
         - Query
   /ibc/apps/transfer/v1/denom_traces:
@@ -46400,9 +46919,338 @@ definitions:
     description: >-
       MsgCreateVestingAccountResponse defines the Msg/CreateVestingAccount
       response type.
+  crossdomain.cdaccesscontrol.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  crossdomain.cdaccesscontrol.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  crossdomain.crossdomain.CooperationNetworkFeatures:
+    type: object
+    properties:
+      depth:
+        type: string
+        format: uint64
+      cost:
+        type: string
+        format: uint64
+      interestList:
+        type: array
+        items:
+          type: string
+      locationList:
+        type: array
+        items:
+          type: string
+      lastUpdate:
+        type: string
+      creator:
+        type: string
+  crossdomain.crossdomain.DecisionPolicy:
+    type: object
+    properties:
+      depth:
+        type: string
+        format: uint64
+      cost:
+        type: string
+        format: uint64
+      location:
+        type: string
+      interest:
+        type: string
+      validity:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          notBefore:
+            type: string
+          notAfter:
+            type: string
+          creator:
+            type: string
+      lastUpdate:
+        type: string
+      creator:
+        type: string
+  crossdomain.crossdomain.ForwardPolicy:
+    type: object
+    properties:
+      mode:
+        type: string
+      domainList:
+        type: array
+        items:
+          type: string
+      locationList:
+        type: array
+        items:
+          type: string
+      creator:
+        type: string
+  crossdomain.crossdomain.LocalDomain:
+    type: object
+    properties:
+      name:
+        type: string
+      domainType:
+        type: string
+      location:
+        type: string
+      creator:
+        type: string
+  crossdomain.crossdomain.LocalDomainCertificate:
+    type: object
+    properties:
+      value:
+        type: string
+      creator:
+        type: string
+  crossdomain.crossdomain.MsgConfigureLocalDomainResponse:
+    type: object
+  crossdomain.crossdomain.MsgCreateCooperationNetworkFeaturesResponse:
+    type: object
+  crossdomain.crossdomain.MsgCreateDecisionPolicyResponse:
+    type: object
+  crossdomain.crossdomain.MsgCreateForwardPolicyResponse:
+    type: object
+  crossdomain.crossdomain.MsgCreateLocalDomainCertificateResponse:
+    type: object
+  crossdomain.crossdomain.MsgCreateLocalDomainResponse:
+    type: object
+  crossdomain.crossdomain.MsgCreatePrivateKeyResponse:
+    type: object
+  crossdomain.crossdomain.MsgCreateRootCertificateResponse:
+    type: object
+  crossdomain.crossdomain.MsgCreateValidityResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+  crossdomain.crossdomain.MsgDeleteCooperationNetworkFeaturesResponse:
+    type: object
+  crossdomain.crossdomain.MsgDeleteDecisionPolicyResponse:
+    type: object
+  crossdomain.crossdomain.MsgDeleteForwardPolicyResponse:
+    type: object
+  crossdomain.crossdomain.MsgDeleteLocalDomainCertificateResponse:
+    type: object
+  crossdomain.crossdomain.MsgDeleteLocalDomainResponse:
+    type: object
+  crossdomain.crossdomain.MsgDeletePrivateKeyResponse:
+    type: object
+  crossdomain.crossdomain.MsgDeleteRootCertificateResponse:
+    type: object
+  crossdomain.crossdomain.MsgDeleteValidityResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdateCooperationNetworkFeaturesResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdateDecisionPolicyResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdateForwardPolicyResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdateLocalDomainCertificateResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdateLocalDomainResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdatePrivateKeyResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdateRootCertificateResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdateValidityResponse:
+    type: object
   crossdomain.crossdomain.Params:
     type: object
     description: Params defines the parameters for the module.
+  crossdomain.crossdomain.PrivateKey:
+    type: object
+    properties:
+      value:
+        type: string
+      creator:
+        type: string
+  crossdomain.crossdomain.QueryAllValidityResponse:
+    type: object
+    properties:
+      Validity:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uint64
+            notBefore:
+              type: string
+            notAfter:
+              type: string
+            creator:
+              type: string
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+  crossdomain.crossdomain.QueryGetCooperationNetworkFeaturesResponse:
+    type: object
+    properties:
+      CooperationNetworkFeatures:
+        type: object
+        properties:
+          depth:
+            type: string
+            format: uint64
+          cost:
+            type: string
+            format: uint64
+          interestList:
+            type: array
+            items:
+              type: string
+          locationList:
+            type: array
+            items:
+              type: string
+          lastUpdate:
+            type: string
+          creator:
+            type: string
+  crossdomain.crossdomain.QueryGetDecisionPolicyResponse:
+    type: object
+    properties:
+      DecisionPolicy:
+        type: object
+        properties:
+          depth:
+            type: string
+            format: uint64
+          cost:
+            type: string
+            format: uint64
+          location:
+            type: string
+          interest:
+            type: string
+          validity:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uint64
+              notBefore:
+                type: string
+              notAfter:
+                type: string
+              creator:
+                type: string
+          lastUpdate:
+            type: string
+          creator:
+            type: string
+  crossdomain.crossdomain.QueryGetForwardPolicyResponse:
+    type: object
+    properties:
+      ForwardPolicy:
+        type: object
+        properties:
+          mode:
+            type: string
+          domainList:
+            type: array
+            items:
+              type: string
+          locationList:
+            type: array
+            items:
+              type: string
+          creator:
+            type: string
+  crossdomain.crossdomain.QueryGetLocalDomainCertificateResponse:
+    type: object
+    properties:
+      LocalDomainCertificate:
+        type: object
+        properties:
+          value:
+            type: string
+          creator:
+            type: string
+  crossdomain.crossdomain.QueryGetLocalDomainResponse:
+    type: object
+    properties:
+      LocalDomain:
+        type: object
+        properties:
+          name:
+            type: string
+          domainType:
+            type: string
+          location:
+            type: string
+          creator:
+            type: string
+  crossdomain.crossdomain.QueryGetPrivateKeyResponse:
+    type: object
+    properties:
+      PrivateKey:
+        type: object
+        properties:
+          value:
+            type: string
+          creator:
+            type: string
+  crossdomain.crossdomain.QueryGetRootCertificateResponse:
+    type: object
+    properties:
+      RootCertificate:
+        type: object
+        properties:
+          value:
+            type: string
+          creator:
+            type: string
+  crossdomain.crossdomain.QueryGetValidityResponse:
+    type: object
+    properties:
+      Validity:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uint64
+          notBefore:
+            type: string
+          notAfter:
+            type: string
+          creator:
+            type: string
   crossdomain.crossdomain.QueryParamsResponse:
     type: object
     properties:
@@ -46410,6 +47258,25 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  crossdomain.crossdomain.RootCertificate:
+    type: object
+    properties:
+      value:
+        type: string
+      creator:
+        type: string
+  crossdomain.crossdomain.Validity:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uint64
+      notBefore:
+        type: string
+      notAfter:
+        type: string
+      creator:
+        type: string
   ibc.applications.transfer.v1.DenomTrace:
     type: object
     properties:
