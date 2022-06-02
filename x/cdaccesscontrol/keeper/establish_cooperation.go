@@ -9,6 +9,9 @@ import (
 	clienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v2/modules/core/24-host"
+
+	"time"
+	"github.com/spf13/cast"
 )
 
 // TransmitEstablishCooperationPacket transmits the packet over IBC with the specified source port and source channel
@@ -76,9 +79,9 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 	// TODO: packet reception logic
 	found := k.FindDomainCooperationByDomainName(ctx, data.Sender)
 	if !found {
-		if k.authenticationKeeper.IsAuthenticated(ctx, data.Sender) {
-			localDomainLocation, _ := k.crossdomaindelegationKeeper.GetLocalDomainLocation(ctx)
-			remoteDomainLocation, _ := k.authenticationKeeper.GetDomainLocationByName(ctx, data.Sender)
+		if k.IsAuthenticated(ctx, data.Sender) {
+			localDomainLocation, _ := k.crossdomainKeeper.GetLocalDomainLocation(ctx)
+			remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, data.Sender)
 			k.AppendDomainCooperation(ctx, types.DomainCooperation{
 				Creator:         ctx.ChainID(),
 				Label:           ctx.ChainID() + "-" + data.Sender,
@@ -120,12 +123,13 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
 				Decision:    "Confirmed",
 			})
 
-			var packetToForward types.ForwardCooperationDataPacketData
+			/*var packetToForward types.ForwardCooperationDataPacketData
 
 			packetToForward.NotBefore = data.NotBefore
 			packetToForward.NotAfter = data.NotAfter
@@ -137,7 +141,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 			packetToForward.Domain2Location = remoteDomainLocation
 
 			//forward
-			forwardPolicy, found := k.crossdomaindelegationKeeper.GetForwardPolicy(ctx)
+			/*forwardPolicy, found := k.crossdomaindelegationKeeper.GetForwardPolicy(ctx)
 			if found {
 				switch forwardPolicy.Mode {
 				case "broadcast":
@@ -257,12 +261,14 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 						Decision:    "Not confirmed",
 					})
 				}
-			}
+			}*/
 		} else {
 			packetAck.Confirmation = "Not confirmed"
+			packetAck.ConfirmedBy = ctx.ChainID()
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
 				Decision:    "Not confirmed",
@@ -270,16 +276,19 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-forward-cooperation-data",
-				Timestamp:   cast.ToString(time.Now()),
 				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
 				Decision:    "Not confirmed",
 			})
 		}
 	} else {
 		packetAck.Confirmation = "Not confirmed"
+		packetAck.ConfirmedBy = ctx.ChainID()
 		k.AppendCooperationLog(ctx, types.CooperationLog{
 			Creator:     ctx.ChainID(),
 			Transaction: "send-establish-cooperation",
+			Function:    "OnRecvEstablishCooperationPacket",
 			Timestamp:   cast.ToString(time.Now()),
 			Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
 			Decision:    "Not confirmed",
@@ -287,8 +296,9 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 		k.AppendCooperationLog(ctx, types.CooperationLog{
 			Creator:     ctx.ChainID(),
 			Transaction: "send-forward-cooperation-data",
-			Timestamp:   cast.ToString(time.Now()),
 			Function:    "OnRecvEstablishCooperationPacket",
+			Timestamp:   cast.ToString(time.Now()),
+			Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
 			Decision:    "Not confirmed",
 		})
 	}
@@ -317,8 +327,8 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 
 		// TODO: successful acknowledgement logic
 		if packetAck.Confirmation == "Confirmed" {
-			localDomainLocation, _ := k.crossdomaindelegationKeeper.GetLocalDomainLocation(ctx)
-			remoteDomainLocation, _ := k.authenticationKeeper.GetDomainLocationByName(ctx, packetAck.ConfirmedBy)
+			localDomainLocation, _ := k.crossdomainKeeper.GetLocalDomainLocation(ctx)
+			remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, packetAck.ConfirmedBy)
 			k.AppendDomainCooperation(ctx, types.DomainCooperation{
 				Creator:         ctx.ChainID(),
 				Label:           ctx.ChainID() + "-" + packetAck.ConfirmedBy,
@@ -358,12 +368,13 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-establish-cooperation",
+				Function:	  "OnAcknowledgementEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 				Decision:    "Confirmed",
 			})
 
-			var packetToForward types.ForwardCooperationDataPacketData
+			/*var packetToForward types.ForwardCooperationDataPacketData
 
 			packetToForward.NotBefore = data.NotBefore
 			packetToForward.NotAfter = data.NotAfter
@@ -373,64 +384,92 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 			packetToForward.Domain2Name = packetAck.ConfirmedBy
 			packetToForward.Domain1Location = localDomainLocation
 			packetToForward.Domain2Location = remoteDomainLocation
-
-			//forward
-			forwardPolicy, found := k.crossdomaindelegationKeeper.GetForwardPolicy(ctx)
-			if found {
-				switch forwardPolicy.Mode {
-				case "broadcast":
-					for _, domainCooperation := range k.GetAllDirectDomainCooperations(ctx) {
-						if domainCooperation.RemoteDomain.Name != packetAck.ConfirmedBy {
-							if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
-								// Transmit the packet
-								k.TransmitForwardCooperationDataPacket(
-									ctx,
-									packetToForward,
-									"authorization",
-									domainCooperation.SourceDomain.IbcConnection.Channel,
-									clienttypes.ZeroHeight(),
-									packet.TimeoutTimestamp,
-								)
-								k.AppendCooperationLog(ctx, types.CooperationLog{
-									Creator:     ctx.ChainID(),
-									Transaction: "send-forward-cooperation-data",
-									Timestamp:   cast.ToString(time.Now()),
-									Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
-									Function:    "OnAcknowledgementEstablishCooperationPacket",
-									Decision:    "Confirmed",
-									Recipient:   domainCooperation.RemoteDomain.Name,
-								})
+			/*
+				//forward
+				forwardPolicy, found := k.crossdomaindelegationKeeper.GetForwardPolicy(ctx)
+				if found {
+					switch forwardPolicy.Mode {
+					case "broadcast":
+						for _, domainCooperation := range k.GetAllDirectDomainCooperations(ctx) {
+							if domainCooperation.RemoteDomain.Name != packetAck.ConfirmedBy {
+								if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
+									// Transmit the packet
+									k.TransmitForwardCooperationDataPacket(
+										ctx,
+										packetToForward,
+										"authorization",
+										domainCooperation.SourceDomain.IbcConnection.Channel,
+										clienttypes.ZeroHeight(),
+										packet.TimeoutTimestamp,
+									)
+									k.AppendCooperationLog(ctx, types.CooperationLog{
+										Creator:     ctx.ChainID(),
+										Transaction: "send-forward-cooperation-data",
+										Timestamp:   cast.ToString(time.Now()),
+										Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
+										Function:    "OnAcknowledgementEstablishCooperationPacket",
+										Decision:    "Confirmed",
+										Recipient:   domainCooperation.RemoteDomain.Name,
+									})
+								}
 							}
 						}
-					}
-					//forward other cooperations to the new cooperative domain
-					for _, domainCooperation := range k.GetAllDomainCooperation(ctx) {
-						if domainCooperation.RemoteDomain.Name != packetAck.ConfirmedBy {
-							if cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
-								var newPacketToForward types.ForwardCooperationDataPacketData
+						//forward other cooperations to the new cooperative domain
+						for _, domainCooperation := range k.GetAllDomainCooperation(ctx) {
+							if domainCooperation.RemoteDomain.Name != packetAck.ConfirmedBy {
+								if cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
+									var newPacketToForward types.ForwardCooperationDataPacketData
 
-								newPacketToForward.NotBefore = domainCooperation.Validity.NotBefore
-								newPacketToForward.NotAfter = domainCooperation.Validity.NotAfter
-								newPacketToForward.Interest = domainCooperation.Interest
-								newPacketToForward.Cost = cast.ToString(domainCooperation.Cost)
-								newPacketToForward.Domain1Name = domainCooperation.SourceDomain.Name
-								newPacketToForward.Domain2Name = domainCooperation.RemoteDomain.Name
-								newPacketToForward.Domain1Location = domainCooperation.SourceDomain.Location
-								newPacketToForward.Domain2Location = domainCooperation.RemoteDomain.Location
+									newPacketToForward.NotBefore = domainCooperation.Validity.NotBefore
+									newPacketToForward.NotAfter = domainCooperation.Validity.NotAfter
+									newPacketToForward.Interest = domainCooperation.Interest
+									newPacketToForward.Cost = cast.ToString(domainCooperation.Cost)
+									newPacketToForward.Domain1Name = domainCooperation.SourceDomain.Name
+									newPacketToForward.Domain2Name = domainCooperation.RemoteDomain.Name
+									newPacketToForward.Domain1Location = domainCooperation.SourceDomain.Location
+									newPacketToForward.Domain2Location = domainCooperation.RemoteDomain.Location
 
-								k.TransmitForwardCooperationDataPacket(
-									ctx,
-									newPacketToForward,
-									"authorization",
-									packet.SourceChannel,
-									clienttypes.ZeroHeight(),
-									packet.TimeoutTimestamp,
-								)
+									k.TransmitForwardCooperationDataPacket(
+										ctx,
+										newPacketToForward,
+										"authorization",
+										packet.SourceChannel,
+										clienttypes.ZeroHeight(),
+										packet.TimeoutTimestamp,
+									)
+								}
 							}
 						}
-					}
-				case "multicast":
-					for _, domainName := range forwardPolicy.DomainList {
+					case "multicast":
+						for _, domainName := range forwardPolicy.DomainList {
+							if domainName != packetAck.ConfirmedBy {
+								domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, domainName)
+								if found {
+									if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
+										// Transmit the packet
+										k.TransmitForwardCooperationDataPacket(
+											ctx,
+											packetToForward,
+											"authorization",
+											domainCooperation.SourceDomain.IbcConnection.Channel,
+											clienttypes.ZeroHeight(),
+											packet.TimeoutTimestamp,
+										)
+										k.AppendCooperationLog(ctx, types.CooperationLog{
+											Creator:     ctx.ChainID(),
+											Transaction: "send-forward-cooperation-data",
+											Timestamp:   cast.ToString(time.Now()),
+											Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
+											Function:    "OnAcknowledgementEstablishCooperationPacket",
+											Decision:    "Confirmed",
+											Recipient:   domainCooperation.RemoteDomain.Name,
+										})
+									}
+								}
+							}
+						}
+					case "unicast":
+						domainName := forwardPolicy.DomainList[0]
 						if domainName != packetAck.ConfirmedBy {
 							domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, domainName)
 							if found {
@@ -456,78 +495,51 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 								}
 							}
 						}
-					}
-				case "unicast":
-					domainName := forwardPolicy.DomainList[0]
-					if domainName != packetAck.ConfirmedBy {
-						domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, domainName)
-						if found {
-							if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
-								// Transmit the packet
-								k.TransmitForwardCooperationDataPacket(
-									ctx,
-									packetToForward,
-									"authorization",
-									domainCooperation.SourceDomain.IbcConnection.Channel,
-									clienttypes.ZeroHeight(),
-									packet.TimeoutTimestamp,
-								)
-								k.AppendCooperationLog(ctx, types.CooperationLog{
-									Creator:     ctx.ChainID(),
-									Transaction: "send-forward-cooperation-data",
-									Timestamp:   cast.ToString(time.Now()),
-									Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
-									Function:    "OnAcknowledgementEstablishCooperationPacket",
-									Decision:    "Confirmed",
-									Recipient:   domainCooperation.RemoteDomain.Name,
-								})
-							}
-						}
-					}
-				case "geocast":
-					for _, location := range forwardPolicy.LocationList {
-						for _, domainCooperation := range k.GetAllDomainCooperationsByLocation(ctx, location) {
-							if domainCooperation.RemoteDomain.Name != packetAck.ConfirmedBy {
-								if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
-									// Transmit the packet
-									k.TransmitForwardCooperationDataPacket(
-										ctx,
-										packetToForward,
-										"authorization",
-										domainCooperation.SourceDomain.IbcConnection.Channel,
-										clienttypes.ZeroHeight(),
-										packet.TimeoutTimestamp,
-									)
-									k.AppendCooperationLog(ctx, types.CooperationLog{
-										Creator:     ctx.ChainID(),
-										Transaction: "send-forward-cooperation-data",
-										Timestamp:   cast.ToString(time.Now()),
-										Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
-										Function:    "OnAcknowledgementEstablishCooperationPacket",
-										Decision:    "Confirmed",
-										Recipient:   domainCooperation.RemoteDomain.Name,
-									})
+					case "geocast":
+						for _, location := range forwardPolicy.LocationList {
+							for _, domainCooperation := range k.GetAllDomainCooperationsByLocation(ctx, location) {
+								if domainCooperation.RemoteDomain.Name != packetAck.ConfirmedBy {
+									if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
+										// Transmit the packet
+										k.TransmitForwardCooperationDataPacket(
+											ctx,
+											packetToForward,
+											"authorization",
+											domainCooperation.SourceDomain.IbcConnection.Channel,
+											clienttypes.ZeroHeight(),
+											packet.TimeoutTimestamp,
+										)
+										k.AppendCooperationLog(ctx, types.CooperationLog{
+											Creator:     ctx.ChainID(),
+											Transaction: "send-forward-cooperation-data",
+											Timestamp:   cast.ToString(time.Now()),
+											Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
+											Function:    "OnAcknowledgementEstablishCooperationPacket",
+											Decision:    "Confirmed",
+											Recipient:   domainCooperation.RemoteDomain.Name,
+										})
+									}
 								}
 							}
 						}
+					default:
+						k.AppendCooperationLog(ctx, types.CooperationLog{
+							Creator:     ctx.ChainID(),
+							Transaction: "send-forward-cooperation-data",
+							Timestamp:   cast.ToString(time.Now()),
+							Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
+							Function:    "OnAcknowledgementEstablishCooperationPacket",
+							Decision:    "Not confirmed",
+						})
 					}
-				default:
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-forward-cooperation-data",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
-						Function:    "OnAcknowledgementEstablishCooperationPacket",
-						Decision:    "Not confirmed",
-					})
 				}
-			}
-			//forward other cooperations
-
+				//forward other cooperations
+			*/
 		} else {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-establish-cooperation",
+				Function:	  "OnAcknowledgementEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 				Decision:    "Not confirmed",
@@ -535,8 +547,9 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-forward-cooperation-data",
+				Function:	  "OnAcknowledgementEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
-				Function:    "OnAcknowledgementEstablishCooperationPacket",
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 				Decision:    "Not confirmed",
 			})
 		}

@@ -31,3 +31,17 @@ func (k Keeper) RemoveLocalDomain(ctx sdk.Context) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LocalDomainKey))
 	store.Delete([]byte{0})
 }
+
+func (k Keeper) GetLocalDomainLocation(ctx sdk.Context) (location string, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.LocalDomainKey))
+
+	b := store.Get([]byte{0})
+	if b == nil {
+		return location, false
+	}
+
+	var val types.LocalDomain
+
+	k.cdc.MustUnmarshal(b, &val)
+	return val.Location, true
+}

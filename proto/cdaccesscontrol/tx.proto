@@ -42,6 +42,7 @@ rpc CreateCooperationLog(MsgCreateCooperationLog) returns (MsgCreateCooperationL
   rpc DeleteCooperationLog(MsgDeleteCooperationLog) returns (MsgDeleteCooperationLogResponse);
   rpc SendEstablishCooperation(MsgSendEstablishCooperation) returns (MsgSendEstablishCooperationResponse);
   rpc SendForwardCooperationData(MsgSendForwardCooperationData) returns (MsgSendForwardCooperationDataResponse);
+  rpc SendDisableCooperation(MsgSendDisableCooperation) returns (MsgSendDisableCooperationResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -313,5 +314,14 @@ message MsgSendForwardCooperationData {
 }
 
 message MsgSendForwardCooperationDataResponse {
+}
+message MsgSendDisableCooperation {
+  string creator = 1;
+  string port = 2;
+  string channelID = 3;
+  uint64 timeoutTimestamp = 4;
+}
+
+message MsgSendDisableCooperationResponse {
 }
 // this line is used by starport scaffolding # proto/tx/message

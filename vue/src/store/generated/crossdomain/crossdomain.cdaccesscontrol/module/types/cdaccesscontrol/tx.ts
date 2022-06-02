@@ -278,6 +278,15 @@ export interface MsgSendForwardCooperationData {
 
 export interface MsgSendForwardCooperationDataResponse {}
 
+export interface MsgSendDisableCooperation {
+  creator: string;
+  port: string;
+  channelID: string;
+  timeoutTimestamp: number;
+}
+
+export interface MsgSendDisableCooperationResponse {}
+
 const baseMsgCreatePublicKey: object = { creator: "", n: 0, e: 0 };
 
 export const MsgCreatePublicKey = {
@@ -5234,6 +5243,190 @@ export const MsgSendForwardCooperationDataResponse = {
   },
 };
 
+const baseMsgSendDisableCooperation: object = {
+  creator: "",
+  port: "",
+  channelID: "",
+  timeoutTimestamp: 0,
+};
+
+export const MsgSendDisableCooperation = {
+  encode(
+    message: MsgSendDisableCooperation,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.port !== "") {
+      writer.uint32(18).string(message.port);
+    }
+    if (message.channelID !== "") {
+      writer.uint32(26).string(message.channelID);
+    }
+    if (message.timeoutTimestamp !== 0) {
+      writer.uint32(32).uint64(message.timeoutTimestamp);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgSendDisableCooperation {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSendDisableCooperation,
+    } as MsgSendDisableCooperation;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.port = reader.string();
+          break;
+        case 3:
+          message.channelID = reader.string();
+          break;
+        case 4:
+          message.timeoutTimestamp = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSendDisableCooperation {
+    const message = {
+      ...baseMsgSendDisableCooperation,
+    } as MsgSendDisableCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = String(object.port);
+    } else {
+      message.port = "";
+    }
+    if (object.channelID !== undefined && object.channelID !== null) {
+      message.channelID = String(object.channelID);
+    } else {
+      message.channelID = "";
+    }
+    if (
+      object.timeoutTimestamp !== undefined &&
+      object.timeoutTimestamp !== null
+    ) {
+      message.timeoutTimestamp = Number(object.timeoutTimestamp);
+    } else {
+      message.timeoutTimestamp = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgSendDisableCooperation): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.port !== undefined && (obj.port = message.port);
+    message.channelID !== undefined && (obj.channelID = message.channelID);
+    message.timeoutTimestamp !== undefined &&
+      (obj.timeoutTimestamp = message.timeoutTimestamp);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSendDisableCooperation>
+  ): MsgSendDisableCooperation {
+    const message = {
+      ...baseMsgSendDisableCooperation,
+    } as MsgSendDisableCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = object.port;
+    } else {
+      message.port = "";
+    }
+    if (object.channelID !== undefined && object.channelID !== null) {
+      message.channelID = object.channelID;
+    } else {
+      message.channelID = "";
+    }
+    if (
+      object.timeoutTimestamp !== undefined &&
+      object.timeoutTimestamp !== null
+    ) {
+      message.timeoutTimestamp = object.timeoutTimestamp;
+    } else {
+      message.timeoutTimestamp = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgSendDisableCooperationResponse: object = {};
+
+export const MsgSendDisableCooperationResponse = {
+  encode(
+    _: MsgSendDisableCooperationResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgSendDisableCooperationResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSendDisableCooperationResponse,
+    } as MsgSendDisableCooperationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSendDisableCooperationResponse {
+    const message = {
+      ...baseMsgSendDisableCooperationResponse,
+    } as MsgSendDisableCooperationResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSendDisableCooperationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSendDisableCooperationResponse>
+  ): MsgSendDisableCooperationResponse {
+    const message = {
+      ...baseMsgSendDisableCooperationResponse,
+    } as MsgSendDisableCooperationResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreatePublicKey(
@@ -5308,10 +5501,13 @@ export interface Msg {
   SendEstablishCooperation(
     request: MsgSendEstablishCooperation
   ): Promise<MsgSendEstablishCooperationResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   SendForwardCooperationData(
     request: MsgSendForwardCooperationData
   ): Promise<MsgSendForwardCooperationDataResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  SendDisableCooperation(
+    request: MsgSendDisableCooperation
+  ): Promise<MsgSendDisableCooperationResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -5688,6 +5884,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSendForwardCooperationDataResponse.decode(new Reader(data))
+    );
+  }
+
+  SendDisableCooperation(
+    request: MsgSendDisableCooperation
+  ): Promise<MsgSendDisableCooperationResponse> {
+    const data = MsgSendDisableCooperation.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "SendDisableCooperation",
+      data
+    );
+    return promise.then((data) =>
+      MsgSendDisableCooperationResponse.decode(new Reader(data))
     );
   }
 }

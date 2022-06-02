@@ -49138,6 +49138,8 @@ definitions:
     type: object
   crossdomain.cdaccesscontrol.MsgSendAuthenticateDomainResponse:
     type: object
+  crossdomain.cdaccesscontrol.MsgSendDisableCooperationResponse:
+    type: object
   crossdomain.cdaccesscontrol.MsgSendEstablishCooperationResponse:
     type: object
   crossdomain.cdaccesscontrol.MsgSendForwardCooperationDataResponse:

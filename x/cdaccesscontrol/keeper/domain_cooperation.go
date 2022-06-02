@@ -104,3 +104,108 @@ func GetDomainCooperationIDBytes(id uint64) []byte {
 func GetDomainCooperationIDFromBytes(bz []byte) uint64 {
 	return binary.BigEndian.Uint64(bz)
 }
+
+func (k Keeper) FindDomainCooperationByDomainName(ctx sdk.Context, domainName string) (found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainCooperationKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.DomainCooperation
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.RemoteDomain.Name == domainName {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (k Keeper) GetAllDirectDomainCooperations(ctx sdk.Context) (list []types.DomainCooperation) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainCooperationKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.DomainCooperation
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.CooperationType == "Direct" {
+			list = append(list, val)
+		}
+	}
+
+	return
+}
+
+func (k Keeper) GetDomainCooperationByDomainName(ctx sdk.Context, domainName string) (val types.DomainCooperation, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainCooperationKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.DomainCooperation
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.RemoteDomain.Name == domainName {
+			return val, true
+		}
+	}
+
+	return val, false
+}
+
+func (k Keeper) GetAllDomainCooperationsByLocation(ctx sdk.Context, location string) (list []types.DomainCooperation) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainCooperationKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.DomainCooperation
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		domainLocation, found := k.GetDomainLocationByDomainName(ctx, val.RemoteDomain.Name)
+		if found {
+			if domainLocation == location {
+				list = append(list, val)
+			}
+		}
+	}
+
+	return
+}
+
+func (k Keeper) FindDomainCooperationByLabel(ctx sdk.Context, domain1Name string, domain2Name string) (found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainCooperationKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.DomainCooperation
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if (val.Label == domain1Name+"-"+domain2Name) || (val.Label == domain2Name+"-"+domain1Name) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (k Keeper) GetAllDomainCooperationsByRemoteDomainName(ctx sdk.Context, remoteDomainName string) (list []types.DomainCooperation) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainCooperationKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.DomainCooperation
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.SourceDomain.Name == remoteDomainName {
+			list = append(list, val)
+		}
+	}
+
+	return
+}

@@ -205,6 +205,25 @@ func (am AppModule) OnRecvPacket(
 				sdk.NewAttribute(types.AttributeKeyAckSuccess, fmt.Sprintf("%t", err != nil)),
 			),
 		)
+	case *types.CdaccesscontrolPacketData_DisableCooperationPacket:
+		packetAck, err := am.keeper.OnRecvDisableCooperationPacket(ctx, modulePacket, *packet.DisableCooperationPacket)
+		if err != nil {
+			ack = channeltypes.NewErrorAcknowledgement(err.Error())
+		} else {
+			// Encode packet acknowledgment
+			packetAckBytes, err := types.ModuleCdc.MarshalJSON(&packetAck)
+			if err != nil {
+				return channeltypes.NewErrorAcknowledgement(sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error()).Error())
+			}
+			ack = channeltypes.NewResultAcknowledgement(sdk.MustSortJSON(packetAckBytes))
+		}
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeDisableCooperationPacket,
+				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+				sdk.NewAttribute(types.AttributeKeyAckSuccess, fmt.Sprintf("%t", err != nil)),
+			),
+		)
 		// this line is used by starport scaffolding # ibc/packet/module/recv
 	default:
 		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
@@ -256,6 +275,12 @@ func (am AppModule) OnAcknowledgementPacket(
 			return err
 		}
 		eventType = types.EventTypeForwardCooperationDataPacket
+	case *types.CdaccesscontrolPacketData_DisableCooperationPacket:
+		err := am.keeper.OnAcknowledgementDisableCooperationPacket(ctx, modulePacket, *packet.DisableCooperationPacket, ack)
+		if err != nil {
+			return err
+		}
+		eventType = types.EventTypeDisableCooperationPacket
 		// this line is used by starport scaffolding # ibc/packet/module/ack
 	default:
 		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
@@ -315,6 +340,11 @@ func (am AppModule) OnTimeoutPacket(
 		}
 	case *types.CdaccesscontrolPacketData_ForwardCooperationDataPacket:
 		err := am.keeper.OnTimeoutForwardCooperationDataPacket(ctx, modulePacket, *packet.ForwardCooperationDataPacket)
+		if err != nil {
+			return err
+		}
+	case *types.CdaccesscontrolPacketData_DisableCooperationPacket:
+		err := am.keeper.OnTimeoutDisableCooperationPacket(ctx, modulePacket, *packet.DisableCooperationPacket)
 		if err != nil {
 			return err
 		}

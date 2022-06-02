@@ -133,6 +133,8 @@ export type CdaccesscontrolMsgDeleteValidityResponse = object;
 
 export type CdaccesscontrolMsgSendAuthenticateDomainResponse = object;
 
+export type CdaccesscontrolMsgSendDisableCooperationResponse = object;
+
 export type CdaccesscontrolMsgSendEstablishCooperationResponse = object;
 
 export type CdaccesscontrolMsgSendForwardCooperationDataResponse = object;

@@ -17,4 +17,5 @@ message DomainCooperation {
   string creationTimestamp = 9; 
   string updateTimestamp = 10; 
   string creator = 11;
+  string status = 12;
 }
