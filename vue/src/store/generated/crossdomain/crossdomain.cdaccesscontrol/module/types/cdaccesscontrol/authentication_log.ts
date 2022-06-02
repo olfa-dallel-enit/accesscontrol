@@ -11,7 +11,6 @@ export interface AuthenticationLog {
   details: string;
   decision: string;
   function: string;
-  recipient: string;
   creator: string;
 }
 
@@ -22,7 +21,6 @@ const baseAuthenticationLog: object = {
   details: "",
   decision: "",
   function: "",
-  recipient: "",
   creator: "",
 };
 
@@ -46,11 +44,8 @@ export const AuthenticationLog = {
     if (message.function !== "") {
       writer.uint32(50).string(message.function);
     }
-    if (message.recipient !== "") {
-      writer.uint32(58).string(message.recipient);
-    }
     if (message.creator !== "") {
-      writer.uint32(66).string(message.creator);
+      writer.uint32(58).string(message.creator);
     }
     return writer;
   },
@@ -81,9 +76,6 @@ export const AuthenticationLog = {
           message.function = reader.string();
           break;
         case 7:
-          message.recipient = reader.string();
-          break;
-        case 8:
           message.creator = reader.string();
           break;
         default:
@@ -126,11 +118,6 @@ export const AuthenticationLog = {
     } else {
       message.function = "";
     }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = String(object.recipient);
-    } else {
-      message.recipient = "";
-    }
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
@@ -148,7 +135,6 @@ export const AuthenticationLog = {
     message.details !== undefined && (obj.details = message.details);
     message.decision !== undefined && (obj.decision = message.decision);
     message.function !== undefined && (obj.function = message.function);
-    message.recipient !== undefined && (obj.recipient = message.recipient);
     message.creator !== undefined && (obj.creator = message.creator);
     return obj;
   },
@@ -184,11 +170,6 @@ export const AuthenticationLog = {
       message.function = object.function;
     } else {
       message.function = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = object.recipient;
-    } else {
-      message.recipient = "";
     }
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;

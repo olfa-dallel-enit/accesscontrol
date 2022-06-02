@@ -68,6 +68,24 @@ func TestGenesis(t *testing.T) {
 			},
 		},
 		AuthenticationLogCount: 2,
+		DomainCooperationList: []types.DomainCooperation{
+			{
+				Id: 0,
+			},
+			{
+				Id: 1,
+			},
+		},
+		DomainCooperationCount: 2,
+		CooperationLogList: []types.CooperationLog{
+			{
+				Id: 0,
+			},
+			{
+				Id: 1,
+			},
+		},
+		CooperationLogCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -93,5 +111,9 @@ func TestGenesis(t *testing.T) {
 	require.Equal(t, genesisState.DomainCount, got.DomainCount)
 	require.ElementsMatch(t, genesisState.AuthenticationLogList, got.AuthenticationLogList)
 	require.Equal(t, genesisState.AuthenticationLogCount, got.AuthenticationLogCount)
+	require.ElementsMatch(t, genesisState.DomainCooperationList, got.DomainCooperationList)
+	require.Equal(t, genesisState.DomainCooperationCount, got.DomainCooperationCount)
+	require.ElementsMatch(t, genesisState.CooperationLogList, got.CooperationLogList)
+	require.Equal(t, genesisState.CooperationLogCount, got.CooperationLogCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

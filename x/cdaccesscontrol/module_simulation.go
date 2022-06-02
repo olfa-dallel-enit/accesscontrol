@@ -96,6 +96,30 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeleteAuthenticationLog int = 100
 
+	opWeightMsgCreateDomainCooperation = "op_weight_msg_domain_cooperation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateDomainCooperation int = 100
+
+	opWeightMsgUpdateDomainCooperation = "op_weight_msg_domain_cooperation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateDomainCooperation int = 100
+
+	opWeightMsgDeleteDomainCooperation = "op_weight_msg_domain_cooperation"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteDomainCooperation int = 100
+
+	opWeightMsgCreateCooperationLog = "op_weight_msg_cooperation_log"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateCooperationLog int = 100
+
+	opWeightMsgUpdateCooperationLog = "op_weight_msg_cooperation_log"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateCooperationLog int = 100
+
+	opWeightMsgDeleteCooperationLog = "op_weight_msg_cooperation_log"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteCooperationLog int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -174,6 +198,28 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 			},
 		},
 		AuthenticationLogCount: 2,
+		DomainCooperationList: []types.DomainCooperation{
+			{
+				Id:      0,
+				Creator: sample.AccAddress(),
+			},
+			{
+				Id:      1,
+				Creator: sample.AccAddress(),
+			},
+		},
+		DomainCooperationCount: 2,
+		CooperationLogList: []types.CooperationLog{
+			{
+				Id:      0,
+				Creator: sample.AccAddress(),
+			},
+			{
+				Id:      1,
+				Creator: sample.AccAddress(),
+			},
+		},
+		CooperationLogCount: 2,
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&cdaccesscontrolGenesis)
@@ -393,6 +439,72 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgDeleteAuthenticationLog,
 		cdaccesscontrolsimulation.SimulateMsgDeleteAuthenticationLog(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCreateDomainCooperation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateDomainCooperation, &weightMsgCreateDomainCooperation, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateDomainCooperation = defaultWeightMsgCreateDomainCooperation
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateDomainCooperation,
+		cdaccesscontrolsimulation.SimulateMsgCreateDomainCooperation(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdateDomainCooperation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateDomainCooperation, &weightMsgUpdateDomainCooperation, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateDomainCooperation = defaultWeightMsgUpdateDomainCooperation
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateDomainCooperation,
+		cdaccesscontrolsimulation.SimulateMsgUpdateDomainCooperation(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeleteDomainCooperation int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteDomainCooperation, &weightMsgDeleteDomainCooperation, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeleteDomainCooperation = defaultWeightMsgDeleteDomainCooperation
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeleteDomainCooperation,
+		cdaccesscontrolsimulation.SimulateMsgDeleteDomainCooperation(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgCreateCooperationLog int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateCooperationLog, &weightMsgCreateCooperationLog, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateCooperationLog = defaultWeightMsgCreateCooperationLog
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateCooperationLog,
+		cdaccesscontrolsimulation.SimulateMsgCreateCooperationLog(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdateCooperationLog int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateCooperationLog, &weightMsgUpdateCooperationLog, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateCooperationLog = defaultWeightMsgUpdateCooperationLog
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateCooperationLog,
+		cdaccesscontrolsimulation.SimulateMsgUpdateCooperationLog(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeleteCooperationLog int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteCooperationLog, &weightMsgDeleteCooperationLog, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeleteCooperationLog = defaultWeightMsgDeleteCooperationLog
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeleteCooperationLog,
+		cdaccesscontrolsimulation.SimulateMsgDeleteCooperationLog(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

@@ -17,7 +17,6 @@ export interface CdaccesscontrolAuthenticationLog {
   details?: string;
   decision?: string;
   function?: string;
-  recipient?: string;
   creator?: string;
 }
 
@@ -26,6 +25,17 @@ export interface CdaccesscontrolCertificate {
   id?: string;
   publicKey?: CdaccesscontrolPublicKey;
   validity?: CdaccesscontrolValidity;
+  creator?: string;
+}
+
+export interface CdaccesscontrolCooperationLog {
+  /** @format uint64 */
+  id?: string;
+  transaction?: string;
+  timestamp?: string;
+  details?: string;
+  decision?: string;
+  function?: string;
   creator?: string;
 }
 
@@ -40,9 +50,27 @@ export interface CdaccesscontrolDomain {
   creator?: string;
 }
 
+export interface CdaccesscontrolDomainCooperation {
+  /** @format uint64 */
+  id?: string;
+  label?: string;
+  cooperationType?: string;
+  sourceDomain?: CdaccesscontrolDomain;
+  remoteDomain?: CdaccesscontrolDomain;
+  validity?: CdaccesscontrolValidity;
+  interest?: string;
+
+  /** @format uint64 */
+  cost?: string;
+  creationTimestamp?: string;
+  updateTimestamp?: string;
+  creator?: string;
+}
+
 export interface CdaccesscontrolIbcConnection {
   /** @format uint64 */
   id?: string;
+  port?: string;
   channel?: string;
   creator?: string;
 }
@@ -53,6 +81,16 @@ export interface CdaccesscontrolMsgCreateAuthenticationLogResponse {
 }
 
 export interface CdaccesscontrolMsgCreateCertificateResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface CdaccesscontrolMsgCreateCooperationLogResponse {
+  /** @format uint64 */
+  id?: string;
+}
+
+export interface CdaccesscontrolMsgCreateDomainCooperationResponse {
   /** @format uint64 */
   id?: string;
 }
@@ -81,6 +119,10 @@ export type CdaccesscontrolMsgDeleteAuthenticationLogResponse = object;
 
 export type CdaccesscontrolMsgDeleteCertificateResponse = object;
 
+export type CdaccesscontrolMsgDeleteCooperationLogResponse = object;
+
+export type CdaccesscontrolMsgDeleteDomainCooperationResponse = object;
+
 export type CdaccesscontrolMsgDeleteDomainResponse = object;
 
 export type CdaccesscontrolMsgDeleteIbcConnectionResponse = object;
@@ -91,9 +133,17 @@ export type CdaccesscontrolMsgDeleteValidityResponse = object;
 
 export type CdaccesscontrolMsgSendAuthenticateDomainResponse = object;
 
+export type CdaccesscontrolMsgSendEstablishCooperationResponse = object;
+
+export type CdaccesscontrolMsgSendForwardCooperationDataResponse = object;
+
 export type CdaccesscontrolMsgUpdateAuthenticationLogResponse = object;
 
 export type CdaccesscontrolMsgUpdateCertificateResponse = object;
+
+export type CdaccesscontrolMsgUpdateCooperationLogResponse = object;
+
+export type CdaccesscontrolMsgUpdateDomainCooperationResponse = object;
 
 export type CdaccesscontrolMsgUpdateDomainResponse = object;
 
@@ -137,6 +187,36 @@ export interface CdaccesscontrolQueryAllAuthenticationLogResponse {
 
 export interface CdaccesscontrolQueryAllCertificateResponse {
   Certificate?: CdaccesscontrolCertificate[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CdaccesscontrolQueryAllCooperationLogResponse {
+  CooperationLog?: CdaccesscontrolCooperationLog[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
+export interface CdaccesscontrolQueryAllDomainCooperationResponse {
+  DomainCooperation?: CdaccesscontrolDomainCooperation[];
 
   /**
    * PageResponse is to be embedded in gRPC response messages where the
@@ -216,6 +296,14 @@ export interface CdaccesscontrolQueryGetAuthenticationLogResponse {
 
 export interface CdaccesscontrolQueryGetCertificateResponse {
   Certificate?: CdaccesscontrolCertificate;
+}
+
+export interface CdaccesscontrolQueryGetCooperationLogResponse {
+  CooperationLog?: CdaccesscontrolCooperationLog;
+}
+
+export interface CdaccesscontrolQueryGetDomainCooperationResponse {
+  DomainCooperation?: CdaccesscontrolDomainCooperation;
 }
 
 export interface CdaccesscontrolQueryGetDomainResponse {
@@ -608,6 +696,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
    * No description
    *
    * @tags Query
+   * @name QueryCooperationLogAll
+   * @summary Queries a list of CooperationLog items.
+   * @request GET:/crossdomain/cdaccesscontrol/cooperation_log
+   */
+  queryCooperationLogAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CdaccesscontrolQueryAllCooperationLogResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/cooperation_log`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryCooperationLog
+   * @summary Queries a CooperationLog by id.
+   * @request GET:/crossdomain/cdaccesscontrol/cooperation_log/{id}
+   */
+  queryCooperationLog = (id: string, params: RequestParams = {}) =>
+    this.request<CdaccesscontrolQueryGetCooperationLogResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/cooperation_log/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
    * @name QueryDomainAll
    * @summary Queries a list of Domain items.
    * @request GET:/crossdomain/cdaccesscontrol/domain
@@ -641,6 +771,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryDomain = (id: string, params: RequestParams = {}) =>
     this.request<CdaccesscontrolQueryGetDomainResponse, RpcStatus>({
       path: `/crossdomain/cdaccesscontrol/domain/${id}`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDomainCooperationAll
+   * @summary Queries a list of DomainCooperation items.
+   * @request GET:/crossdomain/cdaccesscontrol/domain_cooperation
+   */
+  queryDomainCooperationAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<CdaccesscontrolQueryAllDomainCooperationResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/domain_cooperation`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryDomainCooperation
+   * @summary Queries a DomainCooperation by id.
+   * @request GET:/crossdomain/cdaccesscontrol/domain_cooperation/{id}
+   */
+  queryDomainCooperation = (id: string, params: RequestParams = {}) =>
+    this.request<CdaccesscontrolQueryGetDomainCooperationResponse, RpcStatus>({
+      path: `/crossdomain/cdaccesscontrol/domain_cooperation/${id}`,
       method: "GET",
       format: "json",
       ...params,

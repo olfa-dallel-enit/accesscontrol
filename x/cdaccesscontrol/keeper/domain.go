@@ -7,8 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"time"
 	"github.com/spf13/cast"
+	"time"
 )
 
 // GetDomainCount get the total number of domain

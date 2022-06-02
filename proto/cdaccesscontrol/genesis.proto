@@ -9,6 +9,8 @@ import "cdaccesscontrol/certificate.proto";
 import "cdaccesscontrol/ibc_connection.proto";
 import "cdaccesscontrol/domain.proto";
 import "cdaccesscontrol/authentication_log.proto";
+import "cdaccesscontrol/domain_cooperation.proto";
+import "cdaccesscontrol/cooperation_log.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "crossdomain/x/cdaccesscontrol/types";
@@ -29,5 +31,9 @@ message GenesisState {
   uint64 domainCount = 12;
   repeated AuthenticationLog authenticationLogList = 13 [(gogoproto.nullable) = false];
   uint64 authenticationLogCount = 14;
+  repeated DomainCooperation domainCooperationList = 15 [(gogoproto.nullable) = false];
+  uint64 domainCooperationCount = 16;
+  repeated CooperationLog cooperationLogList = 17 [(gogoproto.nullable) = false];
+  uint64 cooperationLogCount = 18;
   // this line is used by starport scaffolding # genesis/proto/state
 }

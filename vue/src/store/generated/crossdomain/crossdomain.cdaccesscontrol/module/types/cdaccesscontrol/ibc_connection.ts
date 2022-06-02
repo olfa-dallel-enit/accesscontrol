@@ -6,22 +6,26 @@ export const protobufPackage = "crossdomain.cdaccesscontrol";
 
 export interface IbcConnection {
   id: number;
+  port: string;
   channel: string;
   creator: string;
 }
 
-const baseIbcConnection: object = { id: 0, channel: "", creator: "" };
+const baseIbcConnection: object = { id: 0, port: "", channel: "", creator: "" };
 
 export const IbcConnection = {
   encode(message: IbcConnection, writer: Writer = Writer.create()): Writer {
     if (message.id !== 0) {
       writer.uint32(8).uint64(message.id);
     }
+    if (message.port !== "") {
+      writer.uint32(18).string(message.port);
+    }
     if (message.channel !== "") {
-      writer.uint32(18).string(message.channel);
+      writer.uint32(26).string(message.channel);
     }
     if (message.creator !== "") {
-      writer.uint32(26).string(message.creator);
+      writer.uint32(34).string(message.creator);
     }
     return writer;
   },
@@ -37,9 +41,12 @@ export const IbcConnection = {
           message.id = longToNumber(reader.uint64() as Long);
           break;
         case 2:
-          message.channel = reader.string();
+          message.port = reader.string();
           break;
         case 3:
+          message.channel = reader.string();
+          break;
+        case 4:
           message.creator = reader.string();
           break;
         default:
@@ -57,6 +64,11 @@ export const IbcConnection = {
     } else {
       message.id = 0;
     }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = String(object.port);
+    } else {
+      message.port = "";
+    }
     if (object.channel !== undefined && object.channel !== null) {
       message.channel = String(object.channel);
     } else {
@@ -73,6 +85,7 @@ export const IbcConnection = {
   toJSON(message: IbcConnection): unknown {
     const obj: any = {};
     message.id !== undefined && (obj.id = message.id);
+    message.port !== undefined && (obj.port = message.port);
     message.channel !== undefined && (obj.channel = message.channel);
     message.creator !== undefined && (obj.creator = message.creator);
     return obj;
@@ -84,6 +97,11 @@ export const IbcConnection = {
       message.id = object.id;
     } else {
       message.id = 0;
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = object.port;
+    } else {
+      message.port = "";
     }
     if (object.channel !== undefined && object.channel !== null) {
       message.channel = object.channel;

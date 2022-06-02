@@ -51,6 +51,20 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	// Set authenticationLog count
 	k.SetAuthenticationLogCount(ctx, genState.AuthenticationLogCount)
+	// Set all the domainCooperation
+	for _, elem := range genState.DomainCooperationList {
+		k.SetDomainCooperation(ctx, elem)
+	}
+
+	// Set domainCooperation count
+	k.SetDomainCooperationCount(ctx, genState.DomainCooperationCount)
+	// Set all the cooperationLog
+	for _, elem := range genState.CooperationLogList {
+		k.SetCooperationLog(ctx, elem)
+	}
+
+	// Set cooperationLog count
+	k.SetCooperationLogCount(ctx, genState.CooperationLogCount)
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetPort(ctx, genState.PortId)
 	// Only try to bind to port if it is not already bound, since we may already own
@@ -84,6 +98,10 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.DomainCount = k.GetDomainCount(ctx)
 	genesis.AuthenticationLogList = k.GetAllAuthenticationLog(ctx)
 	genesis.AuthenticationLogCount = k.GetAuthenticationLogCount(ctx)
+	genesis.DomainCooperationList = k.GetAllDomainCooperation(ctx)
+	genesis.DomainCooperationCount = k.GetDomainCooperationCount(ctx)
+	genesis.CooperationLogList = k.GetAllCooperationLog(ctx)
+	genesis.CooperationLogCount = k.GetCooperationLogCount(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

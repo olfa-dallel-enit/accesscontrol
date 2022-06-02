@@ -27,6 +27,14 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateAuthenticationLog{}, "cdaccesscontrol/UpdateAuthenticationLog", nil)
 	cdc.RegisterConcrete(&MsgDeleteAuthenticationLog{}, "cdaccesscontrol/DeleteAuthenticationLog", nil)
 	cdc.RegisterConcrete(&MsgSendAuthenticateDomain{}, "cdaccesscontrol/SendAuthenticateDomain", nil)
+	cdc.RegisterConcrete(&MsgCreateDomainCooperation{}, "cdaccesscontrol/CreateDomainCooperation", nil)
+	cdc.RegisterConcrete(&MsgUpdateDomainCooperation{}, "cdaccesscontrol/UpdateDomainCooperation", nil)
+	cdc.RegisterConcrete(&MsgDeleteDomainCooperation{}, "cdaccesscontrol/DeleteDomainCooperation", nil)
+	cdc.RegisterConcrete(&MsgCreateCooperationLog{}, "cdaccesscontrol/CreateCooperationLog", nil)
+	cdc.RegisterConcrete(&MsgUpdateCooperationLog{}, "cdaccesscontrol/UpdateCooperationLog", nil)
+	cdc.RegisterConcrete(&MsgDeleteCooperationLog{}, "cdaccesscontrol/DeleteCooperationLog", nil)
+	cdc.RegisterConcrete(&MsgSendEstablishCooperation{}, "cdaccesscontrol/SendEstablishCooperation", nil)
+	cdc.RegisterConcrete(&MsgSendForwardCooperationData{}, "cdaccesscontrol/SendForwardCooperationData", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -63,6 +71,22 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSendAuthenticateDomain{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateDomainCooperation{},
+		&MsgUpdateDomainCooperation{},
+		&MsgDeleteDomainCooperation{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateCooperationLog{},
+		&MsgUpdateCooperationLog{},
+		&MsgDeleteCooperationLog{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgSendEstablishCooperation{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgSendForwardCooperationData{},
 	)
 	// this line is used by starport scaffolding # 3
 

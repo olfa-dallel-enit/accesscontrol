@@ -11,6 +11,8 @@ import "cdaccesscontrol/certificate.proto";
 import "cdaccesscontrol/ibc_connection.proto";
 import "cdaccesscontrol/domain.proto";
 import "cdaccesscontrol/authentication_log.proto";
+import "cdaccesscontrol/domain_cooperation.proto";
+import "cdaccesscontrol/cooperation_log.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "crossdomain/x/cdaccesscontrol/types";
@@ -79,6 +81,26 @@ service Query {
 	// Queries a list of AuthenticationLog items.
 	rpc AuthenticationLogAll(QueryAllAuthenticationLogRequest) returns (QueryAllAuthenticationLogResponse) {
 		option (google.api.http).get = "/crossdomain/cdaccesscontrol/authentication_log";
+	}
+
+// Queries a DomainCooperation by id.
+	rpc DomainCooperation(QueryGetDomainCooperationRequest) returns (QueryGetDomainCooperationResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/domain_cooperation/{id}";
+	}
+
+	// Queries a list of DomainCooperation items.
+	rpc DomainCooperationAll(QueryAllDomainCooperationRequest) returns (QueryAllDomainCooperationResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/domain_cooperation";
+	}
+
+// Queries a CooperationLog by id.
+	rpc CooperationLog(QueryGetCooperationLogRequest) returns (QueryGetCooperationLogResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/cooperation_log/{id}";
+	}
+
+	// Queries a list of CooperationLog items.
+	rpc CooperationLogAll(QueryAllCooperationLogRequest) returns (QueryAllCooperationLogResponse) {
+		option (google.api.http).get = "/crossdomain/cdaccesscontrol/cooperation_log";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -192,6 +214,40 @@ message QueryAllAuthenticationLogRequest {
 
 message QueryAllAuthenticationLogResponse {
 	repeated AuthenticationLog AuthenticationLog = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetDomainCooperationRequest {
+	uint64 id = 1;
+}
+
+message QueryGetDomainCooperationResponse {
+	DomainCooperation DomainCooperation = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllDomainCooperationRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllDomainCooperationResponse {
+	repeated DomainCooperation DomainCooperation = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetCooperationLogRequest {
+	uint64 id = 1;
+}
+
+message QueryGetCooperationLogResponse {
+	CooperationLog CooperationLog = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllCooperationLogRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllCooperationLogResponse {
+	repeated CooperationLog CooperationLog = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

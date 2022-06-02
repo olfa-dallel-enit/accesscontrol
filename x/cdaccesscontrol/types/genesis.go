@@ -18,6 +18,8 @@ func DefaultGenesis() *GenesisState {
 		IbcConnectionList:     []IbcConnection{},
 		DomainList:            []Domain{},
 		AuthenticationLogList: []AuthenticationLog{},
+		DomainCooperationList: []DomainCooperation{},
+		CooperationLogList:    []CooperationLog{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -100,6 +102,30 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("authenticationLog id should be lower or equal than the last id")
 		}
 		authenticationLogIdMap[elem.Id] = true
+	}
+	// Check for duplicated ID in domainCooperation
+	domainCooperationIdMap := make(map[uint64]bool)
+	domainCooperationCount := gs.GetDomainCooperationCount()
+	for _, elem := range gs.DomainCooperationList {
+		if _, ok := domainCooperationIdMap[elem.Id]; ok {
+			return fmt.Errorf("duplicated id for domainCooperation")
+		}
+		if elem.Id >= domainCooperationCount {
+			return fmt.Errorf("domainCooperation id should be lower or equal than the last id")
+		}
+		domainCooperationIdMap[elem.Id] = true
+	}
+	// Check for duplicated ID in cooperationLog
+	cooperationLogIdMap := make(map[uint64]bool)
+	cooperationLogCount := gs.GetCooperationLogCount()
+	for _, elem := range gs.CooperationLogList {
+		if _, ok := cooperationLogIdMap[elem.Id]; ok {
+			return fmt.Errorf("duplicated id for cooperationLog")
+		}
+		if elem.Id >= cooperationLogCount {
+			return fmt.Errorf("cooperationLog id should be lower or equal than the last id")
+		}
+		cooperationLogIdMap[elem.Id] = true
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

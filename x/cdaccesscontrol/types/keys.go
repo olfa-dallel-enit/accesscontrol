@@ -61,3 +61,13 @@ const (
 	AuthenticationLogKey      = "AuthenticationLog-value-"
 	AuthenticationLogCountKey = "AuthenticationLog-count-"
 )
+
+const (
+	DomainCooperationKey      = "DomainCooperation-value-"
+	DomainCooperationCountKey = "DomainCooperation-count-"
+)
+
+const (
+	CooperationLogKey      = "CooperationLog-value-"
+	CooperationLogCountKey = "CooperationLog-count-"
+)

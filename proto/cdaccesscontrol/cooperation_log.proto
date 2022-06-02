@@ -1,0 +1,14 @@
+syntax = "proto3";
+package crossdomain.cdaccesscontrol;
+
+option go_package = "crossdomain/x/cdaccesscontrol/types";
+
+message CooperationLog {
+  uint64 id = 1;
+  string transaction = 2; 
+  string timestamp = 3; 
+  string details = 4; 
+  string decision = 5; 
+  string function = 6; 
+  string creator = 7;
+}

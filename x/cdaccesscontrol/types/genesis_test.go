@@ -76,6 +76,24 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 				},
 				AuthenticationLogCount: 2,
+				DomainCooperationList: []types.DomainCooperation{
+					{
+						Id: 0,
+					},
+					{
+						Id: 1,
+					},
+				},
+				DomainCooperationCount: 2,
+				CooperationLogList: []types.CooperationLog{
+					{
+						Id: 0,
+					},
+					{
+						Id: 1,
+					},
+				},
+				CooperationLogCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -233,6 +251,58 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 				},
 				AuthenticationLogCount: 0,
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated domainCooperation",
+			genState: &types.GenesisState{
+				DomainCooperationList: []types.DomainCooperation{
+					{
+						Id: 0,
+					},
+					{
+						Id: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid domainCooperation count",
+			genState: &types.GenesisState{
+				DomainCooperationList: []types.DomainCooperation{
+					{
+						Id: 1,
+					},
+				},
+				DomainCooperationCount: 0,
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated cooperationLog",
+			genState: &types.GenesisState{
+				CooperationLogList: []types.CooperationLog{
+					{
+						Id: 0,
+					},
+					{
+						Id: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid cooperationLog count",
+			genState: &types.GenesisState{
+				CooperationLogList: []types.CooperationLog{
+					{
+						Id: 1,
+					},
+				},
+				CooperationLogCount: 0,
 			},
 			valid: false,
 		},

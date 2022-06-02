@@ -5,6 +5,7 @@ import { PublicKey } from "../cdaccesscontrol/public_key";
 import { Validity } from "../cdaccesscontrol/validity";
 import { Certificate } from "../cdaccesscontrol/certificate";
 import { IbcConnection } from "../cdaccesscontrol/ibc_connection";
+import { Domain } from "../cdaccesscontrol/domain";
 
 export const protobufPackage = "crossdomain.cdaccesscontrol";
 
@@ -149,7 +150,6 @@ export interface MsgCreateAuthenticationLog {
   details: string;
   decision: string;
   function: string;
-  recipient: string;
 }
 
 export interface MsgCreateAuthenticationLogResponse {
@@ -164,7 +164,6 @@ export interface MsgUpdateAuthenticationLog {
   details: string;
   decision: string;
   function: string;
-  recipient: string;
 }
 
 export interface MsgUpdateAuthenticationLogResponse {}
@@ -184,6 +183,100 @@ export interface MsgSendAuthenticateDomain {
 }
 
 export interface MsgSendAuthenticateDomainResponse {}
+
+export interface MsgCreateDomainCooperation {
+  creator: string;
+  label: string;
+  cooperationType: string;
+  sourceDomain: Domain | undefined;
+  remoteDomain: Domain | undefined;
+  validity: Validity | undefined;
+  interest: string;
+  cost: number;
+  creationTimestamp: string;
+  updateTimestamp: string;
+}
+
+export interface MsgCreateDomainCooperationResponse {
+  id: number;
+}
+
+export interface MsgUpdateDomainCooperation {
+  creator: string;
+  id: number;
+  label: string;
+  cooperationType: string;
+  sourceDomain: Domain | undefined;
+  remoteDomain: Domain | undefined;
+  validity: Validity | undefined;
+  interest: string;
+  cost: number;
+  creationTimestamp: string;
+  updateTimestamp: string;
+}
+
+export interface MsgUpdateDomainCooperationResponse {}
+
+export interface MsgDeleteDomainCooperation {
+  creator: string;
+  id: number;
+}
+
+export interface MsgDeleteDomainCooperationResponse {}
+
+export interface MsgCreateCooperationLog {
+  creator: string;
+  transaction: string;
+  timestamp: string;
+  details: string;
+  decision: string;
+  function: string;
+}
+
+export interface MsgCreateCooperationLogResponse {
+  id: number;
+}
+
+export interface MsgUpdateCooperationLog {
+  creator: string;
+  id: number;
+  transaction: string;
+  timestamp: string;
+  details: string;
+  decision: string;
+  function: string;
+}
+
+export interface MsgUpdateCooperationLogResponse {}
+
+export interface MsgDeleteCooperationLog {
+  creator: string;
+  id: number;
+}
+
+export interface MsgDeleteCooperationLogResponse {}
+
+export interface MsgSendEstablishCooperation {
+  creator: string;
+  port: string;
+  channelID: string;
+  timeoutTimestamp: number;
+  notBefore: string;
+  notAfter: string;
+  interest: string;
+  cost: string;
+}
+
+export interface MsgSendEstablishCooperationResponse {}
+
+export interface MsgSendForwardCooperationData {
+  creator: string;
+  port: string;
+  channelID: string;
+  timeoutTimestamp: number;
+}
+
+export interface MsgSendForwardCooperationDataResponse {}
 
 const baseMsgCreatePublicKey: object = { creator: "", n: 0, e: 0 };
 
@@ -2534,7 +2627,6 @@ const baseMsgCreateAuthenticationLog: object = {
   details: "",
   decision: "",
   function: "",
-  recipient: "",
 };
 
 export const MsgCreateAuthenticationLog = {
@@ -2559,9 +2651,6 @@ export const MsgCreateAuthenticationLog = {
     }
     if (message.function !== "") {
       writer.uint32(50).string(message.function);
-    }
-    if (message.recipient !== "") {
-      writer.uint32(58).string(message.recipient);
     }
     return writer;
   },
@@ -2595,9 +2684,6 @@ export const MsgCreateAuthenticationLog = {
           break;
         case 6:
           message.function = reader.string();
-          break;
-        case 7:
-          message.recipient = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2641,11 +2727,6 @@ export const MsgCreateAuthenticationLog = {
     } else {
       message.function = "";
     }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = String(object.recipient);
-    } else {
-      message.recipient = "";
-    }
     return message;
   },
 
@@ -2658,7 +2739,6 @@ export const MsgCreateAuthenticationLog = {
     message.details !== undefined && (obj.details = message.details);
     message.decision !== undefined && (obj.decision = message.decision);
     message.function !== undefined && (obj.function = message.function);
-    message.recipient !== undefined && (obj.recipient = message.recipient);
     return obj;
   },
 
@@ -2697,11 +2777,6 @@ export const MsgCreateAuthenticationLog = {
       message.function = object.function;
     } else {
       message.function = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = object.recipient;
-    } else {
-      message.recipient = "";
     }
     return message;
   },
@@ -2784,7 +2859,6 @@ const baseMsgUpdateAuthenticationLog: object = {
   details: "",
   decision: "",
   function: "",
-  recipient: "",
 };
 
 export const MsgUpdateAuthenticationLog = {
@@ -2812,9 +2886,6 @@ export const MsgUpdateAuthenticationLog = {
     }
     if (message.function !== "") {
       writer.uint32(58).string(message.function);
-    }
-    if (message.recipient !== "") {
-      writer.uint32(66).string(message.recipient);
     }
     return writer;
   },
@@ -2851,9 +2922,6 @@ export const MsgUpdateAuthenticationLog = {
           break;
         case 7:
           message.function = reader.string();
-          break;
-        case 8:
-          message.recipient = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2902,11 +2970,6 @@ export const MsgUpdateAuthenticationLog = {
     } else {
       message.function = "";
     }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = String(object.recipient);
-    } else {
-      message.recipient = "";
-    }
     return message;
   },
 
@@ -2920,7 +2983,6 @@ export const MsgUpdateAuthenticationLog = {
     message.details !== undefined && (obj.details = message.details);
     message.decision !== undefined && (obj.decision = message.decision);
     message.function !== undefined && (obj.function = message.function);
-    message.recipient !== undefined && (obj.recipient = message.recipient);
     return obj;
   },
 
@@ -2964,11 +3026,6 @@ export const MsgUpdateAuthenticationLog = {
       message.function = object.function;
     } else {
       message.function = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = object.recipient;
-    } else {
-      message.recipient = "";
     }
     return message;
   },
@@ -3348,6 +3405,1835 @@ export const MsgSendAuthenticateDomainResponse = {
   },
 };
 
+const baseMsgCreateDomainCooperation: object = {
+  creator: "",
+  label: "",
+  cooperationType: "",
+  interest: "",
+  cost: 0,
+  creationTimestamp: "",
+  updateTimestamp: "",
+};
+
+export const MsgCreateDomainCooperation = {
+  encode(
+    message: MsgCreateDomainCooperation,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.label !== "") {
+      writer.uint32(18).string(message.label);
+    }
+    if (message.cooperationType !== "") {
+      writer.uint32(26).string(message.cooperationType);
+    }
+    if (message.sourceDomain !== undefined) {
+      Domain.encode(message.sourceDomain, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.remoteDomain !== undefined) {
+      Domain.encode(message.remoteDomain, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.validity !== undefined) {
+      Validity.encode(message.validity, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.interest !== "") {
+      writer.uint32(58).string(message.interest);
+    }
+    if (message.cost !== 0) {
+      writer.uint32(64).uint64(message.cost);
+    }
+    if (message.creationTimestamp !== "") {
+      writer.uint32(74).string(message.creationTimestamp);
+    }
+    if (message.updateTimestamp !== "") {
+      writer.uint32(82).string(message.updateTimestamp);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgCreateDomainCooperation {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateDomainCooperation,
+    } as MsgCreateDomainCooperation;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.label = reader.string();
+          break;
+        case 3:
+          message.cooperationType = reader.string();
+          break;
+        case 4:
+          message.sourceDomain = Domain.decode(reader, reader.uint32());
+          break;
+        case 5:
+          message.remoteDomain = Domain.decode(reader, reader.uint32());
+          break;
+        case 6:
+          message.validity = Validity.decode(reader, reader.uint32());
+          break;
+        case 7:
+          message.interest = reader.string();
+          break;
+        case 8:
+          message.cost = longToNumber(reader.uint64() as Long);
+          break;
+        case 9:
+          message.creationTimestamp = reader.string();
+          break;
+        case 10:
+          message.updateTimestamp = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateDomainCooperation {
+    const message = {
+      ...baseMsgCreateDomainCooperation,
+    } as MsgCreateDomainCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.label !== undefined && object.label !== null) {
+      message.label = String(object.label);
+    } else {
+      message.label = "";
+    }
+    if (
+      object.cooperationType !== undefined &&
+      object.cooperationType !== null
+    ) {
+      message.cooperationType = String(object.cooperationType);
+    } else {
+      message.cooperationType = "";
+    }
+    if (object.sourceDomain !== undefined && object.sourceDomain !== null) {
+      message.sourceDomain = Domain.fromJSON(object.sourceDomain);
+    } else {
+      message.sourceDomain = undefined;
+    }
+    if (object.remoteDomain !== undefined && object.remoteDomain !== null) {
+      message.remoteDomain = Domain.fromJSON(object.remoteDomain);
+    } else {
+      message.remoteDomain = undefined;
+    }
+    if (object.validity !== undefined && object.validity !== null) {
+      message.validity = Validity.fromJSON(object.validity);
+    } else {
+      message.validity = undefined;
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = String(object.interest);
+    } else {
+      message.interest = "";
+    }
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = Number(object.cost);
+    } else {
+      message.cost = 0;
+    }
+    if (
+      object.creationTimestamp !== undefined &&
+      object.creationTimestamp !== null
+    ) {
+      message.creationTimestamp = String(object.creationTimestamp);
+    } else {
+      message.creationTimestamp = "";
+    }
+    if (
+      object.updateTimestamp !== undefined &&
+      object.updateTimestamp !== null
+    ) {
+      message.updateTimestamp = String(object.updateTimestamp);
+    } else {
+      message.updateTimestamp = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateDomainCooperation): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.label !== undefined && (obj.label = message.label);
+    message.cooperationType !== undefined &&
+      (obj.cooperationType = message.cooperationType);
+    message.sourceDomain !== undefined &&
+      (obj.sourceDomain = message.sourceDomain
+        ? Domain.toJSON(message.sourceDomain)
+        : undefined);
+    message.remoteDomain !== undefined &&
+      (obj.remoteDomain = message.remoteDomain
+        ? Domain.toJSON(message.remoteDomain)
+        : undefined);
+    message.validity !== undefined &&
+      (obj.validity = message.validity
+        ? Validity.toJSON(message.validity)
+        : undefined);
+    message.interest !== undefined && (obj.interest = message.interest);
+    message.cost !== undefined && (obj.cost = message.cost);
+    message.creationTimestamp !== undefined &&
+      (obj.creationTimestamp = message.creationTimestamp);
+    message.updateTimestamp !== undefined &&
+      (obj.updateTimestamp = message.updateTimestamp);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateDomainCooperation>
+  ): MsgCreateDomainCooperation {
+    const message = {
+      ...baseMsgCreateDomainCooperation,
+    } as MsgCreateDomainCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.label !== undefined && object.label !== null) {
+      message.label = object.label;
+    } else {
+      message.label = "";
+    }
+    if (
+      object.cooperationType !== undefined &&
+      object.cooperationType !== null
+    ) {
+      message.cooperationType = object.cooperationType;
+    } else {
+      message.cooperationType = "";
+    }
+    if (object.sourceDomain !== undefined && object.sourceDomain !== null) {
+      message.sourceDomain = Domain.fromPartial(object.sourceDomain);
+    } else {
+      message.sourceDomain = undefined;
+    }
+    if (object.remoteDomain !== undefined && object.remoteDomain !== null) {
+      message.remoteDomain = Domain.fromPartial(object.remoteDomain);
+    } else {
+      message.remoteDomain = undefined;
+    }
+    if (object.validity !== undefined && object.validity !== null) {
+      message.validity = Validity.fromPartial(object.validity);
+    } else {
+      message.validity = undefined;
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = object.interest;
+    } else {
+      message.interest = "";
+    }
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = object.cost;
+    } else {
+      message.cost = 0;
+    }
+    if (
+      object.creationTimestamp !== undefined &&
+      object.creationTimestamp !== null
+    ) {
+      message.creationTimestamp = object.creationTimestamp;
+    } else {
+      message.creationTimestamp = "";
+    }
+    if (
+      object.updateTimestamp !== undefined &&
+      object.updateTimestamp !== null
+    ) {
+      message.updateTimestamp = object.updateTimestamp;
+    } else {
+      message.updateTimestamp = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgCreateDomainCooperationResponse: object = { id: 0 };
+
+export const MsgCreateDomainCooperationResponse = {
+  encode(
+    message: MsgCreateDomainCooperationResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgCreateDomainCooperationResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateDomainCooperationResponse,
+    } as MsgCreateDomainCooperationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateDomainCooperationResponse {
+    const message = {
+      ...baseMsgCreateDomainCooperationResponse,
+    } as MsgCreateDomainCooperationResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateDomainCooperationResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateDomainCooperationResponse>
+  ): MsgCreateDomainCooperationResponse {
+    const message = {
+      ...baseMsgCreateDomainCooperationResponse,
+    } as MsgCreateDomainCooperationResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateDomainCooperation: object = {
+  creator: "",
+  id: 0,
+  label: "",
+  cooperationType: "",
+  interest: "",
+  cost: 0,
+  creationTimestamp: "",
+  updateTimestamp: "",
+};
+
+export const MsgUpdateDomainCooperation = {
+  encode(
+    message: MsgUpdateDomainCooperation,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    if (message.label !== "") {
+      writer.uint32(26).string(message.label);
+    }
+    if (message.cooperationType !== "") {
+      writer.uint32(34).string(message.cooperationType);
+    }
+    if (message.sourceDomain !== undefined) {
+      Domain.encode(message.sourceDomain, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.remoteDomain !== undefined) {
+      Domain.encode(message.remoteDomain, writer.uint32(50).fork()).ldelim();
+    }
+    if (message.validity !== undefined) {
+      Validity.encode(message.validity, writer.uint32(58).fork()).ldelim();
+    }
+    if (message.interest !== "") {
+      writer.uint32(66).string(message.interest);
+    }
+    if (message.cost !== 0) {
+      writer.uint32(72).uint64(message.cost);
+    }
+    if (message.creationTimestamp !== "") {
+      writer.uint32(82).string(message.creationTimestamp);
+    }
+    if (message.updateTimestamp !== "") {
+      writer.uint32(90).string(message.updateTimestamp);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateDomainCooperation {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateDomainCooperation,
+    } as MsgUpdateDomainCooperation;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.label = reader.string();
+          break;
+        case 4:
+          message.cooperationType = reader.string();
+          break;
+        case 5:
+          message.sourceDomain = Domain.decode(reader, reader.uint32());
+          break;
+        case 6:
+          message.remoteDomain = Domain.decode(reader, reader.uint32());
+          break;
+        case 7:
+          message.validity = Validity.decode(reader, reader.uint32());
+          break;
+        case 8:
+          message.interest = reader.string();
+          break;
+        case 9:
+          message.cost = longToNumber(reader.uint64() as Long);
+          break;
+        case 10:
+          message.creationTimestamp = reader.string();
+          break;
+        case 11:
+          message.updateTimestamp = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateDomainCooperation {
+    const message = {
+      ...baseMsgUpdateDomainCooperation,
+    } as MsgUpdateDomainCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    if (object.label !== undefined && object.label !== null) {
+      message.label = String(object.label);
+    } else {
+      message.label = "";
+    }
+    if (
+      object.cooperationType !== undefined &&
+      object.cooperationType !== null
+    ) {
+      message.cooperationType = String(object.cooperationType);
+    } else {
+      message.cooperationType = "";
+    }
+    if (object.sourceDomain !== undefined && object.sourceDomain !== null) {
+      message.sourceDomain = Domain.fromJSON(object.sourceDomain);
+    } else {
+      message.sourceDomain = undefined;
+    }
+    if (object.remoteDomain !== undefined && object.remoteDomain !== null) {
+      message.remoteDomain = Domain.fromJSON(object.remoteDomain);
+    } else {
+      message.remoteDomain = undefined;
+    }
+    if (object.validity !== undefined && object.validity !== null) {
+      message.validity = Validity.fromJSON(object.validity);
+    } else {
+      message.validity = undefined;
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = String(object.interest);
+    } else {
+      message.interest = "";
+    }
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = Number(object.cost);
+    } else {
+      message.cost = 0;
+    }
+    if (
+      object.creationTimestamp !== undefined &&
+      object.creationTimestamp !== null
+    ) {
+      message.creationTimestamp = String(object.creationTimestamp);
+    } else {
+      message.creationTimestamp = "";
+    }
+    if (
+      object.updateTimestamp !== undefined &&
+      object.updateTimestamp !== null
+    ) {
+      message.updateTimestamp = String(object.updateTimestamp);
+    } else {
+      message.updateTimestamp = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgUpdateDomainCooperation): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
+    message.label !== undefined && (obj.label = message.label);
+    message.cooperationType !== undefined &&
+      (obj.cooperationType = message.cooperationType);
+    message.sourceDomain !== undefined &&
+      (obj.sourceDomain = message.sourceDomain
+        ? Domain.toJSON(message.sourceDomain)
+        : undefined);
+    message.remoteDomain !== undefined &&
+      (obj.remoteDomain = message.remoteDomain
+        ? Domain.toJSON(message.remoteDomain)
+        : undefined);
+    message.validity !== undefined &&
+      (obj.validity = message.validity
+        ? Validity.toJSON(message.validity)
+        : undefined);
+    message.interest !== undefined && (obj.interest = message.interest);
+    message.cost !== undefined && (obj.cost = message.cost);
+    message.creationTimestamp !== undefined &&
+      (obj.creationTimestamp = message.creationTimestamp);
+    message.updateTimestamp !== undefined &&
+      (obj.updateTimestamp = message.updateTimestamp);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateDomainCooperation>
+  ): MsgUpdateDomainCooperation {
+    const message = {
+      ...baseMsgUpdateDomainCooperation,
+    } as MsgUpdateDomainCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    if (object.label !== undefined && object.label !== null) {
+      message.label = object.label;
+    } else {
+      message.label = "";
+    }
+    if (
+      object.cooperationType !== undefined &&
+      object.cooperationType !== null
+    ) {
+      message.cooperationType = object.cooperationType;
+    } else {
+      message.cooperationType = "";
+    }
+    if (object.sourceDomain !== undefined && object.sourceDomain !== null) {
+      message.sourceDomain = Domain.fromPartial(object.sourceDomain);
+    } else {
+      message.sourceDomain = undefined;
+    }
+    if (object.remoteDomain !== undefined && object.remoteDomain !== null) {
+      message.remoteDomain = Domain.fromPartial(object.remoteDomain);
+    } else {
+      message.remoteDomain = undefined;
+    }
+    if (object.validity !== undefined && object.validity !== null) {
+      message.validity = Validity.fromPartial(object.validity);
+    } else {
+      message.validity = undefined;
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = object.interest;
+    } else {
+      message.interest = "";
+    }
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = object.cost;
+    } else {
+      message.cost = 0;
+    }
+    if (
+      object.creationTimestamp !== undefined &&
+      object.creationTimestamp !== null
+    ) {
+      message.creationTimestamp = object.creationTimestamp;
+    } else {
+      message.creationTimestamp = "";
+    }
+    if (
+      object.updateTimestamp !== undefined &&
+      object.updateTimestamp !== null
+    ) {
+      message.updateTimestamp = object.updateTimestamp;
+    } else {
+      message.updateTimestamp = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateDomainCooperationResponse: object = {};
+
+export const MsgUpdateDomainCooperationResponse = {
+  encode(
+    _: MsgUpdateDomainCooperationResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateDomainCooperationResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateDomainCooperationResponse,
+    } as MsgUpdateDomainCooperationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateDomainCooperationResponse {
+    const message = {
+      ...baseMsgUpdateDomainCooperationResponse,
+    } as MsgUpdateDomainCooperationResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateDomainCooperationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateDomainCooperationResponse>
+  ): MsgUpdateDomainCooperationResponse {
+    const message = {
+      ...baseMsgUpdateDomainCooperationResponse,
+    } as MsgUpdateDomainCooperationResponse;
+    return message;
+  },
+};
+
+const baseMsgDeleteDomainCooperation: object = { creator: "", id: 0 };
+
+export const MsgDeleteDomainCooperation = {
+  encode(
+    message: MsgDeleteDomainCooperation,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteDomainCooperation {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteDomainCooperation,
+    } as MsgDeleteDomainCooperation;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteDomainCooperation {
+    const message = {
+      ...baseMsgDeleteDomainCooperation,
+    } as MsgDeleteDomainCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDeleteDomainCooperation): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeleteDomainCooperation>
+  ): MsgDeleteDomainCooperation {
+    const message = {
+      ...baseMsgDeleteDomainCooperation,
+    } as MsgDeleteDomainCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgDeleteDomainCooperationResponse: object = {};
+
+export const MsgDeleteDomainCooperationResponse = {
+  encode(
+    _: MsgDeleteDomainCooperationResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteDomainCooperationResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteDomainCooperationResponse,
+    } as MsgDeleteDomainCooperationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeleteDomainCooperationResponse {
+    const message = {
+      ...baseMsgDeleteDomainCooperationResponse,
+    } as MsgDeleteDomainCooperationResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeleteDomainCooperationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeleteDomainCooperationResponse>
+  ): MsgDeleteDomainCooperationResponse {
+    const message = {
+      ...baseMsgDeleteDomainCooperationResponse,
+    } as MsgDeleteDomainCooperationResponse;
+    return message;
+  },
+};
+
+const baseMsgCreateCooperationLog: object = {
+  creator: "",
+  transaction: "",
+  timestamp: "",
+  details: "",
+  decision: "",
+  function: "",
+};
+
+export const MsgCreateCooperationLog = {
+  encode(
+    message: MsgCreateCooperationLog,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.transaction !== "") {
+      writer.uint32(18).string(message.transaction);
+    }
+    if (message.timestamp !== "") {
+      writer.uint32(26).string(message.timestamp);
+    }
+    if (message.details !== "") {
+      writer.uint32(34).string(message.details);
+    }
+    if (message.decision !== "") {
+      writer.uint32(42).string(message.decision);
+    }
+    if (message.function !== "") {
+      writer.uint32(50).string(message.function);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgCreateCooperationLog {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateCooperationLog,
+    } as MsgCreateCooperationLog;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.transaction = reader.string();
+          break;
+        case 3:
+          message.timestamp = reader.string();
+          break;
+        case 4:
+          message.details = reader.string();
+          break;
+        case 5:
+          message.decision = reader.string();
+          break;
+        case 6:
+          message.function = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateCooperationLog {
+    const message = {
+      ...baseMsgCreateCooperationLog,
+    } as MsgCreateCooperationLog;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.transaction !== undefined && object.transaction !== null) {
+      message.transaction = String(object.transaction);
+    } else {
+      message.transaction = "";
+    }
+    if (object.timestamp !== undefined && object.timestamp !== null) {
+      message.timestamp = String(object.timestamp);
+    } else {
+      message.timestamp = "";
+    }
+    if (object.details !== undefined && object.details !== null) {
+      message.details = String(object.details);
+    } else {
+      message.details = "";
+    }
+    if (object.decision !== undefined && object.decision !== null) {
+      message.decision = String(object.decision);
+    } else {
+      message.decision = "";
+    }
+    if (object.function !== undefined && object.function !== null) {
+      message.function = String(object.function);
+    } else {
+      message.function = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateCooperationLog): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.transaction !== undefined &&
+      (obj.transaction = message.transaction);
+    message.timestamp !== undefined && (obj.timestamp = message.timestamp);
+    message.details !== undefined && (obj.details = message.details);
+    message.decision !== undefined && (obj.decision = message.decision);
+    message.function !== undefined && (obj.function = message.function);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateCooperationLog>
+  ): MsgCreateCooperationLog {
+    const message = {
+      ...baseMsgCreateCooperationLog,
+    } as MsgCreateCooperationLog;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.transaction !== undefined && object.transaction !== null) {
+      message.transaction = object.transaction;
+    } else {
+      message.transaction = "";
+    }
+    if (object.timestamp !== undefined && object.timestamp !== null) {
+      message.timestamp = object.timestamp;
+    } else {
+      message.timestamp = "";
+    }
+    if (object.details !== undefined && object.details !== null) {
+      message.details = object.details;
+    } else {
+      message.details = "";
+    }
+    if (object.decision !== undefined && object.decision !== null) {
+      message.decision = object.decision;
+    } else {
+      message.decision = "";
+    }
+    if (object.function !== undefined && object.function !== null) {
+      message.function = object.function;
+    } else {
+      message.function = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgCreateCooperationLogResponse: object = { id: 0 };
+
+export const MsgCreateCooperationLogResponse = {
+  encode(
+    message: MsgCreateCooperationLogResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgCreateCooperationLogResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateCooperationLogResponse,
+    } as MsgCreateCooperationLogResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateCooperationLogResponse {
+    const message = {
+      ...baseMsgCreateCooperationLogResponse,
+    } as MsgCreateCooperationLogResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateCooperationLogResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateCooperationLogResponse>
+  ): MsgCreateCooperationLogResponse {
+    const message = {
+      ...baseMsgCreateCooperationLogResponse,
+    } as MsgCreateCooperationLogResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateCooperationLog: object = {
+  creator: "",
+  id: 0,
+  transaction: "",
+  timestamp: "",
+  details: "",
+  decision: "",
+  function: "",
+};
+
+export const MsgUpdateCooperationLog = {
+  encode(
+    message: MsgUpdateCooperationLog,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    if (message.transaction !== "") {
+      writer.uint32(26).string(message.transaction);
+    }
+    if (message.timestamp !== "") {
+      writer.uint32(34).string(message.timestamp);
+    }
+    if (message.details !== "") {
+      writer.uint32(42).string(message.details);
+    }
+    if (message.decision !== "") {
+      writer.uint32(50).string(message.decision);
+    }
+    if (message.function !== "") {
+      writer.uint32(58).string(message.function);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdateCooperationLog {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateCooperationLog,
+    } as MsgUpdateCooperationLog;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        case 3:
+          message.transaction = reader.string();
+          break;
+        case 4:
+          message.timestamp = reader.string();
+          break;
+        case 5:
+          message.details = reader.string();
+          break;
+        case 6:
+          message.decision = reader.string();
+          break;
+        case 7:
+          message.function = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateCooperationLog {
+    const message = {
+      ...baseMsgUpdateCooperationLog,
+    } as MsgUpdateCooperationLog;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    if (object.transaction !== undefined && object.transaction !== null) {
+      message.transaction = String(object.transaction);
+    } else {
+      message.transaction = "";
+    }
+    if (object.timestamp !== undefined && object.timestamp !== null) {
+      message.timestamp = String(object.timestamp);
+    } else {
+      message.timestamp = "";
+    }
+    if (object.details !== undefined && object.details !== null) {
+      message.details = String(object.details);
+    } else {
+      message.details = "";
+    }
+    if (object.decision !== undefined && object.decision !== null) {
+      message.decision = String(object.decision);
+    } else {
+      message.decision = "";
+    }
+    if (object.function !== undefined && object.function !== null) {
+      message.function = String(object.function);
+    } else {
+      message.function = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgUpdateCooperationLog): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
+    message.transaction !== undefined &&
+      (obj.transaction = message.transaction);
+    message.timestamp !== undefined && (obj.timestamp = message.timestamp);
+    message.details !== undefined && (obj.details = message.details);
+    message.decision !== undefined && (obj.decision = message.decision);
+    message.function !== undefined && (obj.function = message.function);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateCooperationLog>
+  ): MsgUpdateCooperationLog {
+    const message = {
+      ...baseMsgUpdateCooperationLog,
+    } as MsgUpdateCooperationLog;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    if (object.transaction !== undefined && object.transaction !== null) {
+      message.transaction = object.transaction;
+    } else {
+      message.transaction = "";
+    }
+    if (object.timestamp !== undefined && object.timestamp !== null) {
+      message.timestamp = object.timestamp;
+    } else {
+      message.timestamp = "";
+    }
+    if (object.details !== undefined && object.details !== null) {
+      message.details = object.details;
+    } else {
+      message.details = "";
+    }
+    if (object.decision !== undefined && object.decision !== null) {
+      message.decision = object.decision;
+    } else {
+      message.decision = "";
+    }
+    if (object.function !== undefined && object.function !== null) {
+      message.function = object.function;
+    } else {
+      message.function = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateCooperationLogResponse: object = {};
+
+export const MsgUpdateCooperationLogResponse = {
+  encode(
+    _: MsgUpdateCooperationLogResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateCooperationLogResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateCooperationLogResponse,
+    } as MsgUpdateCooperationLogResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateCooperationLogResponse {
+    const message = {
+      ...baseMsgUpdateCooperationLogResponse,
+    } as MsgUpdateCooperationLogResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateCooperationLogResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateCooperationLogResponse>
+  ): MsgUpdateCooperationLogResponse {
+    const message = {
+      ...baseMsgUpdateCooperationLogResponse,
+    } as MsgUpdateCooperationLogResponse;
+    return message;
+  },
+};
+
+const baseMsgDeleteCooperationLog: object = { creator: "", id: 0 };
+
+export const MsgDeleteCooperationLog = {
+  encode(
+    message: MsgDeleteCooperationLog,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgDeleteCooperationLog {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteCooperationLog,
+    } as MsgDeleteCooperationLog;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteCooperationLog {
+    const message = {
+      ...baseMsgDeleteCooperationLog,
+    } as MsgDeleteCooperationLog;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDeleteCooperationLog): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeleteCooperationLog>
+  ): MsgDeleteCooperationLog {
+    const message = {
+      ...baseMsgDeleteCooperationLog,
+    } as MsgDeleteCooperationLog;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgDeleteCooperationLogResponse: object = {};
+
+export const MsgDeleteCooperationLogResponse = {
+  encode(
+    _: MsgDeleteCooperationLogResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteCooperationLogResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteCooperationLogResponse,
+    } as MsgDeleteCooperationLogResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeleteCooperationLogResponse {
+    const message = {
+      ...baseMsgDeleteCooperationLogResponse,
+    } as MsgDeleteCooperationLogResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeleteCooperationLogResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeleteCooperationLogResponse>
+  ): MsgDeleteCooperationLogResponse {
+    const message = {
+      ...baseMsgDeleteCooperationLogResponse,
+    } as MsgDeleteCooperationLogResponse;
+    return message;
+  },
+};
+
+const baseMsgSendEstablishCooperation: object = {
+  creator: "",
+  port: "",
+  channelID: "",
+  timeoutTimestamp: 0,
+  notBefore: "",
+  notAfter: "",
+  interest: "",
+  cost: "",
+};
+
+export const MsgSendEstablishCooperation = {
+  encode(
+    message: MsgSendEstablishCooperation,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.port !== "") {
+      writer.uint32(18).string(message.port);
+    }
+    if (message.channelID !== "") {
+      writer.uint32(26).string(message.channelID);
+    }
+    if (message.timeoutTimestamp !== 0) {
+      writer.uint32(32).uint64(message.timeoutTimestamp);
+    }
+    if (message.notBefore !== "") {
+      writer.uint32(42).string(message.notBefore);
+    }
+    if (message.notAfter !== "") {
+      writer.uint32(50).string(message.notAfter);
+    }
+    if (message.interest !== "") {
+      writer.uint32(58).string(message.interest);
+    }
+    if (message.cost !== "") {
+      writer.uint32(66).string(message.cost);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgSendEstablishCooperation {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSendEstablishCooperation,
+    } as MsgSendEstablishCooperation;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.port = reader.string();
+          break;
+        case 3:
+          message.channelID = reader.string();
+          break;
+        case 4:
+          message.timeoutTimestamp = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.notBefore = reader.string();
+          break;
+        case 6:
+          message.notAfter = reader.string();
+          break;
+        case 7:
+          message.interest = reader.string();
+          break;
+        case 8:
+          message.cost = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSendEstablishCooperation {
+    const message = {
+      ...baseMsgSendEstablishCooperation,
+    } as MsgSendEstablishCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = String(object.port);
+    } else {
+      message.port = "";
+    }
+    if (object.channelID !== undefined && object.channelID !== null) {
+      message.channelID = String(object.channelID);
+    } else {
+      message.channelID = "";
+    }
+    if (
+      object.timeoutTimestamp !== undefined &&
+      object.timeoutTimestamp !== null
+    ) {
+      message.timeoutTimestamp = Number(object.timeoutTimestamp);
+    } else {
+      message.timeoutTimestamp = 0;
+    }
+    if (object.notBefore !== undefined && object.notBefore !== null) {
+      message.notBefore = String(object.notBefore);
+    } else {
+      message.notBefore = "";
+    }
+    if (object.notAfter !== undefined && object.notAfter !== null) {
+      message.notAfter = String(object.notAfter);
+    } else {
+      message.notAfter = "";
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = String(object.interest);
+    } else {
+      message.interest = "";
+    }
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = String(object.cost);
+    } else {
+      message.cost = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgSendEstablishCooperation): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.port !== undefined && (obj.port = message.port);
+    message.channelID !== undefined && (obj.channelID = message.channelID);
+    message.timeoutTimestamp !== undefined &&
+      (obj.timeoutTimestamp = message.timeoutTimestamp);
+    message.notBefore !== undefined && (obj.notBefore = message.notBefore);
+    message.notAfter !== undefined && (obj.notAfter = message.notAfter);
+    message.interest !== undefined && (obj.interest = message.interest);
+    message.cost !== undefined && (obj.cost = message.cost);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSendEstablishCooperation>
+  ): MsgSendEstablishCooperation {
+    const message = {
+      ...baseMsgSendEstablishCooperation,
+    } as MsgSendEstablishCooperation;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = object.port;
+    } else {
+      message.port = "";
+    }
+    if (object.channelID !== undefined && object.channelID !== null) {
+      message.channelID = object.channelID;
+    } else {
+      message.channelID = "";
+    }
+    if (
+      object.timeoutTimestamp !== undefined &&
+      object.timeoutTimestamp !== null
+    ) {
+      message.timeoutTimestamp = object.timeoutTimestamp;
+    } else {
+      message.timeoutTimestamp = 0;
+    }
+    if (object.notBefore !== undefined && object.notBefore !== null) {
+      message.notBefore = object.notBefore;
+    } else {
+      message.notBefore = "";
+    }
+    if (object.notAfter !== undefined && object.notAfter !== null) {
+      message.notAfter = object.notAfter;
+    } else {
+      message.notAfter = "";
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = object.interest;
+    } else {
+      message.interest = "";
+    }
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = object.cost;
+    } else {
+      message.cost = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgSendEstablishCooperationResponse: object = {};
+
+export const MsgSendEstablishCooperationResponse = {
+  encode(
+    _: MsgSendEstablishCooperationResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgSendEstablishCooperationResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSendEstablishCooperationResponse,
+    } as MsgSendEstablishCooperationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSendEstablishCooperationResponse {
+    const message = {
+      ...baseMsgSendEstablishCooperationResponse,
+    } as MsgSendEstablishCooperationResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSendEstablishCooperationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSendEstablishCooperationResponse>
+  ): MsgSendEstablishCooperationResponse {
+    const message = {
+      ...baseMsgSendEstablishCooperationResponse,
+    } as MsgSendEstablishCooperationResponse;
+    return message;
+  },
+};
+
+const baseMsgSendForwardCooperationData: object = {
+  creator: "",
+  port: "",
+  channelID: "",
+  timeoutTimestamp: 0,
+};
+
+export const MsgSendForwardCooperationData = {
+  encode(
+    message: MsgSendForwardCooperationData,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.port !== "") {
+      writer.uint32(18).string(message.port);
+    }
+    if (message.channelID !== "") {
+      writer.uint32(26).string(message.channelID);
+    }
+    if (message.timeoutTimestamp !== 0) {
+      writer.uint32(32).uint64(message.timeoutTimestamp);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgSendForwardCooperationData {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSendForwardCooperationData,
+    } as MsgSendForwardCooperationData;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.port = reader.string();
+          break;
+        case 3:
+          message.channelID = reader.string();
+          break;
+        case 4:
+          message.timeoutTimestamp = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSendForwardCooperationData {
+    const message = {
+      ...baseMsgSendForwardCooperationData,
+    } as MsgSendForwardCooperationData;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = String(object.port);
+    } else {
+      message.port = "";
+    }
+    if (object.channelID !== undefined && object.channelID !== null) {
+      message.channelID = String(object.channelID);
+    } else {
+      message.channelID = "";
+    }
+    if (
+      object.timeoutTimestamp !== undefined &&
+      object.timeoutTimestamp !== null
+    ) {
+      message.timeoutTimestamp = Number(object.timeoutTimestamp);
+    } else {
+      message.timeoutTimestamp = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgSendForwardCooperationData): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.port !== undefined && (obj.port = message.port);
+    message.channelID !== undefined && (obj.channelID = message.channelID);
+    message.timeoutTimestamp !== undefined &&
+      (obj.timeoutTimestamp = message.timeoutTimestamp);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSendForwardCooperationData>
+  ): MsgSendForwardCooperationData {
+    const message = {
+      ...baseMsgSendForwardCooperationData,
+    } as MsgSendForwardCooperationData;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = object.port;
+    } else {
+      message.port = "";
+    }
+    if (object.channelID !== undefined && object.channelID !== null) {
+      message.channelID = object.channelID;
+    } else {
+      message.channelID = "";
+    }
+    if (
+      object.timeoutTimestamp !== undefined &&
+      object.timeoutTimestamp !== null
+    ) {
+      message.timeoutTimestamp = object.timeoutTimestamp;
+    } else {
+      message.timeoutTimestamp = 0;
+    }
+    return message;
+  },
+};
+
+const baseMsgSendForwardCooperationDataResponse: object = {};
+
+export const MsgSendForwardCooperationDataResponse = {
+  encode(
+    _: MsgSendForwardCooperationDataResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgSendForwardCooperationDataResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSendForwardCooperationDataResponse,
+    } as MsgSendForwardCooperationDataResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSendForwardCooperationDataResponse {
+    const message = {
+      ...baseMsgSendForwardCooperationDataResponse,
+    } as MsgSendForwardCooperationDataResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSendForwardCooperationDataResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSendForwardCooperationDataResponse>
+  ): MsgSendForwardCooperationDataResponse {
+    const message = {
+      ...baseMsgSendForwardCooperationDataResponse,
+    } as MsgSendForwardCooperationDataResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreatePublicKey(
@@ -3398,10 +5284,34 @@ export interface Msg {
   DeleteAuthenticationLog(
     request: MsgDeleteAuthenticationLog
   ): Promise<MsgDeleteAuthenticationLogResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   SendAuthenticateDomain(
     request: MsgSendAuthenticateDomain
   ): Promise<MsgSendAuthenticateDomainResponse>;
+  CreateDomainCooperation(
+    request: MsgCreateDomainCooperation
+  ): Promise<MsgCreateDomainCooperationResponse>;
+  UpdateDomainCooperation(
+    request: MsgUpdateDomainCooperation
+  ): Promise<MsgUpdateDomainCooperationResponse>;
+  DeleteDomainCooperation(
+    request: MsgDeleteDomainCooperation
+  ): Promise<MsgDeleteDomainCooperationResponse>;
+  CreateCooperationLog(
+    request: MsgCreateCooperationLog
+  ): Promise<MsgCreateCooperationLogResponse>;
+  UpdateCooperationLog(
+    request: MsgUpdateCooperationLog
+  ): Promise<MsgUpdateCooperationLogResponse>;
+  DeleteCooperationLog(
+    request: MsgDeleteCooperationLog
+  ): Promise<MsgDeleteCooperationLogResponse>;
+  SendEstablishCooperation(
+    request: MsgSendEstablishCooperation
+  ): Promise<MsgSendEstablishCooperationResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  SendForwardCooperationData(
+    request: MsgSendForwardCooperationData
+  ): Promise<MsgSendForwardCooperationDataResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -3666,6 +5576,118 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSendAuthenticateDomainResponse.decode(new Reader(data))
+    );
+  }
+
+  CreateDomainCooperation(
+    request: MsgCreateDomainCooperation
+  ): Promise<MsgCreateDomainCooperationResponse> {
+    const data = MsgCreateDomainCooperation.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "CreateDomainCooperation",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateDomainCooperationResponse.decode(new Reader(data))
+    );
+  }
+
+  UpdateDomainCooperation(
+    request: MsgUpdateDomainCooperation
+  ): Promise<MsgUpdateDomainCooperationResponse> {
+    const data = MsgUpdateDomainCooperation.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "UpdateDomainCooperation",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateDomainCooperationResponse.decode(new Reader(data))
+    );
+  }
+
+  DeleteDomainCooperation(
+    request: MsgDeleteDomainCooperation
+  ): Promise<MsgDeleteDomainCooperationResponse> {
+    const data = MsgDeleteDomainCooperation.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "DeleteDomainCooperation",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeleteDomainCooperationResponse.decode(new Reader(data))
+    );
+  }
+
+  CreateCooperationLog(
+    request: MsgCreateCooperationLog
+  ): Promise<MsgCreateCooperationLogResponse> {
+    const data = MsgCreateCooperationLog.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "CreateCooperationLog",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateCooperationLogResponse.decode(new Reader(data))
+    );
+  }
+
+  UpdateCooperationLog(
+    request: MsgUpdateCooperationLog
+  ): Promise<MsgUpdateCooperationLogResponse> {
+    const data = MsgUpdateCooperationLog.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "UpdateCooperationLog",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateCooperationLogResponse.decode(new Reader(data))
+    );
+  }
+
+  DeleteCooperationLog(
+    request: MsgDeleteCooperationLog
+  ): Promise<MsgDeleteCooperationLogResponse> {
+    const data = MsgDeleteCooperationLog.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "DeleteCooperationLog",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeleteCooperationLogResponse.decode(new Reader(data))
+    );
+  }
+
+  SendEstablishCooperation(
+    request: MsgSendEstablishCooperation
+  ): Promise<MsgSendEstablishCooperationResponse> {
+    const data = MsgSendEstablishCooperation.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "SendEstablishCooperation",
+      data
+    );
+    return promise.then((data) =>
+      MsgSendEstablishCooperationResponse.decode(new Reader(data))
+    );
+  }
+
+  SendForwardCooperationData(
+    request: MsgSendForwardCooperationData
+  ): Promise<MsgSendForwardCooperationDataResponse> {
+    const data = MsgSendForwardCooperationData.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "SendForwardCooperationData",
+      data
+    );
+    return promise.then((data) =>
+      MsgSendForwardCooperationDataResponse.decode(new Reader(data))
     );
   }
 }

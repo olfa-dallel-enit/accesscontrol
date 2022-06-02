@@ -1,12 +1,14 @@
 syntax = "proto3";
 package crossdomain.cdaccesscontrol;
 
-import "cdaccesscontrol/domain.proto";
 import "cdaccesscontrol/authentication_log.proto";
+import "cdaccesscontrol/domain_cooperation.proto";
+import "cdaccesscontrol/cooperation_log.proto";
 // this line is used by starport scaffolding # proto/tx/import
+import "cdaccesscontrol/validity.proto";
+import "cdaccesscontrol/domain.proto";
 import "cdaccesscontrol/ibc_connection.proto";
 import "cdaccesscontrol/certificate.proto";
-import "cdaccesscontrol/validity.proto";
 import "cdaccesscontrol/public_key.proto";
 
 option go_package = "crossdomain/x/cdaccesscontrol/types";
@@ -32,6 +34,14 @@ rpc CreateAuthenticationLog(MsgCreateAuthenticationLog) returns (MsgCreateAuthen
   rpc UpdateAuthenticationLog(MsgUpdateAuthenticationLog) returns (MsgUpdateAuthenticationLogResponse);
   rpc DeleteAuthenticationLog(MsgDeleteAuthenticationLog) returns (MsgDeleteAuthenticationLogResponse);
   rpc SendAuthenticateDomain(MsgSendAuthenticateDomain) returns (MsgSendAuthenticateDomainResponse);
+rpc CreateDomainCooperation(MsgCreateDomainCooperation) returns (MsgCreateDomainCooperationResponse);
+  rpc UpdateDomainCooperation(MsgUpdateDomainCooperation) returns (MsgUpdateDomainCooperationResponse);
+  rpc DeleteDomainCooperation(MsgDeleteDomainCooperation) returns (MsgDeleteDomainCooperationResponse);
+rpc CreateCooperationLog(MsgCreateCooperationLog) returns (MsgCreateCooperationLogResponse);
+  rpc UpdateCooperationLog(MsgUpdateCooperationLog) returns (MsgUpdateCooperationLogResponse);
+  rpc DeleteCooperationLog(MsgDeleteCooperationLog) returns (MsgDeleteCooperationLogResponse);
+  rpc SendEstablishCooperation(MsgSendEstablishCooperation) returns (MsgSendEstablishCooperationResponse);
+  rpc SendForwardCooperationData(MsgSendForwardCooperationData) returns (MsgSendForwardCooperationDataResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -209,5 +219,99 @@ message MsgSendAuthenticateDomain {
 }
 
 message MsgSendAuthenticateDomainResponse {
+}
+message MsgCreateDomainCooperation {
+  string creator = 1;
+  string label = 2;
+  string cooperationType = 3;
+  Domain sourceDomain = 4;
+  Domain remoteDomain = 5;
+  Validity validity = 6;
+  string interest = 7;
+  uint64 cost = 8;
+  string creationTimestamp = 9;
+  string updateTimestamp = 10;
+}
+
+message MsgCreateDomainCooperationResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateDomainCooperation {
+  string creator = 1;
+  uint64 id = 2;
+  string label = 3;
+  string cooperationType = 4;
+  Domain sourceDomain = 5;
+  Domain remoteDomain = 6;
+  Validity validity = 7;
+  string interest = 8;
+  uint64 cost = 9;
+  string creationTimestamp = 10;
+  string updateTimestamp = 11;
+}
+
+message MsgUpdateDomainCooperationResponse {}
+
+message MsgDeleteDomainCooperation {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteDomainCooperationResponse {}
+
+message MsgCreateCooperationLog {
+  string creator = 1;
+  string transaction = 2;
+  string timestamp = 3;
+  string details = 4;
+  string decision = 5;
+  string function = 6;
+}
+
+message MsgCreateCooperationLogResponse {
+  uint64 id = 1;
+}
+
+message MsgUpdateCooperationLog {
+  string creator = 1;
+  uint64 id = 2;
+  string transaction = 3;
+  string timestamp = 4;
+  string details = 5;
+  string decision = 6;
+  string function = 7;
+}
+
+message MsgUpdateCooperationLogResponse {}
+
+message MsgDeleteCooperationLog {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgDeleteCooperationLogResponse {}
+
+message MsgSendEstablishCooperation {
+  string creator = 1;
+  string port = 2;
+  string channelID = 3;
+  uint64 timeoutTimestamp = 4;
+  string notBefore = 5;
+  string notAfter = 6;
+  string interest = 7;
+  string cost = 8;
+}
+
+message MsgSendEstablishCooperationResponse {
+}
+message MsgSendForwardCooperationData {
+  string creator = 1;
+  string port = 2;
+  string channelID = 3;
+  uint64 timeoutTimestamp = 4;
+}
+
+message MsgSendForwardCooperationDataResponse {
 }
 // this line is used by starport scaffolding # proto/tx/message

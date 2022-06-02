@@ -109,7 +109,7 @@ func (k Keeper) OnRecvAuthenticateDomainPacket(ctx sdk.Context, packet channelty
 					},
 					IbcConnection: &types.IbcConnection{
 						Creator: ctx.ChainID(),
-						Port: packet.DestinationPort,
+						Port:    packet.DestinationPort,
 						Channel: packet.DestinationChannel,
 					},
 				})
@@ -132,7 +132,7 @@ func (k Keeper) OnRecvAuthenticateDomainPacket(ctx sdk.Context, packet channelty
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Authenticated domain: " + data.Sender,
 					Decision:    "Confirmed",
-					Function: "authenticate_domain: OnRecvAuthenticateDomainPacket",
+					Function:    "authenticate_domain: OnRecvAuthenticateDomainPacket",
 				})
 			} else {
 				packetAck.Confirmation = "Not confirmed"
@@ -142,7 +142,7 @@ func (k Keeper) OnRecvAuthenticateDomainPacket(ctx sdk.Context, packet channelty
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Authenticated domain: " + data.Sender,
 					Decision:    "Not confirmed",
-					Function: "authenticate_domain: OnRecvAuthenticateDomainPacket",
+					Function:    "authenticate_domain: OnRecvAuthenticateDomainPacket",
 				})
 			}
 		} else {
@@ -153,7 +153,7 @@ func (k Keeper) OnRecvAuthenticateDomainPacket(ctx sdk.Context, packet channelty
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Authenticated domain: " + data.Sender,
 				Decision:    "Not confirmed",
-				Function: "authenticate_domain: OnRecvAuthenticateDomainPacket",
+				Function:    "authenticate_domain: OnRecvAuthenticateDomainPacket",
 			})
 		}
 	} else {
@@ -164,7 +164,7 @@ func (k Keeper) OnRecvAuthenticateDomainPacket(ctx sdk.Context, packet channelty
 			Timestamp:   cast.ToString(time.Now()),
 			Details:     "Authenticated domain: " + data.Sender,
 			Decision:    "Not confirmed",
-			Function: "authenticate_domain: OnRecvAuthenticateDomainPacket",
+			Function:    "authenticate_domain: OnRecvAuthenticateDomainPacket",
 		})
 	}
 
@@ -212,7 +212,7 @@ func (k Keeper) OnAcknowledgementAuthenticateDomainPacket(ctx sdk.Context, packe
 				},
 				IbcConnection: &types.IbcConnection{
 					Creator: ctx.ChainID(),
-					Port: packet.SourcePort,
+					Port:    packet.SourcePort,
 					Channel: packet.SourceChannel,
 				},
 			})
@@ -223,7 +223,7 @@ func (k Keeper) OnAcknowledgementAuthenticateDomainPacket(ctx sdk.Context, packe
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Authenticated domain: " + packetAck.ConfirmedBy,
 				Decision:    "Confirmed",
-				Function:     "authenticate_domain: OnAcknowledgementAuthenticateDomainPacket",
+				Function:    "authenticate_domain: OnAcknowledgementAuthenticateDomainPacket",
 			})
 		} else {
 			k.AppendAuthenticationLog(ctx, types.AuthenticationLog{
@@ -232,7 +232,7 @@ func (k Keeper) OnAcknowledgementAuthenticateDomainPacket(ctx sdk.Context, packe
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Authenticated domain: " + packetAck.ConfirmedBy,
 				Decision:    "Not confirmed",
-				Function:     "authenticate_domain: OnAcknowledgementAuthenticateDomainPacket",
+				Function:    "authenticate_domain: OnAcknowledgementAuthenticateDomainPacket",
 			})
 		}
 

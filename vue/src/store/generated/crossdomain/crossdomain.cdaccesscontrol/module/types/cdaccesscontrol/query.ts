@@ -12,6 +12,8 @@ import { Certificate } from "../cdaccesscontrol/certificate";
 import { IbcConnection } from "../cdaccesscontrol/ibc_connection";
 import { Domain } from "../cdaccesscontrol/domain";
 import { AuthenticationLog } from "../cdaccesscontrol/authentication_log";
+import { DomainCooperation } from "../cdaccesscontrol/domain_cooperation";
+import { CooperationLog } from "../cdaccesscontrol/cooperation_log";
 
 export const protobufPackage = "crossdomain.cdaccesscontrol";
 
@@ -123,6 +125,40 @@ export interface QueryAllAuthenticationLogRequest {
 
 export interface QueryAllAuthenticationLogResponse {
   AuthenticationLog: AuthenticationLog[];
+  pagination: PageResponse | undefined;
+}
+
+export interface QueryGetDomainCooperationRequest {
+  id: number;
+}
+
+export interface QueryGetDomainCooperationResponse {
+  DomainCooperation: DomainCooperation | undefined;
+}
+
+export interface QueryAllDomainCooperationRequest {
+  pagination: PageRequest | undefined;
+}
+
+export interface QueryAllDomainCooperationResponse {
+  DomainCooperation: DomainCooperation[];
+  pagination: PageResponse | undefined;
+}
+
+export interface QueryGetCooperationLogRequest {
+  id: number;
+}
+
+export interface QueryGetCooperationLogResponse {
+  CooperationLog: CooperationLog | undefined;
+}
+
+export interface QueryAllCooperationLogRequest {
+  pagination: PageRequest | undefined;
+}
+
+export interface QueryAllCooperationLogResponse {
+  CooperationLog: CooperationLog[];
   pagination: PageResponse | undefined;
 }
 
@@ -2095,6 +2131,668 @@ export const QueryAllAuthenticationLogResponse = {
   },
 };
 
+const baseQueryGetDomainCooperationRequest: object = { id: 0 };
+
+export const QueryGetDomainCooperationRequest = {
+  encode(
+    message: QueryGetDomainCooperationRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetDomainCooperationRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetDomainCooperationRequest,
+    } as QueryGetDomainCooperationRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetDomainCooperationRequest {
+    const message = {
+      ...baseQueryGetDomainCooperationRequest,
+    } as QueryGetDomainCooperationRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetDomainCooperationRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetDomainCooperationRequest>
+  ): QueryGetDomainCooperationRequest {
+    const message = {
+      ...baseQueryGetDomainCooperationRequest,
+    } as QueryGetDomainCooperationRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseQueryGetDomainCooperationResponse: object = {};
+
+export const QueryGetDomainCooperationResponse = {
+  encode(
+    message: QueryGetDomainCooperationResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.DomainCooperation !== undefined) {
+      DomainCooperation.encode(
+        message.DomainCooperation,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetDomainCooperationResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetDomainCooperationResponse,
+    } as QueryGetDomainCooperationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.DomainCooperation = DomainCooperation.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetDomainCooperationResponse {
+    const message = {
+      ...baseQueryGetDomainCooperationResponse,
+    } as QueryGetDomainCooperationResponse;
+    if (
+      object.DomainCooperation !== undefined &&
+      object.DomainCooperation !== null
+    ) {
+      message.DomainCooperation = DomainCooperation.fromJSON(
+        object.DomainCooperation
+      );
+    } else {
+      message.DomainCooperation = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetDomainCooperationResponse): unknown {
+    const obj: any = {};
+    message.DomainCooperation !== undefined &&
+      (obj.DomainCooperation = message.DomainCooperation
+        ? DomainCooperation.toJSON(message.DomainCooperation)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetDomainCooperationResponse>
+  ): QueryGetDomainCooperationResponse {
+    const message = {
+      ...baseQueryGetDomainCooperationResponse,
+    } as QueryGetDomainCooperationResponse;
+    if (
+      object.DomainCooperation !== undefined &&
+      object.DomainCooperation !== null
+    ) {
+      message.DomainCooperation = DomainCooperation.fromPartial(
+        object.DomainCooperation
+      );
+    } else {
+      message.DomainCooperation = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllDomainCooperationRequest: object = {};
+
+export const QueryAllDomainCooperationRequest = {
+  encode(
+    message: QueryAllDomainCooperationRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryAllDomainCooperationRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllDomainCooperationRequest,
+    } as QueryAllDomainCooperationRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllDomainCooperationRequest {
+    const message = {
+      ...baseQueryAllDomainCooperationRequest,
+    } as QueryAllDomainCooperationRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllDomainCooperationRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllDomainCooperationRequest>
+  ): QueryAllDomainCooperationRequest {
+    const message = {
+      ...baseQueryAllDomainCooperationRequest,
+    } as QueryAllDomainCooperationRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllDomainCooperationResponse: object = {};
+
+export const QueryAllDomainCooperationResponse = {
+  encode(
+    message: QueryAllDomainCooperationResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    for (const v of message.DomainCooperation) {
+      DomainCooperation.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryAllDomainCooperationResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllDomainCooperationResponse,
+    } as QueryAllDomainCooperationResponse;
+    message.DomainCooperation = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.DomainCooperation.push(
+            DomainCooperation.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllDomainCooperationResponse {
+    const message = {
+      ...baseQueryAllDomainCooperationResponse,
+    } as QueryAllDomainCooperationResponse;
+    message.DomainCooperation = [];
+    if (
+      object.DomainCooperation !== undefined &&
+      object.DomainCooperation !== null
+    ) {
+      for (const e of object.DomainCooperation) {
+        message.DomainCooperation.push(DomainCooperation.fromJSON(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllDomainCooperationResponse): unknown {
+    const obj: any = {};
+    if (message.DomainCooperation) {
+      obj.DomainCooperation = message.DomainCooperation.map((e) =>
+        e ? DomainCooperation.toJSON(e) : undefined
+      );
+    } else {
+      obj.DomainCooperation = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllDomainCooperationResponse>
+  ): QueryAllDomainCooperationResponse {
+    const message = {
+      ...baseQueryAllDomainCooperationResponse,
+    } as QueryAllDomainCooperationResponse;
+    message.DomainCooperation = [];
+    if (
+      object.DomainCooperation !== undefined &&
+      object.DomainCooperation !== null
+    ) {
+      for (const e of object.DomainCooperation) {
+        message.DomainCooperation.push(DomainCooperation.fromPartial(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryGetCooperationLogRequest: object = { id: 0 };
+
+export const QueryGetCooperationLogRequest = {
+  encode(
+    message: QueryGetCooperationLogRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).uint64(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetCooperationLogRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetCooperationLogRequest,
+    } as QueryGetCooperationLogRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = longToNumber(reader.uint64() as Long);
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetCooperationLogRequest {
+    const message = {
+      ...baseQueryGetCooperationLogRequest,
+    } as QueryGetCooperationLogRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetCooperationLogRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetCooperationLogRequest>
+  ): QueryGetCooperationLogRequest {
+    const message = {
+      ...baseQueryGetCooperationLogRequest,
+    } as QueryGetCooperationLogRequest;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
+    }
+    return message;
+  },
+};
+
+const baseQueryGetCooperationLogResponse: object = {};
+
+export const QueryGetCooperationLogResponse = {
+  encode(
+    message: QueryGetCooperationLogResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.CooperationLog !== undefined) {
+      CooperationLog.encode(
+        message.CooperationLog,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetCooperationLogResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetCooperationLogResponse,
+    } as QueryGetCooperationLogResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.CooperationLog = CooperationLog.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetCooperationLogResponse {
+    const message = {
+      ...baseQueryGetCooperationLogResponse,
+    } as QueryGetCooperationLogResponse;
+    if (object.CooperationLog !== undefined && object.CooperationLog !== null) {
+      message.CooperationLog = CooperationLog.fromJSON(object.CooperationLog);
+    } else {
+      message.CooperationLog = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetCooperationLogResponse): unknown {
+    const obj: any = {};
+    message.CooperationLog !== undefined &&
+      (obj.CooperationLog = message.CooperationLog
+        ? CooperationLog.toJSON(message.CooperationLog)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetCooperationLogResponse>
+  ): QueryGetCooperationLogResponse {
+    const message = {
+      ...baseQueryGetCooperationLogResponse,
+    } as QueryGetCooperationLogResponse;
+    if (object.CooperationLog !== undefined && object.CooperationLog !== null) {
+      message.CooperationLog = CooperationLog.fromPartial(
+        object.CooperationLog
+      );
+    } else {
+      message.CooperationLog = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllCooperationLogRequest: object = {};
+
+export const QueryAllCooperationLogRequest = {
+  encode(
+    message: QueryAllCooperationLogRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryAllCooperationLogRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllCooperationLogRequest,
+    } as QueryAllCooperationLogRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllCooperationLogRequest {
+    const message = {
+      ...baseQueryAllCooperationLogRequest,
+    } as QueryAllCooperationLogRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllCooperationLogRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllCooperationLogRequest>
+  ): QueryAllCooperationLogRequest {
+    const message = {
+      ...baseQueryAllCooperationLogRequest,
+    } as QueryAllCooperationLogRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllCooperationLogResponse: object = {};
+
+export const QueryAllCooperationLogResponse = {
+  encode(
+    message: QueryAllCooperationLogResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    for (const v of message.CooperationLog) {
+      CooperationLog.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryAllCooperationLogResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllCooperationLogResponse,
+    } as QueryAllCooperationLogResponse;
+    message.CooperationLog = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.CooperationLog.push(
+            CooperationLog.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllCooperationLogResponse {
+    const message = {
+      ...baseQueryAllCooperationLogResponse,
+    } as QueryAllCooperationLogResponse;
+    message.CooperationLog = [];
+    if (object.CooperationLog !== undefined && object.CooperationLog !== null) {
+      for (const e of object.CooperationLog) {
+        message.CooperationLog.push(CooperationLog.fromJSON(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllCooperationLogResponse): unknown {
+    const obj: any = {};
+    if (message.CooperationLog) {
+      obj.CooperationLog = message.CooperationLog.map((e) =>
+        e ? CooperationLog.toJSON(e) : undefined
+      );
+    } else {
+      obj.CooperationLog = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllCooperationLogResponse>
+  ): QueryAllCooperationLogResponse {
+    const message = {
+      ...baseQueryAllCooperationLogResponse,
+    } as QueryAllCooperationLogResponse;
+    message.CooperationLog = [];
+    if (object.CooperationLog !== undefined && object.CooperationLog !== null) {
+      for (const e of object.CooperationLog) {
+        message.CooperationLog.push(CooperationLog.fromPartial(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -2141,6 +2839,22 @@ export interface Query {
   AuthenticationLogAll(
     request: QueryAllAuthenticationLogRequest
   ): Promise<QueryAllAuthenticationLogResponse>;
+  /** Queries a DomainCooperation by id. */
+  DomainCooperation(
+    request: QueryGetDomainCooperationRequest
+  ): Promise<QueryGetDomainCooperationResponse>;
+  /** Queries a list of DomainCooperation items. */
+  DomainCooperationAll(
+    request: QueryAllDomainCooperationRequest
+  ): Promise<QueryAllDomainCooperationResponse>;
+  /** Queries a CooperationLog by id. */
+  CooperationLog(
+    request: QueryGetCooperationLogRequest
+  ): Promise<QueryGetCooperationLogResponse>;
+  /** Queries a list of CooperationLog items. */
+  CooperationLogAll(
+    request: QueryAllCooperationLogRequest
+  ): Promise<QueryAllCooperationLogResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2319,6 +3033,62 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllAuthenticationLogResponse.decode(new Reader(data))
+    );
+  }
+
+  DomainCooperation(
+    request: QueryGetDomainCooperationRequest
+  ): Promise<QueryGetDomainCooperationResponse> {
+    const data = QueryGetDomainCooperationRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Query",
+      "DomainCooperation",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetDomainCooperationResponse.decode(new Reader(data))
+    );
+  }
+
+  DomainCooperationAll(
+    request: QueryAllDomainCooperationRequest
+  ): Promise<QueryAllDomainCooperationResponse> {
+    const data = QueryAllDomainCooperationRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Query",
+      "DomainCooperationAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllDomainCooperationResponse.decode(new Reader(data))
+    );
+  }
+
+  CooperationLog(
+    request: QueryGetCooperationLogRequest
+  ): Promise<QueryGetCooperationLogResponse> {
+    const data = QueryGetCooperationLogRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Query",
+      "CooperationLog",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetCooperationLogResponse.decode(new Reader(data))
+    );
+  }
+
+  CooperationLogAll(
+    request: QueryAllCooperationLogRequest
+  ): Promise<QueryAllCooperationLogResponse> {
+    const data = QueryAllCooperationLogRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Query",
+      "CooperationLogAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllCooperationLogResponse.decode(new Reader(data))
     );
   }
 }

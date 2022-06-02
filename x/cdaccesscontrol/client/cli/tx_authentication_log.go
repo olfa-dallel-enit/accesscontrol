@@ -61,7 +61,6 @@ func CmdUpdateAuthenticationLog() *cobra.Command {
 
 			argFunction := args[5]
 
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err

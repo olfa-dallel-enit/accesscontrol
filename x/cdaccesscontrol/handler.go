@@ -92,6 +92,36 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgSendAuthenticateDomain:
 			res, err := msgServer.SendAuthenticateDomain(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgCreateDomainCooperation:
+			res, err := msgServer.CreateDomainCooperation(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
+		case *types.MsgUpdateDomainCooperation:
+			res, err := msgServer.UpdateDomainCooperation(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
+		case *types.MsgDeleteDomainCooperation:
+			res, err := msgServer.DeleteDomainCooperation(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
+		case *types.MsgCreateCooperationLog:
+			res, err := msgServer.CreateCooperationLog(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
+		case *types.MsgUpdateCooperationLog:
+			res, err := msgServer.UpdateCooperationLog(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
+		case *types.MsgDeleteCooperationLog:
+			res, err := msgServer.DeleteCooperationLog(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
+		case *types.MsgSendEstablishCooperation:
+			res, err := msgServer.SendEstablishCooperation(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgSendForwardCooperationData:
+			res, err := msgServer.SendForwardCooperationData(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)

@@ -8,6 +8,8 @@ import { Certificate } from "../cdaccesscontrol/certificate";
 import { IbcConnection } from "../cdaccesscontrol/ibc_connection";
 import { Domain } from "../cdaccesscontrol/domain";
 import { AuthenticationLog } from "../cdaccesscontrol/authentication_log";
+import { DomainCooperation } from "../cdaccesscontrol/domain_cooperation";
+import { CooperationLog } from "../cdaccesscontrol/cooperation_log";
 
 export const protobufPackage = "crossdomain.cdaccesscontrol";
 
@@ -26,8 +28,12 @@ export interface GenesisState {
   domainList: Domain[];
   domainCount: number;
   authenticationLogList: AuthenticationLog[];
-  /** this line is used by starport scaffolding # genesis/proto/state */
   authenticationLogCount: number;
+  domainCooperationList: DomainCooperation[];
+  domainCooperationCount: number;
+  cooperationLogList: CooperationLog[];
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  cooperationLogCount: number;
 }
 
 const baseGenesisState: object = {
@@ -38,6 +44,8 @@ const baseGenesisState: object = {
   ibcConnectionCount: 0,
   domainCount: 0,
   authenticationLogCount: 0,
+  domainCooperationCount: 0,
+  cooperationLogCount: 0,
 };
 
 export const GenesisState = {
@@ -84,6 +92,18 @@ export const GenesisState = {
     if (message.authenticationLogCount !== 0) {
       writer.uint32(112).uint64(message.authenticationLogCount);
     }
+    for (const v of message.domainCooperationList) {
+      DomainCooperation.encode(v!, writer.uint32(122).fork()).ldelim();
+    }
+    if (message.domainCooperationCount !== 0) {
+      writer.uint32(128).uint64(message.domainCooperationCount);
+    }
+    for (const v of message.cooperationLogList) {
+      CooperationLog.encode(v!, writer.uint32(138).fork()).ldelim();
+    }
+    if (message.cooperationLogCount !== 0) {
+      writer.uint32(144).uint64(message.cooperationLogCount);
+    }
     return writer;
   },
 
@@ -97,6 +117,8 @@ export const GenesisState = {
     message.ibcConnectionList = [];
     message.domainList = [];
     message.authenticationLogList = [];
+    message.domainCooperationList = [];
+    message.cooperationLogList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -150,6 +172,24 @@ export const GenesisState = {
             reader.uint64() as Long
           );
           break;
+        case 15:
+          message.domainCooperationList.push(
+            DomainCooperation.decode(reader, reader.uint32())
+          );
+          break;
+        case 16:
+          message.domainCooperationCount = longToNumber(
+            reader.uint64() as Long
+          );
+          break;
+        case 17:
+          message.cooperationLogList.push(
+            CooperationLog.decode(reader, reader.uint32())
+          );
+          break;
+        case 18:
+          message.cooperationLogCount = longToNumber(reader.uint64() as Long);
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -166,6 +206,8 @@ export const GenesisState = {
     message.ibcConnectionList = [];
     message.domainList = [];
     message.authenticationLogList = [];
+    message.domainCooperationList = [];
+    message.cooperationLogList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromJSON(object.params);
     } else {
@@ -254,6 +296,38 @@ export const GenesisState = {
     } else {
       message.authenticationLogCount = 0;
     }
+    if (
+      object.domainCooperationList !== undefined &&
+      object.domainCooperationList !== null
+    ) {
+      for (const e of object.domainCooperationList) {
+        message.domainCooperationList.push(DomainCooperation.fromJSON(e));
+      }
+    }
+    if (
+      object.domainCooperationCount !== undefined &&
+      object.domainCooperationCount !== null
+    ) {
+      message.domainCooperationCount = Number(object.domainCooperationCount);
+    } else {
+      message.domainCooperationCount = 0;
+    }
+    if (
+      object.cooperationLogList !== undefined &&
+      object.cooperationLogList !== null
+    ) {
+      for (const e of object.cooperationLogList) {
+        message.cooperationLogList.push(CooperationLog.fromJSON(e));
+      }
+    }
+    if (
+      object.cooperationLogCount !== undefined &&
+      object.cooperationLogCount !== null
+    ) {
+      message.cooperationLogCount = Number(object.cooperationLogCount);
+    } else {
+      message.cooperationLogCount = 0;
+    }
     return message;
   },
 
@@ -316,6 +390,24 @@ export const GenesisState = {
     }
     message.authenticationLogCount !== undefined &&
       (obj.authenticationLogCount = message.authenticationLogCount);
+    if (message.domainCooperationList) {
+      obj.domainCooperationList = message.domainCooperationList.map((e) =>
+        e ? DomainCooperation.toJSON(e) : undefined
+      );
+    } else {
+      obj.domainCooperationList = [];
+    }
+    message.domainCooperationCount !== undefined &&
+      (obj.domainCooperationCount = message.domainCooperationCount);
+    if (message.cooperationLogList) {
+      obj.cooperationLogList = message.cooperationLogList.map((e) =>
+        e ? CooperationLog.toJSON(e) : undefined
+      );
+    } else {
+      obj.cooperationLogList = [];
+    }
+    message.cooperationLogCount !== undefined &&
+      (obj.cooperationLogCount = message.cooperationLogCount);
     return obj;
   },
 
@@ -327,6 +419,8 @@ export const GenesisState = {
     message.ibcConnectionList = [];
     message.domainList = [];
     message.authenticationLogList = [];
+    message.domainCooperationList = [];
+    message.cooperationLogList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromPartial(object.params);
     } else {
@@ -414,6 +508,38 @@ export const GenesisState = {
       message.authenticationLogCount = object.authenticationLogCount;
     } else {
       message.authenticationLogCount = 0;
+    }
+    if (
+      object.domainCooperationList !== undefined &&
+      object.domainCooperationList !== null
+    ) {
+      for (const e of object.domainCooperationList) {
+        message.domainCooperationList.push(DomainCooperation.fromPartial(e));
+      }
+    }
+    if (
+      object.domainCooperationCount !== undefined &&
+      object.domainCooperationCount !== null
+    ) {
+      message.domainCooperationCount = object.domainCooperationCount;
+    } else {
+      message.domainCooperationCount = 0;
+    }
+    if (
+      object.cooperationLogList !== undefined &&
+      object.cooperationLogList !== null
+    ) {
+      for (const e of object.cooperationLogList) {
+        message.cooperationLogList.push(CooperationLog.fromPartial(e));
+      }
+    }
+    if (
+      object.cooperationLogCount !== undefined &&
+      object.cooperationLogCount !== null
+    ) {
+      message.cooperationLogCount = object.cooperationLogCount;
+    } else {
+      message.cooperationLogCount = 0;
     }
     return message;
   },
