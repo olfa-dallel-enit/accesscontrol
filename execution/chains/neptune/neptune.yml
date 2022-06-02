@@ -1,0 +1,23 @@
+accounts:
+  - name: alice
+    coins: ["100000token", "100000000000stake"]
+  - name: bob
+    coins: ["50000token", "10000000000stake"]
+validator:
+  name: alice
+  staked: "100000000stake"
+faucet:
+  host: ":4505"
+  name: bob
+  coins: ["5token", "100000stake"]
+host:
+  rpc: ":26670"
+  p2p: ":26671"
+  prof: ":6065"
+  grpc: ":9098"
+  grpc-web: ":9099"
+  api: ":1325"
+genesis:
+  chain_id: "neptune"
+init:
+  home: "$HOME/.neptune"

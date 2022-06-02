@@ -1,0 +1,23 @@
+accounts:
+  - name: alice
+    coins: ["100000token", "100000000000stake"]
+  - name: bob
+    coins: ["50000token", "10000000000stake"]
+validator:
+  name: alice
+  staked: "100000000stake"
+faucet:
+  host: ":4504"
+  name: bob
+  coins: ["5token", "100000stake"]
+host:
+  rpc: ":26668"
+  p2p: ":26669"
+  prof: ":6064"
+  grpc: ":9096"
+  grpc-web: ":9097"
+  api: ":1324"
+genesis:
+  chain_id: "jupiter"
+init:
+  home: "$HOME/.jupiter"
