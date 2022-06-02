@@ -7,6 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 	"strings"
+	
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func CmdCreateForwardPolicy() *cobra.Command {
@@ -18,6 +20,42 @@ func CmdCreateForwardPolicy() *cobra.Command {
 			argMode := args[0]
 			argDomainList := strings.Split(args[1], listSeparator)
 			argLocationList := strings.Split(args[2], listSeparator)
+
+			if strings.Compare(argMode, "broadcast") != 0 {
+				if strings.Compare(argMode, "multicast") != 0 {
+					if strings.Compare(argMode, "unicast") != 0 {
+						if strings.Compare(argMode, "geocast") != 0 {
+							return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid forward mode")
+						} else {
+							if len(args[1]) > 0 {
+								return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for geocast mode")
+							} else if len(args[2]) == 0 {
+								return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid locationList for geocast mode")
+							}
+						}
+					} else {
+						if len(args[1]) == 0 {
+							return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for unicast mode")
+						} else if len(argDomainList) > 1 {
+							return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for unicast mode")
+						} else if len(args[2]) > 0 {
+							return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid locationList for unicast mode")
+						}
+					}
+				} else {
+					if len(args[1]) == 0 {
+						return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for multicast mode")
+					} else if len(args[2]) > 0 {
+						return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid locationList for multicast mode")
+					}
+				}
+			} else {
+				if len(args[1]) > 0 {
+					return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for broadcast mode")
+				} else if len(args[2]) > 0 {
+					return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid locationList for broadcast mode")
+				}
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -46,6 +84,42 @@ func CmdUpdateForwardPolicy() *cobra.Command {
 			argMode := args[0]
 			argDomainList := strings.Split(args[1], listSeparator)
 			argLocationList := strings.Split(args[2], listSeparator)
+
+			if strings.Compare(argMode, "broadcast") != 0 {
+				if strings.Compare(argMode, "multicast") != 0 {
+					if strings.Compare(argMode, "unicast") != 0 {
+						if strings.Compare(argMode, "geocast") != 0 {
+							return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid forward mode")
+						} else {
+							if len(args[1]) > 0 {
+								return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for geocast mode")
+							} else if len(args[2]) == 0 {
+								return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid locationList for geocast mode")
+							}
+						}
+					} else {
+						if len(args[1]) == 0 {
+							return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for unicast mode")
+						} else if len(argDomainList) > 1 {
+							return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for unicast mode")
+						} else if len(args[2]) > 0 {
+							return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid locationList for unicast mode")
+						}
+					}
+				} else {
+					if len(args[1]) == 0 {
+						return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for multicast mode")
+					} else if len(args[2]) > 0 {
+						return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid locationList for multicast mode")
+					}
+				}
+			} else {
+				if len(args[1]) > 0 {
+					return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid domainList for broadcast mode")
+				} else if len(args[2]) > 0 {
+					return sdkerrors.Wrap(sdkerrors.ErrIO, " Invalid locationList for broadcast mode")
+				}
+			}
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
