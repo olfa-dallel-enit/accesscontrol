@@ -109,6 +109,7 @@ func (k Keeper) OnRecvAuthenticateDomainPacket(ctx sdk.Context, packet channelty
 					},
 					IbcConnection: &types.IbcConnection{
 						Creator: ctx.ChainID(),
+						Port: packet.DestinationPort,
 						Channel: packet.DestinationChannel,
 					},
 				})
@@ -211,6 +212,7 @@ func (k Keeper) OnAcknowledgementAuthenticateDomainPacket(ctx sdk.Context, packe
 				},
 				IbcConnection: &types.IbcConnection{
 					Creator: ctx.ChainID(),
+					Port: packet.SourcePort,
 					Channel: packet.SourceChannel,
 				},
 			})
