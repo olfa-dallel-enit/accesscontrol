@@ -20,6 +20,7 @@ func (k msgServer) SendEstablishCooperation(goCtx context.Context, msg *types.Ms
 	packet.NotAfter = msg.NotAfter
 	packet.Interest = msg.Interest
 	packet.Cost = msg.Cost
+	packet.Sender = ctx.ChainID()
 
 	// Transmit the packet
 	err := k.TransmitEstablishCooperationPacket(

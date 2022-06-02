@@ -44,13 +44,18 @@ message EstablishCooperationPacketData {
   string notAfter = 2;
   string interest = 3;
   string cost = 4;
+  string sender = 5;
 }
 
 // EstablishCooperationPacketAck defines a struct for the packet acknowledgment
 message EstablishCooperationPacketAck {
+  string confirmation = 1;
+  string confirmedBy = 2;
 	}
+    
 // ForwardCooperationDataPacketData defines a struct for the packet payload
 message ForwardCooperationDataPacketData {
+
 }
 
 // ForwardCooperationDataPacketAck defines a struct for the packet acknowledgment
