@@ -14,10 +14,10 @@ import (
 	"time"
 )
 
-// TransmitModifyCooperationValidityPacket transmits the packet over IBC with the specified source port and source channel
-func (k Keeper) TransmitModifyCooperationValidityPacket(
+// TransmitModifyCooperationInterestPacket transmits the packet over IBC with the specified source port and source channel
+func (k Keeper) TransmitModifyCooperationInterestPacket(
 	ctx sdk.Context,
-	packetData types.ModifyCooperationValidityPacketData,
+	packetData types.ModifyCooperationInterestPacketData,
 	sourcePort,
 	sourceChannel string,
 	timeoutHeight clienttypes.Height,
@@ -69,8 +69,8 @@ func (k Keeper) TransmitModifyCooperationValidityPacket(
 	return nil
 }
 
-// OnRecvModifyCooperationValidityPacket processes packet reception
-func (k Keeper) OnRecvModifyCooperationValidityPacket(ctx sdk.Context, packet channeltypes.Packet, data types.ModifyCooperationValidityPacketData) (packetAck types.ModifyCooperationValidityPacketAck, err error) {
+// OnRecvModifyCooperationInterestPacket processes packet reception
+func (k Keeper) OnRecvModifyCooperationInterestPacket(ctx sdk.Context, packet channeltypes.Packet, data types.ModifyCooperationInterestPacketData) (packetAck types.ModifyCooperationInterestPacketAck, err error) {
 	// validate packet data upon receiving
 	if err := data.ValidateBasic(); err != nil {
 		return packetAck, err
@@ -83,17 +83,13 @@ func (k Keeper) OnRecvModifyCooperationValidityPacket(ctx sdk.Context, packet ch
 			if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
 				k.SetDomainCooperation(ctx, types.DomainCooperation{
 					Id: 				domainCooperation.Id,
-					Creator:         ctx.ChainID(),
-					Label:           domainCooperation.Label,
-					CooperationType: domainCooperation.CooperationType,
-					SourceDomain:    domainCooperation.SourceDomain,
-					RemoteDomain:    domainCooperation.RemoteDomain,
-					Validity: &types.Validity{
-						Creator:   ctx.ChainID(),
-						NotBefore: data.NotBefore + " +0000 UTC",
-						NotAfter:  data.NotAfter + " +0000 UTC",
-					},
-					Interest:          domainCooperation.Interest,
+					Creator:           ctx.ChainID(),
+					Label:             domainCooperation.Label,
+					CooperationType:   domainCooperation.CooperationType,
+					SourceDomain:      domainCooperation.SourceDomain,
+					RemoteDomain:      domainCooperation.RemoteDomain,
+					Validity:          domainCooperation.Validity,
+					Interest:          data.Interest,
 					Cost:              domainCooperation.Cost,
 					CreationTimestamp: domainCooperation.CreationTimestamp,
 					UpdateTimestamp:   cast.ToString(time.Now()),
@@ -103,8 +99,8 @@ func (k Keeper) OnRecvModifyCooperationValidityPacket(ctx sdk.Context, packet ch
 				packetAck.ConfirmedBy = ctx.ChainID()
 				k.AppendCooperationLog(ctx, types.CooperationLog{
 					Creator:     ctx.ChainID(),
-					Transaction: "send-modify-cooperation-validity",
-					Function:    "OnRecvModifyCooperationValidityPacket",
+					Transaction: "send-modify-cooperation-interest",
+					Function:    "OnRecvModifyCooperationInterestPacket",
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + domainCooperation.Label,
 					Decision:    "Confirmed",
@@ -114,16 +110,16 @@ func (k Keeper) OnRecvModifyCooperationValidityPacket(ctx sdk.Context, packet ch
 				packetAck.ConfirmedBy = ctx.ChainID()
 				k.AppendCooperationLog(ctx, types.CooperationLog{
 					Creator:     ctx.ChainID(),
-					Transaction: "send-modify-cooperation-validity",
-					Function:    "OnRecvModifyCooperationValidityPacket",
+					Transaction: "send-modify-cooperation-interest",
+					Function:    "OnRecvModifyCooperationInterestPacket",
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + domainCooperation.Label,
 					Decision:    "Not confirmed: cooperation not valid",
 				})
 				k.AppendCooperationLog(ctx, types.CooperationLog{
 					Creator:     ctx.ChainID(),
-					Transaction: "send-modify-cooperation-validity",
-					Function:    "OnRecvModifyCooperationValidityPacket",
+					Transaction: "send-modify-cooperation-interest",
+					Function:    "OnRecvModifyCooperationInterestPacket",
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + domainCooperation.Label,
 					Decision:    "Not confirmed: cooperation not valid",
@@ -134,16 +130,16 @@ func (k Keeper) OnRecvModifyCooperationValidityPacket(ctx sdk.Context, packet ch
 			packetAck.ConfirmedBy = ctx.ChainID()
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
-				Transaction: "send-modify-cooperation-validity",
-				Function:    "OnRecvModifyCooperationValidityPacket",
+				Transaction: "send-modify-cooperation-interest",
+				Function:    "OnRecvModifyCooperationInterestPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + domainCooperation.Label,
 				Decision:    "Not confirmed: domain not authenticated",
 			})
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
-				Transaction: "send-modify-cooperation-validity",
-				Function:    "OnRecvModifyCooperationValidityPacket",
+				Transaction: "send-modify-cooperation-interest",
+				Function:    "OnRecvModifyCooperationInterestPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + domainCooperation.Label,
 				Decision:    "Not confirmed: domain not authenticated",
@@ -154,16 +150,16 @@ func (k Keeper) OnRecvModifyCooperationValidityPacket(ctx sdk.Context, packet ch
 		packetAck.ConfirmedBy = ctx.ChainID()
 		k.AppendCooperationLog(ctx, types.CooperationLog{
 			Creator:     ctx.ChainID(),
-			Transaction: "send-modify-cooperation-validity",
-			Function:    "OnRecvModifyCooperationValidityPacket",
+			Transaction: "send-modify-cooperation-interest",
+			Function:    "OnRecvModifyCooperationInterestPacket",
 			Timestamp:   cast.ToString(time.Now()),
 			Details:     "Cooperation label: " + domainCooperation.Label,
 			Decision:    "Not confirmed: cooperation not found",
 		})
 		k.AppendCooperationLog(ctx, types.CooperationLog{
 			Creator:     ctx.ChainID(),
-			Transaction: "send-enable-cooperation-validity",
-			Function:    "OnRecvModifyCooperationValidityPacket",
+			Transaction: "send-enable-cooperation-interest",
+			Function:    "OnRecvModifyCooperationInterestPacket",
 			Timestamp:   cast.ToString(time.Now()),
 			Details:     "Cooperation label: " + domainCooperation.Label,
 			Decision:    "Not confirmed: cooperation not found",
@@ -173,9 +169,9 @@ func (k Keeper) OnRecvModifyCooperationValidityPacket(ctx sdk.Context, packet ch
 	return packetAck, nil
 }
 
-// OnAcknowledgementModifyCooperationValidityPacket responds to the the success or failure of a packet
+// OnAcknowledgementModifyCooperationInterestPacket responds to the the success or failure of a packet
 // acknowledgement written on the receiving chain.
-func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context, packet channeltypes.Packet, data types.ModifyCooperationValidityPacketData, ack channeltypes.Acknowledgement) error {
+func (k Keeper) OnAcknowledgementModifyCooperationInterestPacket(ctx sdk.Context, packet channeltypes.Packet, data types.ModifyCooperationInterestPacketData, ack channeltypes.Acknowledgement) error {
 	switch dispatchedAck := ack.Response.(type) {
 	case *channeltypes.Acknowledgement_Error:
 
@@ -185,7 +181,7 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 		return nil
 	case *channeltypes.Acknowledgement_Result:
 		// Decode the packet acknowledgment
-		var packetAck types.ModifyCooperationValidityPacketAck
+		var packetAck types.ModifyCooperationInterestPacketAck
 
 		if err := types.ModuleCdc.UnmarshalJSON(dispatchedAck.Result, &packetAck); err != nil {
 			// The counter-party module doesn't implement the correct acknowledgment format
@@ -197,18 +193,14 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 			domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, packetAck.ConfirmedBy)
 			if found {
 				k.SetDomainCooperation(ctx, types.DomainCooperation{
-					Id: 		     domainCooperation.Id,
-					Creator:         ctx.ChainID(),
-					Label:           domainCooperation.Label,
-					CooperationType: domainCooperation.CooperationType,
-					SourceDomain:    domainCooperation.SourceDomain,
-					RemoteDomain:    domainCooperation.RemoteDomain,
-					Validity: &types.Validity{
-						Creator:   ctx.ChainID(),
-						NotBefore: data.NotBefore + " +0000 UTC",
-						NotAfter:  data.NotAfter + " +0000 UTC",
-					},
-					Interest:          domainCooperation.Interest,
+					Id: 				domainCooperation.Id,
+					Creator:           ctx.ChainID(),
+					Label:             domainCooperation.Label,
+					CooperationType:   domainCooperation.CooperationType,
+					SourceDomain:      domainCooperation.SourceDomain,
+					RemoteDomain:      domainCooperation.RemoteDomain,
+					Validity:          domainCooperation.Validity,
+					Interest:          data.Interest,
 					Cost:              domainCooperation.Cost,
 					CreationTimestamp: domainCooperation.CreationTimestamp,
 					UpdateTimestamp:   cast.ToString(time.Now()),
@@ -217,8 +209,8 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 
 				k.AppendCooperationLog(ctx, types.CooperationLog{
 					Creator:     ctx.ChainID(),
-					Transaction: "send-modify-cooperation-validity",
-					Function:    "OnAcknowledgementModifyCooperationValidityPacket",
+					Transaction: "send-modify-cooperation-interest",
+					Function:    "OnAcknowledgementModifyCooperationInterestPacket",
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + domainCooperation.Label,
 					Decision:    "Confirmed",
@@ -226,8 +218,8 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 			} else {
 				k.AppendCooperationLog(ctx, types.CooperationLog{
 					Creator:     ctx.ChainID(),
-					Transaction: "send-modify-cooperation-validity",
-					Function:    "OnAcknowledgementModifyCooperationValidityPacket",
+					Transaction: "send-modify-cooperation-interest",
+					Function:    "OnAcknowledgementModifyCooperationInterestPacket",
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 					Decision:    "Not confirmed: cooperation not found ",
@@ -235,7 +227,7 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 				k.AppendCooperationLog(ctx, types.CooperationLog{
 					Creator:     ctx.ChainID(),
 					Transaction: "send-forward-enabled-cooperation",
-					Function:    "OnAcknowledgementModifyCooperationValidityPacket",
+					Function:    "OnAcknowledgementModifyCooperationInterestPacket",
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + domainCooperation.Label,
 					Decision:    "Not confirmed: cooperation not found ",
@@ -244,8 +236,8 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 		} else {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
-				Transaction: "send-modify-cooperation-validity",
-				Function:    "OnAcknowledgementModifyCooperationValidityPacket",
+				Transaction: "send-modify-cooperation-interest",
+				Function:    "OnAcknowledgementModifyCooperationInterestPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 				Decision:    "Not confirmed: operation not confirmed",
@@ -253,12 +245,13 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-forward-enabled-cooperation",
-				Function:    "OnAcknowledgementModifyCooperationValidityPacket",
+				Function:    "OnAcknowledgementModifyCooperationInterestPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
 				Decision:    "Not confirmed: operation not confirmed",
 			})
 		}
+
 
 		return nil
 	default:
@@ -267,8 +260,8 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 	}
 }
 
-// OnTimeoutModifyCooperationValidityPacket responds to the case where a packet has not been transmitted because of a timeout
-func (k Keeper) OnTimeoutModifyCooperationValidityPacket(ctx sdk.Context, packet channeltypes.Packet, data types.ModifyCooperationValidityPacketData) error {
+// OnTimeoutModifyCooperationInterestPacket responds to the case where a packet has not been transmitted because of a timeout
+func (k Keeper) OnTimeoutModifyCooperationInterestPacket(ctx sdk.Context, packet channeltypes.Packet, data types.ModifyCooperationInterestPacketData) error {
 
 	// TODO: packet timeout logic
 

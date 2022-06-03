@@ -9,6 +9,7 @@ message CdaccesscontrolPacketData {
     oneof packet {
         NoData noData = 1;
         // this line is used by starport scaffolding # ibc/packet/proto/field
+				ModifyCooperationInterestPacketData modifyCooperationInterestPacket = 9; // this line is used by starport scaffolding # ibc/packet/proto/field/number
 				ModifyCooperationValidityPacketData modifyCooperationValidityPacket = 8; // this line is used by starport scaffolding # ibc/packet/proto/field/number
 				ModifyCooperationCostPacketData modifyCooperationCostPacket = 7; // this line is used by starport scaffolding # ibc/packet/proto/field/number
 				EnableCooperationPacketData enableCooperationPacket = 6; // this line is used by starport scaffolding # ibc/packet/proto/field/number
@@ -105,6 +106,17 @@ message ModifyCooperationValidityPacketData {
 
 // ModifyCooperationValidityPacketAck defines a struct for the packet acknowledgment
 message ModifyCooperationValidityPacketAck {
+  string confirmation = 1;
+  string confirmedBy = 2;
+	}
+// ModifyCooperationInterestPacketData defines a struct for the packet payload
+message ModifyCooperationInterestPacketData {
+  string interest = 1;
+  string sender = 2;
+}
+
+// ModifyCooperationInterestPacketAck defines a struct for the packet acknowledgment
+message ModifyCooperationInterestPacketAck {
   string confirmation = 1;
   string confirmedBy = 2;
 	}

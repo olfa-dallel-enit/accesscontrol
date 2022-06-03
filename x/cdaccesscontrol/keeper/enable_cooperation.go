@@ -83,6 +83,7 @@ func (k Keeper) OnRecvEnableCooperationPacket(ctx sdk.Context, packet channeltyp
 		if k.IsAuthenticated(ctx, data.Sender) {
 			if cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
 				k.SetDomainCooperation(ctx, types.DomainCooperation{
+					Id: 			   domainCooperation.Id,
 					Creator:           ctx.ChainID(),
 					Label:             domainCooperation.Label,
 					CooperationType:   domainCooperation.CooperationType,
@@ -193,6 +194,7 @@ func (k Keeper) OnAcknowledgementEnableCooperationPacket(ctx sdk.Context, packet
 			domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, packetAck.ConfirmedBy)
 			if found {
 				k.SetDomainCooperation(ctx, types.DomainCooperation{
+					Id: 			   domainCooperation.Id,
 					Creator:           ctx.ChainID(),
 					Label:             domainCooperation.Label,
 					CooperationType:   domainCooperation.CooperationType,

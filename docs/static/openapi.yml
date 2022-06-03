@@ -49154,6 +49154,8 @@ definitions:
     type: object
   crossdomain.cdaccesscontrol.MsgSendModifyCooperationCostResponse:
     type: object
+  crossdomain.cdaccesscontrol.MsgSendModifyCooperationInterestResponse:
+    type: object
   crossdomain.cdaccesscontrol.MsgSendModifyCooperationValidityResponse:
     type: object
   crossdomain.cdaccesscontrol.MsgUpdateAuthenticationLogResponse:

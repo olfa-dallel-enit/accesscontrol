@@ -46,6 +46,7 @@ rpc CreateCooperationLog(MsgCreateCooperationLog) returns (MsgCreateCooperationL
   rpc SendEnableCooperation(MsgSendEnableCooperation) returns (MsgSendEnableCooperationResponse);
   rpc SendModifyCooperationCost(MsgSendModifyCooperationCost) returns (MsgSendModifyCooperationCostResponse);
   rpc SendModifyCooperationValidity(MsgSendModifyCooperationValidity) returns (MsgSendModifyCooperationValidityResponse);
+  rpc SendModifyCooperationInterest(MsgSendModifyCooperationInterest) returns (MsgSendModifyCooperationInterestResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -356,5 +357,15 @@ message MsgSendModifyCooperationValidity {
 }
 
 message MsgSendModifyCooperationValidityResponse {
+}
+message MsgSendModifyCooperationInterest {
+  string creator = 1;
+  string port = 2;
+  string channelID = 3;
+  uint64 timeoutTimestamp = 4;
+  string interest = 5;
+}
+
+message MsgSendModifyCooperationInterestResponse {
 }
 // this line is used by starport scaffolding # proto/tx/message

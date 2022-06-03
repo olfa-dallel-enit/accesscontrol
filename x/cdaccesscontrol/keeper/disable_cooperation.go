@@ -81,6 +81,7 @@ func (k Keeper) OnRecvDisableCooperationPacket(ctx sdk.Context, packet channelty
 	if found {
 		if k.IsAuthenticated(ctx, data.Sender) {
 			k.SetDomainCooperation(ctx, types.DomainCooperation{
+				Id: 			   domainCooperation.Id,
 				Creator:           ctx.ChainID(),
 				Label:             domainCooperation.Label,
 				CooperationType:   domainCooperation.CooperationType,
@@ -172,6 +173,7 @@ func (k Keeper) OnAcknowledgementDisableCooperationPacket(ctx sdk.Context, packe
 			domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, packetAck.ConfirmedBy)
 			if found {
 				k.SetDomainCooperation(ctx, types.DomainCooperation{
+					Id: 			   domainCooperation.Id,
 					Creator:           ctx.ChainID(),
 					Label:             domainCooperation.Label,
 					CooperationType:   domainCooperation.CooperationType,

@@ -317,6 +317,16 @@ export interface MsgSendModifyCooperationValidity {
 
 export interface MsgSendModifyCooperationValidityResponse {}
 
+export interface MsgSendModifyCooperationInterest {
+  creator: string;
+  port: string;
+  channelID: string;
+  timeoutTimestamp: number;
+  interest: string;
+}
+
+export interface MsgSendModifyCooperationInterestResponse {}
+
 const baseMsgCreatePublicKey: object = { creator: "", n: 0, e: 0 };
 
 export const MsgCreatePublicKey = {
@@ -6063,6 +6073,208 @@ export const MsgSendModifyCooperationValidityResponse = {
   },
 };
 
+const baseMsgSendModifyCooperationInterest: object = {
+  creator: "",
+  port: "",
+  channelID: "",
+  timeoutTimestamp: 0,
+  interest: "",
+};
+
+export const MsgSendModifyCooperationInterest = {
+  encode(
+    message: MsgSendModifyCooperationInterest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.port !== "") {
+      writer.uint32(18).string(message.port);
+    }
+    if (message.channelID !== "") {
+      writer.uint32(26).string(message.channelID);
+    }
+    if (message.timeoutTimestamp !== 0) {
+      writer.uint32(32).uint64(message.timeoutTimestamp);
+    }
+    if (message.interest !== "") {
+      writer.uint32(42).string(message.interest);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgSendModifyCooperationInterest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSendModifyCooperationInterest,
+    } as MsgSendModifyCooperationInterest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.port = reader.string();
+          break;
+        case 3:
+          message.channelID = reader.string();
+          break;
+        case 4:
+          message.timeoutTimestamp = longToNumber(reader.uint64() as Long);
+          break;
+        case 5:
+          message.interest = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSendModifyCooperationInterest {
+    const message = {
+      ...baseMsgSendModifyCooperationInterest,
+    } as MsgSendModifyCooperationInterest;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = String(object.port);
+    } else {
+      message.port = "";
+    }
+    if (object.channelID !== undefined && object.channelID !== null) {
+      message.channelID = String(object.channelID);
+    } else {
+      message.channelID = "";
+    }
+    if (
+      object.timeoutTimestamp !== undefined &&
+      object.timeoutTimestamp !== null
+    ) {
+      message.timeoutTimestamp = Number(object.timeoutTimestamp);
+    } else {
+      message.timeoutTimestamp = 0;
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = String(object.interest);
+    } else {
+      message.interest = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgSendModifyCooperationInterest): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.port !== undefined && (obj.port = message.port);
+    message.channelID !== undefined && (obj.channelID = message.channelID);
+    message.timeoutTimestamp !== undefined &&
+      (obj.timeoutTimestamp = message.timeoutTimestamp);
+    message.interest !== undefined && (obj.interest = message.interest);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSendModifyCooperationInterest>
+  ): MsgSendModifyCooperationInterest {
+    const message = {
+      ...baseMsgSendModifyCooperationInterest,
+    } as MsgSendModifyCooperationInterest;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.port !== undefined && object.port !== null) {
+      message.port = object.port;
+    } else {
+      message.port = "";
+    }
+    if (object.channelID !== undefined && object.channelID !== null) {
+      message.channelID = object.channelID;
+    } else {
+      message.channelID = "";
+    }
+    if (
+      object.timeoutTimestamp !== undefined &&
+      object.timeoutTimestamp !== null
+    ) {
+      message.timeoutTimestamp = object.timeoutTimestamp;
+    } else {
+      message.timeoutTimestamp = 0;
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = object.interest;
+    } else {
+      message.interest = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgSendModifyCooperationInterestResponse: object = {};
+
+export const MsgSendModifyCooperationInterestResponse = {
+  encode(
+    _: MsgSendModifyCooperationInterestResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgSendModifyCooperationInterestResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSendModifyCooperationInterestResponse,
+    } as MsgSendModifyCooperationInterestResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSendModifyCooperationInterestResponse {
+    const message = {
+      ...baseMsgSendModifyCooperationInterestResponse,
+    } as MsgSendModifyCooperationInterestResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSendModifyCooperationInterestResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSendModifyCooperationInterestResponse>
+  ): MsgSendModifyCooperationInterestResponse {
+    const message = {
+      ...baseMsgSendModifyCooperationInterestResponse,
+    } as MsgSendModifyCooperationInterestResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreatePublicKey(
@@ -6149,10 +6361,13 @@ export interface Msg {
   SendModifyCooperationCost(
     request: MsgSendModifyCooperationCost
   ): Promise<MsgSendModifyCooperationCostResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   SendModifyCooperationValidity(
     request: MsgSendModifyCooperationValidity
   ): Promise<MsgSendModifyCooperationValidityResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  SendModifyCooperationInterest(
+    request: MsgSendModifyCooperationInterest
+  ): Promise<MsgSendModifyCooperationInterestResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -6585,6 +6800,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSendModifyCooperationValidityResponse.decode(new Reader(data))
+    );
+  }
+
+  SendModifyCooperationInterest(
+    request: MsgSendModifyCooperationInterest
+  ): Promise<MsgSendModifyCooperationInterestResponse> {
+    const data = MsgSendModifyCooperationInterest.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.cdaccesscontrol.Msg",
+      "SendModifyCooperationInterest",
+      data
+    );
+    return promise.then((data) =>
+      MsgSendModifyCooperationInterestResponse.decode(new Reader(data))
     );
   }
 }
