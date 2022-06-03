@@ -262,6 +262,25 @@ func (am AppModule) OnRecvPacket(
 				sdk.NewAttribute(types.AttributeKeyAckSuccess, fmt.Sprintf("%t", err != nil)),
 			),
 		)
+	case *types.CdaccesscontrolPacketData_ModifyCooperationValidityPacket:
+		packetAck, err := am.keeper.OnRecvModifyCooperationValidityPacket(ctx, modulePacket, *packet.ModifyCooperationValidityPacket)
+		if err != nil {
+			ack = channeltypes.NewErrorAcknowledgement(err.Error())
+		} else {
+			// Encode packet acknowledgment
+			packetAckBytes, err := types.ModuleCdc.MarshalJSON(&packetAck)
+			if err != nil {
+				return channeltypes.NewErrorAcknowledgement(sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error()).Error())
+			}
+			ack = channeltypes.NewResultAcknowledgement(sdk.MustSortJSON(packetAckBytes))
+		}
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeModifyCooperationValidityPacket,
+				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+				sdk.NewAttribute(types.AttributeKeyAckSuccess, fmt.Sprintf("%t", err != nil)),
+			),
+		)
 		// this line is used by starport scaffolding # ibc/packet/module/recv
 	default:
 		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
@@ -331,6 +350,12 @@ func (am AppModule) OnAcknowledgementPacket(
 			return err
 		}
 		eventType = types.EventTypeModifyCooperationCostPacket
+	case *types.CdaccesscontrolPacketData_ModifyCooperationValidityPacket:
+		err := am.keeper.OnAcknowledgementModifyCooperationValidityPacket(ctx, modulePacket, *packet.ModifyCooperationValidityPacket, ack)
+		if err != nil {
+			return err
+		}
+		eventType = types.EventTypeModifyCooperationValidityPacket
 		// this line is used by starport scaffolding # ibc/packet/module/ack
 	default:
 		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
@@ -405,6 +430,11 @@ func (am AppModule) OnTimeoutPacket(
 		}
 	case *types.CdaccesscontrolPacketData_ModifyCooperationCostPacket:
 		err := am.keeper.OnTimeoutModifyCooperationCostPacket(ctx, modulePacket, *packet.ModifyCooperationCostPacket)
+		if err != nil {
+			return err
+		}
+	case *types.CdaccesscontrolPacketData_ModifyCooperationValidityPacket:
+		err := am.keeper.OnTimeoutModifyCooperationValidityPacket(ctx, modulePacket, *packet.ModifyCooperationValidityPacket)
 		if err != nil {
 			return err
 		}
