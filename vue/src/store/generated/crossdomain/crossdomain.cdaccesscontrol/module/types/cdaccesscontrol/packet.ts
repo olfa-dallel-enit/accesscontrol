@@ -6,6 +6,8 @@ export const protobufPackage = "crossdomain.cdaccesscontrol";
 export interface CdaccesscontrolPacketData {
   noData: NoData | undefined;
   /** this line is used by starport scaffolding # ibc/packet/proto/field */
+  modifyCooperationCostPacket: ModifyCooperationCostPacketData | undefined;
+  /** this line is used by starport scaffolding # ibc/packet/proto/field/number */
   enableCooperationPacket: EnableCooperationPacketData | undefined;
   /** this line is used by starport scaffolding # ibc/packet/proto/field/number */
   disableCooperationPacket: DisableCooperationPacketData | undefined;
@@ -73,10 +75,23 @@ export interface DisableCooperationPacketAck {
 }
 
 /** EnableCooperationPacketData defines a struct for the packet payload */
-export interface EnableCooperationPacketData {}
+export interface EnableCooperationPacketData {
+  sender: string;
+}
 
 /** EnableCooperationPacketAck defines a struct for the packet acknowledgment */
-export interface EnableCooperationPacketAck {}
+export interface EnableCooperationPacketAck {
+  confirmation: string;
+  confirmedBy: string;
+}
+
+/** ModifyCooperationCostPacketData defines a struct for the packet payload */
+export interface ModifyCooperationCostPacketData {
+  cost: string;
+}
+
+/** ModifyCooperationCostPacketAck defines a struct for the packet acknowledgment */
+export interface ModifyCooperationCostPacketAck {}
 
 const baseCdaccesscontrolPacketData: object = {};
 
@@ -87,6 +102,12 @@ export const CdaccesscontrolPacketData = {
   ): Writer {
     if (message.noData !== undefined) {
       NoData.encode(message.noData, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.modifyCooperationCostPacket !== undefined) {
+      ModifyCooperationCostPacketData.encode(
+        message.modifyCooperationCostPacket,
+        writer.uint32(58).fork()
+      ).ldelim();
     }
     if (message.enableCooperationPacket !== undefined) {
       EnableCooperationPacketData.encode(
@@ -136,6 +157,12 @@ export const CdaccesscontrolPacketData = {
         case 1:
           message.noData = NoData.decode(reader, reader.uint32());
           break;
+        case 7:
+          message.modifyCooperationCostPacket = ModifyCooperationCostPacketData.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
         case 6:
           message.enableCooperationPacket = EnableCooperationPacketData.decode(
             reader,
@@ -182,6 +209,16 @@ export const CdaccesscontrolPacketData = {
       message.noData = NoData.fromJSON(object.noData);
     } else {
       message.noData = undefined;
+    }
+    if (
+      object.modifyCooperationCostPacket !== undefined &&
+      object.modifyCooperationCostPacket !== null
+    ) {
+      message.modifyCooperationCostPacket = ModifyCooperationCostPacketData.fromJSON(
+        object.modifyCooperationCostPacket
+      );
+    } else {
+      message.modifyCooperationCostPacket = undefined;
     }
     if (
       object.enableCooperationPacket !== undefined &&
@@ -240,6 +277,12 @@ export const CdaccesscontrolPacketData = {
     const obj: any = {};
     message.noData !== undefined &&
       (obj.noData = message.noData ? NoData.toJSON(message.noData) : undefined);
+    message.modifyCooperationCostPacket !== undefined &&
+      (obj.modifyCooperationCostPacket = message.modifyCooperationCostPacket
+        ? ModifyCooperationCostPacketData.toJSON(
+            message.modifyCooperationCostPacket
+          )
+        : undefined);
     message.enableCooperationPacket !== undefined &&
       (obj.enableCooperationPacket = message.enableCooperationPacket
         ? EnableCooperationPacketData.toJSON(message.enableCooperationPacket)
@@ -277,6 +320,16 @@ export const CdaccesscontrolPacketData = {
       message.noData = NoData.fromPartial(object.noData);
     } else {
       message.noData = undefined;
+    }
+    if (
+      object.modifyCooperationCostPacket !== undefined &&
+      object.modifyCooperationCostPacket !== null
+    ) {
+      message.modifyCooperationCostPacket = ModifyCooperationCostPacketData.fromPartial(
+        object.modifyCooperationCostPacket
+      );
+    } else {
+      message.modifyCooperationCostPacket = undefined;
     }
     if (
       object.enableCooperationPacket !== undefined &&
@@ -1210,13 +1263,16 @@ export const DisableCooperationPacketAck = {
   },
 };
 
-const baseEnableCooperationPacketData: object = {};
+const baseEnableCooperationPacketData: object = { sender: "" };
 
 export const EnableCooperationPacketData = {
   encode(
-    _: EnableCooperationPacketData,
+    message: EnableCooperationPacketData,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
     return writer;
   },
 
@@ -1232,6 +1288,9 @@ export const EnableCooperationPacketData = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.sender = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1240,35 +1299,55 @@ export const EnableCooperationPacketData = {
     return message;
   },
 
-  fromJSON(_: any): EnableCooperationPacketData {
+  fromJSON(object: any): EnableCooperationPacketData {
     const message = {
       ...baseEnableCooperationPacketData,
     } as EnableCooperationPacketData;
+    if (object.sender !== undefined && object.sender !== null) {
+      message.sender = String(object.sender);
+    } else {
+      message.sender = "";
+    }
     return message;
   },
 
-  toJSON(_: EnableCooperationPacketData): unknown {
+  toJSON(message: EnableCooperationPacketData): unknown {
     const obj: any = {};
+    message.sender !== undefined && (obj.sender = message.sender);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<EnableCooperationPacketData>
+    object: DeepPartial<EnableCooperationPacketData>
   ): EnableCooperationPacketData {
     const message = {
       ...baseEnableCooperationPacketData,
     } as EnableCooperationPacketData;
+    if (object.sender !== undefined && object.sender !== null) {
+      message.sender = object.sender;
+    } else {
+      message.sender = "";
+    }
     return message;
   },
 };
 
-const baseEnableCooperationPacketAck: object = {};
+const baseEnableCooperationPacketAck: object = {
+  confirmation: "",
+  confirmedBy: "",
+};
 
 export const EnableCooperationPacketAck = {
   encode(
-    _: EnableCooperationPacketAck,
+    message: EnableCooperationPacketAck,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.confirmation !== "") {
+      writer.uint32(10).string(message.confirmation);
+    }
+    if (message.confirmedBy !== "") {
+      writer.uint32(18).string(message.confirmedBy);
+    }
     return writer;
   },
 
@@ -1284,6 +1363,12 @@ export const EnableCooperationPacketAck = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.confirmation = reader.string();
+          break;
+        case 2:
+          message.confirmedBy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1292,24 +1377,169 @@ export const EnableCooperationPacketAck = {
     return message;
   },
 
-  fromJSON(_: any): EnableCooperationPacketAck {
+  fromJSON(object: any): EnableCooperationPacketAck {
     const message = {
       ...baseEnableCooperationPacketAck,
     } as EnableCooperationPacketAck;
+    if (object.confirmation !== undefined && object.confirmation !== null) {
+      message.confirmation = String(object.confirmation);
+    } else {
+      message.confirmation = "";
+    }
+    if (object.confirmedBy !== undefined && object.confirmedBy !== null) {
+      message.confirmedBy = String(object.confirmedBy);
+    } else {
+      message.confirmedBy = "";
+    }
     return message;
   },
 
-  toJSON(_: EnableCooperationPacketAck): unknown {
+  toJSON(message: EnableCooperationPacketAck): unknown {
+    const obj: any = {};
+    message.confirmation !== undefined &&
+      (obj.confirmation = message.confirmation);
+    message.confirmedBy !== undefined &&
+      (obj.confirmedBy = message.confirmedBy);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<EnableCooperationPacketAck>
+  ): EnableCooperationPacketAck {
+    const message = {
+      ...baseEnableCooperationPacketAck,
+    } as EnableCooperationPacketAck;
+    if (object.confirmation !== undefined && object.confirmation !== null) {
+      message.confirmation = object.confirmation;
+    } else {
+      message.confirmation = "";
+    }
+    if (object.confirmedBy !== undefined && object.confirmedBy !== null) {
+      message.confirmedBy = object.confirmedBy;
+    } else {
+      message.confirmedBy = "";
+    }
+    return message;
+  },
+};
+
+const baseModifyCooperationCostPacketData: object = { cost: "" };
+
+export const ModifyCooperationCostPacketData = {
+  encode(
+    message: ModifyCooperationCostPacketData,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.cost !== "") {
+      writer.uint32(10).string(message.cost);
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): ModifyCooperationCostPacketData {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseModifyCooperationCostPacketData,
+    } as ModifyCooperationCostPacketData;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.cost = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModifyCooperationCostPacketData {
+    const message = {
+      ...baseModifyCooperationCostPacketData,
+    } as ModifyCooperationCostPacketData;
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = String(object.cost);
+    } else {
+      message.cost = "";
+    }
+    return message;
+  },
+
+  toJSON(message: ModifyCooperationCostPacketData): unknown {
+    const obj: any = {};
+    message.cost !== undefined && (obj.cost = message.cost);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ModifyCooperationCostPacketData>
+  ): ModifyCooperationCostPacketData {
+    const message = {
+      ...baseModifyCooperationCostPacketData,
+    } as ModifyCooperationCostPacketData;
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = object.cost;
+    } else {
+      message.cost = "";
+    }
+    return message;
+  },
+};
+
+const baseModifyCooperationCostPacketAck: object = {};
+
+export const ModifyCooperationCostPacketAck = {
+  encode(
+    _: ModifyCooperationCostPacketAck,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): ModifyCooperationCostPacketAck {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseModifyCooperationCostPacketAck,
+    } as ModifyCooperationCostPacketAck;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ModifyCooperationCostPacketAck {
+    const message = {
+      ...baseModifyCooperationCostPacketAck,
+    } as ModifyCooperationCostPacketAck;
+    return message;
+  },
+
+  toJSON(_: ModifyCooperationCostPacketAck): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<EnableCooperationPacketAck>
-  ): EnableCooperationPacketAck {
+    _: DeepPartial<ModifyCooperationCostPacketAck>
+  ): ModifyCooperationCostPacketAck {
     const message = {
-      ...baseEnableCooperationPacketAck,
-    } as EnableCooperationPacketAck;
+      ...baseModifyCooperationCostPacketAck,
+    } as ModifyCooperationCostPacketAck;
     return message;
   },
 };

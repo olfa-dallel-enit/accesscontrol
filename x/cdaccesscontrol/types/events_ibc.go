@@ -8,6 +8,7 @@ const (
 	EventTypeForwardCooperationDataPacket = "forwardCooperationData_packet"
 	EventTypeDisableCooperationPacket     = "disableCooperation_packet"
 	EventTypeEnableCooperationPacket      = "enableCooperation_packet"
+	EventTypeModifyCooperationCostPacket  = "modifyCooperationCost_packet"
 	// this line is used by starport scaffolding # ibc/packet/event
 
 	AttributeKeyAckSuccess = "success"
