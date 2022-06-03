@@ -88,35 +88,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 			if exist{
 				//constrain-less
 				if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 {
-					localDomain, _ := k.crossdomainKeeper.GetLocalDomain(ctx)
-					remoteDomain, _ := k.GetDomainByName(ctx, data.Sender)
-					k.AppendDomainCooperation(ctx, types.DomainCooperation{
-						Creator:         ctx.ChainID(),
-						Label:           ctx.ChainID() + "-" + data.Sender,
-						CooperationType: "Direct",
-						SourceDomain: &types.Domain{
-							Creator:    ctx.ChainID(),
-							Name:       ctx.ChainID(),
-							DomainType: "Local",
-							IbcConnection: &types.IbcConnection{
-								Creator: ctx.ChainID(),
-								Port:    packet.DestinationPort,
-								Channel: packet.SourceChannel,
-							},
-							Location: localDomain.Location,
-						},
-						RemoteDomain: &remoteDomain,
-						Validity: &types.Validity{
-							Creator:   ctx.ChainID(),
-							NotBefore: data.NotBefore + " +0000 UTC",
-							NotAfter:  data.NotAfter + " +0000 UTC",
-						},
-						Interest:          data.Interest,
-						Cost:              cast.ToUint64(data.Cost),
-						CreationTimestamp: cast.ToString(time.Now()),
-						UpdateTimestamp:   cast.ToString(time.Now()),
-						Status:            "Enabled",
-					})
+					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 
@@ -128,6 +100,9 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
 						Decision:    "Confirmed",
 					})
+				/*}else if{
+
+				}*/
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -644,4 +619,36 @@ func findString(stringToFound string, stringList []string) (found bool){
 		}
 	}
 	return false
+}
+
+func (k Keeper) addDomainCooperation(ctx sdk.Context, packet channeltypes.Packet, data types.EstablishCooperationPacketData){
+	localDomain, _ := k.crossdomainKeeper.GetLocalDomain(ctx)
+	remoteDomain, _ := k.GetDomainByName(ctx, data.Sender)
+	k.AppendDomainCooperation(ctx, types.DomainCooperation{
+		Creator:         ctx.ChainID(),
+		Label:           ctx.ChainID() + "-" + data.Sender,
+		CooperationType: "Direct",
+		SourceDomain: &types.Domain{
+			Creator:    ctx.ChainID(),
+			Name:       ctx.ChainID(),
+			DomainType: "Local",
+			IbcConnection: &types.IbcConnection{
+				Creator: ctx.ChainID(),
+				Port:    packet.DestinationPort,
+				Channel: packet.SourceChannel,
+			},
+			Location: localDomain.Location,
+		},
+		RemoteDomain: &remoteDomain,
+		Validity: &types.Validity{
+			Creator:   ctx.ChainID(),
+			NotBefore: data.NotBefore + " +0000 UTC",
+			NotAfter:  data.NotAfter + " +0000 UTC",
+		},
+		Interest:          data.Interest,
+		Cost:              cast.ToUint64(data.Cost),
+		CreationTimestamp: cast.ToString(time.Now()),
+		UpdateTimestamp:   cast.ToString(time.Now()),
+		Status:            "Enabled",
+	})
 }
