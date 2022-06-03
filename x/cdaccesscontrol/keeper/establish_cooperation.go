@@ -87,7 +87,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 			decisionPolicy, exist := k.crossdomainKeeper.GetDecisionPolicy(ctx)
 			if exist{
 				//constrain-less
-				if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 {
+				if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
@@ -164,7 +164,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 							Function:    "OnRecvEstablishCooperationPacket",
 							Timestamp:   cast.ToString(time.Now()),
 							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-							Decision:    "Confirmed: decision policy based on interest verified",
+							Decision:    "Confirmed: decision policy based on cooperation interest verified",
 						})
 					}else{
 						packetAck.Confirmation = "Not confirmed"
@@ -175,7 +175,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 							Function:    "OnRecvEstablishCooperationPacket",
 							Timestamp:   cast.ToString(time.Now()),
 							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-							Decision:    "Not confirmed: decision policy based on interest not verified",
+							Decision:    "Not confirmed: decision policy based on cooperation interest not verified",
 						})
 					}
 				//last update
@@ -204,7 +204,32 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 							Decision:    "Not confirmed: decision policy based on last update time not verified",
 						})
 					}	
-				//validity???!!
+				//validity
+				}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
+					if cast.ToTime(data.NotBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(data.NotAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+						k.addDomainCooperation(ctx, packet, data)	
+						packetAck.Confirmation = "Confirmed"
+						packetAck.ConfirmedBy = ctx.ChainID()
+						k.AppendCooperationLog(ctx, types.CooperationLog{
+							Creator:     ctx.ChainID(),
+							Transaction: "send-establish-cooperation",
+							Function:    "OnRecvEstablishCooperationPacket",
+							Timestamp:   cast.ToString(time.Now()),
+							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+							Decision:    "Confirmed: decision policy based on cooperation validity verified",
+						})
+					}else{
+						packetAck.Confirmation = "Not confirmed"
+						packetAck.ConfirmedBy = ctx.ChainID()
+						k.AppendCooperationLog(ctx, types.CooperationLog{
+							Creator:     ctx.ChainID(),
+							Transaction: "send-establish-cooperation",
+							Function:    "OnRecvEstablishCooperationPacket",
+							Timestamp:   cast.ToString(time.Now()),
+							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+							Decision:    "Not confirmed: decision policy based on cooperation validity not verified",
+						})
+					}
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -663,27 +688,7 @@ func (k Keeper) OnTimeoutEstablishCooperationPacket(ctx sdk.Context, packet chan
 	return nil
 }
 
-/*func (k Keeper) acceptCooperationBasedOnLastUpdate(ctx sdk.Context, updateTimestamp string) (accepted bool){
-	decisionPolicyLastUpdate, found := k.crossdomainKeeper.GetDecisionPolicyLastUpdate(ctx)
-	if found{
-		if cast.ToTime(updateTimestamp).UnixNano() >= cast.ToTime(decisionPolicyLastUpdate).UnixNano(){
-			return true
-		}
-	}
-	return false
-}
 
-func (k Keeper) acceptCooperationBasedOnValidity(ctx sdk.Context, validity types.Validity) (accepted bool){
-	decisionPolicyValidity, found := k.crossdomainKeeper.GetDecisionPolicyValidity(ctx)
-	if found{
-		if cast.ToTime(validity.NotBefore).UnixNano() >= cast.ToTime(decisionPolicyValidity.NotBefore).UnixNano() && cast.ToTime(validity.NotAfter).UnixNano() <= cast.ToTime(decisionPolicyValidity.NotAfter).UnixNano(){
-			return true
-		}
-	}
-	return false
-}
-
-*/
 
 func findString(stringToFound string, stringList []string) (found bool){
 
