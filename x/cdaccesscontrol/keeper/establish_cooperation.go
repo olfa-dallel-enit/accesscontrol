@@ -84,7 +84,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 	found := k.FindDomainCooperationByDomainName(ctx, data.Sender)
 	if !found {
 		if k.IsAuthenticated(ctx, data.Sender) {
-			//Decision policy
+			//Check decision policy
 			decisionPolicy, exist := k.crossdomainKeeper.GetDecisionPolicy(ctx)
 			if exist{
 				if CheckConstraintlessBasedDecisionPolicy(decisionPolicy){
@@ -97,7 +97,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 						Function:    "OnRecvEstablishCooperationPacket",
 						Timestamp:   cast.ToString(time.Now()),
 						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: contraint-less decision policy verified",
+						Decision:    "Confirmed: contraint-less decision policy is verified",
 					})
 				}else if CheckCostBasedDecisionPolicy(cast.ToUint64(data.Cost), decisionPolicy) {
 					k.addDomainCooperation(ctx, packet, data)	
@@ -109,7 +109,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 						Function:    "OnRecvEstablishCooperationPacket",
 						Timestamp:   cast.ToString(time.Now()),
 						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on cost verified",
+						Decision:    "Confirmed: decision policy based on cost is verified",
 					})
 				}else if k.CheckLocationBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
@@ -121,7 +121,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 						Function:    "OnRecvEstablishCooperationPacket",
 						Timestamp:   cast.ToString(time.Now()),
 						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on location verified",
+						Decision:    "Confirmed: decision policy based on location is verified",
 					})
 				}else if CheckInterestBasedDecisionPolicy(data.Interest, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
@@ -133,7 +133,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 						Function:    "OnRecvEstablishCooperationPacket",
 						Timestamp:   cast.ToString(time.Now()),
 						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on cooperation interest verified",
+						Decision:    "Confirmed: decision policy based on cooperation interest is verified",
 					})
 				}else if CheckLastUpdateBasedDecisionPolicy(decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
@@ -145,7 +145,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 						Function:    "OnRecvEstablishCooperationPacket",
 						Timestamp:   cast.ToString(time.Now()),
 						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on last update time verified",
+						Decision:    "Confirmed: decision policy based on last update time is verified",
 					})
 				}else if CheckValidityBasedDecisionPolicy(data.NotBefore, data.NotAfter, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
@@ -157,7 +157,19 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 						Function:    "OnRecvEstablishCooperationPacket",
 						Timestamp:   cast.ToString(time.Now()),
 						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on cooperation validity verified",
+						Decision:    "Confirmed: decision policy based on cooperation validity is verified",
+					})
+				}else if k.CheckHybridBasedDecisionPolicy(ctx, cast.ToUint64(data.Cost), data.Sender, data.Interest, data.NotBefore, data.NotAfter, decisionPolicy){
+					k.addDomainCooperation(ctx, packet, data)	
+					packetAck.Confirmation = "Confirmed"
+					packetAck.ConfirmedBy = ctx.ChainID()
+					k.AppendCooperationLog(ctx, types.CooperationLog{
+						Creator:     ctx.ChainID(),
+						Transaction: "send-establish-cooperation",
+						Function:    "OnRecvEstablishCooperationPacket",
+						Timestamp:   cast.ToString(time.Now()),
+						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+						Decision:    "Confirmed: decision policy based on hybrid criteria is verified",
 					})
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
@@ -617,14 +629,12 @@ func (k Keeper) OnTimeoutEstablishCooperationPacket(ctx sdk.Context, packet chan
 	return nil
 }
 
-
 func CheckConstraintlessBasedDecisionPolicy(decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		return true
 	}
 	return false
 }
-
 
 func CheckCostBasedDecisionPolicy(cost uint64, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
@@ -757,13 +767,12 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & location & interest & lastUpdate & validity
-	}else if{
-
 	}
+	/*}else if{
+
+	}*/
 	return false
 }
-
-
 
 func findString(stringToFound string, stringList []string) (found bool){
 	for _, s := range stringList{
