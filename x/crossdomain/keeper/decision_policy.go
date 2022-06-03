@@ -31,3 +31,16 @@ func (k Keeper) RemoveDecisionPolicy(ctx sdk.Context) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DecisionPolicyKey))
 	store.Delete([]byte{0})
 }
+
+
+func (k Keeper) GetDecisionPolicyCost(ctx sdk.Context) (cost uint64, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DecisionPolicyKey))
+
+	b := store.Get([]byte{0})
+	if b == nil {
+		return cost, false
+	}
+
+	k.cdc.MustUnmarshal(b, &val)
+	return val.Cost, true
+}
