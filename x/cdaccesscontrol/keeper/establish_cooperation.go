@@ -91,18 +91,24 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-establish-cooperation",
-						Function:    "OnRecvEstablishCooperationPacket",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed",
-					})
-				/*}else if{
-
-				}*/
+				}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 {
+					verified := k.AcceptCooperationBasedOnCost(ctx, cast.ToUint64(data.Cost))
+					if verified{
+						k.addDomainCooperation(ctx, packet, data)	
+						packetAck.Confirmation = "Confirmed"
+						packetAck.ConfirmedBy = ctx.ChainID()
+					}else{
+						packetAck.Confirmation = "Not confirmed"
+						packetAck.ConfirmedBy = ctx.ChainID()
+						k.AppendCooperationLog(ctx, types.CooperationLog{
+							Creator:     ctx.ChainID(),
+							Transaction: "send-establish-cooperation",
+							Function:    "OnRecvEstablishCooperationPacket",
+							Timestamp:   cast.ToString(time.Now()),
+							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+							Decision:    "Not confirmed: decision policy not verified",
+						})
+					}
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -561,7 +567,7 @@ func (k Keeper) OnTimeoutEstablishCooperationPacket(ctx sdk.Context, packet chan
 	return nil
 }
 
-func (k Keeper) acceptCooperationBasedOnCost(ctx sdk.Context, cost uint64) (accepted bool){
+func (k Keeper) AcceptCooperationBasedOnCost(ctx sdk.Context, cost uint64) (verified bool){
 	decisionPolicyCost, found := k.crossdomainKeeper.GetDecisionPolicyCost(ctx)
 	if found{
 		if cost <= decisionPolicyCost{
@@ -650,5 +656,14 @@ func (k Keeper) addDomainCooperation(ctx sdk.Context, packet channeltypes.Packet
 		CreationTimestamp: cast.ToString(time.Now()),
 		UpdateTimestamp:   cast.ToString(time.Now()),
 		Status:            "Enabled",
+	})
+
+	k.AppendCooperationLog(ctx, types.CooperationLog{
+		Creator:     ctx.ChainID(),
+		Transaction: "send-establish-cooperation",
+			Function:    "OnRecvEstablishCooperationPacket",
+			Timestamp:   cast.ToString(time.Now()),
+			Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+			Decision:    "Confirmed",
 	})
 }
