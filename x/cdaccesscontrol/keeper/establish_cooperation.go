@@ -178,6 +178,33 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 							Decision:    "Not confirmed: decision policy based on interest not verified",
 						})
 					}
+				//last update
+				}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 {
+					if time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
+						k.addDomainCooperation(ctx, packet, data)	
+						packetAck.Confirmation = "Confirmed"
+						packetAck.ConfirmedBy = ctx.ChainID()
+						k.AppendCooperationLog(ctx, types.CooperationLog{
+							Creator:     ctx.ChainID(),
+							Transaction: "send-establish-cooperation",
+							Function:    "OnRecvEstablishCooperationPacket",
+							Timestamp:   cast.ToString(time.Now()),
+							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+							Decision:    "Confirmed: decision policy based on last update time verified",
+						})
+					}else{
+						packetAck.Confirmation = "Not confirmed"
+						packetAck.ConfirmedBy = ctx.ChainID()
+						k.AppendCooperationLog(ctx, types.CooperationLog{
+							Creator:     ctx.ChainID(),
+							Transaction: "send-establish-cooperation",
+							Function:    "OnRecvEstablishCooperationPacket",
+							Timestamp:   cast.ToString(time.Now()),
+							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+							Decision:    "Not confirmed: decision policy based on last update time not verified",
+						})
+					}	
+				//validity???!!
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -656,15 +683,6 @@ func (k Keeper) acceptCooperationBasedOnValidity(ctx sdk.Context, validity types
 	return false
 }
 
-func (k Keeper) acceptCooperationBasedOnInterest(ctx sdk.Context, interest string) (accepted bool){
-	decisionPolicyInterestList, found := k.crossdomainKeeper.GetDecisionPolicyInterestList(ctx)
-	if found{
-		if findString(interest, decisionPolicyInterestList){
-			return true
-		}
-	}
-	return false
-}
 */
 
 func findString(stringToFound string, stringList []string) (found bool){
