@@ -13,13 +13,13 @@ const (
 
 var _ sdk.Msg = &MsgCreateDecisionPolicy{}
 
-func NewMsgCreateDecisionPolicy(creator string, depth uint64, cost uint64, location string, interest string, validity *Validity, lastUpdate string) *MsgCreateDecisionPolicy {
+func NewMsgCreateDecisionPolicy(creator string, depth uint64, cost uint64, locationList []string, interestList []string, validity *Validity, lastUpdate string) *MsgCreateDecisionPolicy {
 	return &MsgCreateDecisionPolicy{
 		Creator:    creator,
 		Depth:      depth,
 		Cost:       cost,
-		Location:   location,
-		Interest:   interest,
+		LocationList:   locationList,
+		InterestList:   interestList,
 		Validity:   validity,
 		LastUpdate: lastUpdate,
 	}
@@ -56,13 +56,13 @@ func (msg *MsgCreateDecisionPolicy) ValidateBasic() error {
 
 var _ sdk.Msg = &MsgUpdateDecisionPolicy{}
 
-func NewMsgUpdateDecisionPolicy(creator string, depth uint64, cost uint64, location string, interest string, validity *Validity, lastUpdate string) *MsgUpdateDecisionPolicy {
+func NewMsgUpdateDecisionPolicy(creator string, depth uint64, cost uint64, locationList []string, interestList []string, validity *Validity, lastUpdate string) *MsgUpdateDecisionPolicy {
 	return &MsgUpdateDecisionPolicy{
 		Creator:    creator,
 		Depth:      depth,
 		Cost:       cost,
-		Location:   location,
-		Interest:   interest,
+		LocationList:   locationList,
+		InterestList:   interestList,
 		Validity:   validity,
 		LastUpdate: lastUpdate,
 	}

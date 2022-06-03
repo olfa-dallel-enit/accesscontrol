@@ -4,14 +4,17 @@ import (
 	"errors"
 
 	"crossdomain/x/cdaccesscontrol/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	//"github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 	clienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v2/modules/core/24-host"
 
-	"github.com/spf13/cast"
 	"time"
+
+	"github.com/spf13/cast"
 )
 
 // TransmitEstablishCooperationPacket transmits the packet over IBC with the specified source port and source channel
@@ -551,4 +554,64 @@ func (k Keeper) OnTimeoutEstablishCooperationPacket(ctx sdk.Context, packet chan
 	// TODO: packet timeout logic
 
 	return nil
+}
+
+func (k Keeper) acceptCooperationBasedOnCost(ctx sdk.Context, cost uint64) (accepted bool){
+	decisionPolicyCost, found := k.crossdomainKeeper.GetDecisionPolicyCost(ctx)
+	if found{
+		if cost <= decisionPolicyCost{
+			return true
+		}
+	}
+	return false
+}
+
+func (k Keeper) acceptCooperationBasedOnLastUpdate(ctx sdk.Context, updateTimestamp string) (accepted bool){
+	decisionPolicyLastUpdate, found := k.crossdomainKeeper.GetDecisionPolicyLastUpdate(ctx)
+	if found{
+		if cast.ToTime(updateTimestamp).UnixNano() >= cast.ToTime(decisionPolicyLastUpdate).UnixNano(){
+			return true
+		}
+	}
+	return false
+}
+
+func (k Keeper) acceptCooperationBasedOnValidity(ctx sdk.Context, validity types.Validity) (accepted bool){
+	decisionPolicyValidity, found := k.crossdomainKeeper.GetDecisionPolicyValidity(ctx)
+	if found{
+		if cast.ToTime(validity.NotBefore).UnixNano() >= cast.ToTime(decisionPolicyValidity.NotBefore).UnixNano() && cast.ToTime(validity.NotAfter).UnixNano() <= cast.ToTime(decisionPolicyValidity.NotAfter).UnixNano(){
+			return true
+		}
+	}
+	return false
+}
+
+func (k Keeper) acceptCooperationBasedOnLocation(ctx sdk.Context, location string) (accepted bool){
+	decisionPolicyLocationList, found := k.crossdomainKeeper.GetDecisionPolicyLocationList(ctx)
+	if found{
+		if findString(location, decisionPolicyLocationList){
+			return true
+		}
+	}
+	return false
+}
+
+func (k Keeper) acceptCooperationBasedOnInterest(ctx sdk.Context, interest string) (accepted bool){
+	decisionPolicyInterestList, found := k.crossdomainKeeper.GetDecisionPolicyInterestList(ctx)
+	if found{
+		if findString(interest, decisionPolicyInterestList){
+			return true
+		}
+	}
+	return false
+}
+
+func findString(stringToFound string, stringList []string) (found bool){
+
+	for _, s := range stringList{
+		if s == stringToFound{
+			return true
+		}
+	}
+	return false
 }

@@ -172,8 +172,8 @@ message MsgCreateDecisionPolicy {
   string creator = 1;
   uint64 depth = 3;
   uint64 cost = 4;
-  string location = 5;
-  string interest = 6;
+  repeated string locationList = 5;
+  repeated string interestList = 6;
   Validity validity = 7;
   string lastUpdate = 8;
 }
@@ -183,8 +183,8 @@ message MsgUpdateDecisionPolicy {
   string creator = 1;
   uint64 depth = 3;
   uint64 cost = 4;
-  string location = 5;
-  string interest = 6;
+  repeated string locationList = 5;
+  repeated string interestList = 6;
   Validity validity = 7;
   string lastUpdate = 8;
 }

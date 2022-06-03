@@ -8,6 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
+
+	"strings"
 )
 
 func CmdCreateDecisionPolicy() *cobra.Command {
@@ -24,8 +26,8 @@ func CmdCreateDecisionPolicy() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argLocation := args[2]
-			argInterest := args[3]
+			argLocationList := strings.Split(args[2], listSeparator)
+			argInterestList := strings.Split(args[3], listSeparator)
 			argValidity := new(types.Validity)
 			err = json.Unmarshal([]byte(args[4]), argValidity)
 			if err != nil {
@@ -38,7 +40,7 @@ func CmdCreateDecisionPolicy() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateDecisionPolicy(clientCtx.GetFromAddress().String(), argDepth, argCost, argLocation, argInterest, argValidity, argLastUpdate)
+			msg := types.NewMsgCreateDecisionPolicy(clientCtx.GetFromAddress().String(), argDepth, argCost, argLocationList, argInterestList, argValidity, argLastUpdate)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -65,8 +67,8 @@ func CmdUpdateDecisionPolicy() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			argLocation := args[2]
-			argInterest := args[3]
+			argLocationList := strings.Split(args[2], listSeparator)
+			argInterestList := strings.Split(args[3], listSeparator)
 			argValidity := new(types.Validity)
 			err = json.Unmarshal([]byte(args[4]), argValidity)
 			if err != nil {
@@ -79,7 +81,7 @@ func CmdUpdateDecisionPolicy() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgUpdateDecisionPolicy(clientCtx.GetFromAddress().String(), argDepth, argCost, argLocation, argInterest, argValidity, argLastUpdate)
+			msg := types.NewMsgUpdateDecisionPolicy(clientCtx.GetFromAddress().String(), argDepth, argCost, argLocationList, argInterestList, argValidity, argLastUpdate)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

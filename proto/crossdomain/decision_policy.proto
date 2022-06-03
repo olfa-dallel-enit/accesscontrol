@@ -7,8 +7,8 @@ import "crossdomain/validity.proto";
 message DecisionPolicy {
   uint64 depth = 1; 
   uint64 cost = 2; 
-  string location = 3; 
-  string interest = 4; 
+  repeated string locationList = 3; 
+  repeated string interestList = 4; 
   Validity validity = 5; 
   string lastUpdate = 6; 
   string creator = 7;
