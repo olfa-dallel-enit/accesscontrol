@@ -12,6 +12,7 @@ type CrossdomainKeeper interface {
 	GetLocalDomain(ctx sdk.Context) (val crossdomainTypes.LocalDomain, found bool)
 	GetLocalDomainCertificate(ctx sdk.Context) (val crossdomainTypes.LocalDomainCertificate, found bool)
 	GetLocalDomainLocation(ctx sdk.Context) (location string, found bool)
+	GetDecisionPolicy(ctx sdk.Context) (val crossdomainTypes.DecisionPolicy, found bool)
 	GetDecisionPolicyCost(ctx sdk.Context) (cost uint64, found bool)
 	GetDecisionPolicyLastUpdate(ctx sdk.Context) (lastUpdate string, found bool)
 	GetDecisionPolicyValidity(ctx sdk.Context) (validity crossdomainTypes.Validity, found bool) 
