@@ -13,7 +13,7 @@ import (
 	host "github.com/cosmos/ibc-go/v2/modules/core/24-host"
 
 	"time"
-
+	"strings"
 	"github.com/spf13/cast"
 )
 
@@ -151,7 +151,33 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
 							Decision:    "Not confirmed: decision policy based on location not verified",
 						})
-					}				
+					}	
+				//interest
+				}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 {
+					if findString(data.Interest, decisionPolicy.InterestList){
+						k.addDomainCooperation(ctx, packet, data)	
+						packetAck.Confirmation = "Confirmed"
+						packetAck.ConfirmedBy = ctx.ChainID()
+						k.AppendCooperationLog(ctx, types.CooperationLog{
+							Creator:     ctx.ChainID(),
+							Transaction: "send-establish-cooperation",
+							Function:    "OnRecvEstablishCooperationPacket",
+							Timestamp:   cast.ToString(time.Now()),
+							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+							Decision:    "Confirmed: decision policy based on interest verified",
+						})
+					}else{
+						packetAck.Confirmation = "Not confirmed"
+						packetAck.ConfirmedBy = ctx.ChainID()
+						k.AppendCooperationLog(ctx, types.CooperationLog{
+							Creator:     ctx.ChainID(),
+							Transaction: "send-establish-cooperation",
+							Function:    "OnRecvEstablishCooperationPacket",
+							Timestamp:   cast.ToString(time.Now()),
+							Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+							Decision:    "Not confirmed: decision policy based on interest not verified",
+						})
+					}
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -644,7 +670,7 @@ func (k Keeper) acceptCooperationBasedOnInterest(ctx sdk.Context, interest strin
 func findString(stringToFound string, stringList []string) (found bool){
 
 	for _, s := range stringList{
-		if s == stringToFound{
+		if strings.ToUpper(s) == strings.ToUpper(stringToFound){
 			return true
 		}
 	}
