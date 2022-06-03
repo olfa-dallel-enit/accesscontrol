@@ -16,6 +16,8 @@ func (k msgServer) SendRevokeCooperation(goCtx context.Context, msg *types.MsgSe
 	// Construct the packet
 	var packet types.RevokeCooperationPacketData
 
+	packet.Sender = ctx.ChainID()
+
 	// Transmit the packet
 	err := k.TransmitRevokeCooperationPacket(
 		ctx,

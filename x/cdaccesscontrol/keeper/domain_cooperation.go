@@ -209,3 +209,21 @@ func (k Keeper) GetAllDomainCooperationsByRemoteDomainName(ctx sdk.Context, remo
 
 	return
 }
+
+func (k Keeper) RemoveDomainCooperationByRemoteDomainName(ctx sdk.Context, remoteDomainName string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DomainCooperationKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	var id uint64
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.DomainCooperation
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		if val.RemoteDomain.Name == remoteDomainName {
+			id = val.Id
+		}
+	}
+	k.RemoveDomainCooperation(ctx, id)
+}

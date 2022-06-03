@@ -9,6 +9,9 @@ import (
 	clienttypes "github.com/cosmos/ibc-go/v2/modules/core/02-client/types"
 	channeltypes "github.com/cosmos/ibc-go/v2/modules/core/04-channel/types"
 	host "github.com/cosmos/ibc-go/v2/modules/core/24-host"
+
+	"github.com/spf13/cast"
+	"time"
 )
 
 // TransmitRevokeCooperationPacket transmits the packet over IBC with the specified source port and source channel
@@ -74,6 +77,81 @@ func (k Keeper) OnRecvRevokeCooperationPacket(ctx sdk.Context, packet channeltyp
 	}
 
 	// TODO: packet reception logic
+	domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, data.Sender)
+	if found {
+		if k.IsAuthenticated(ctx, data.Sender) {
+			if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
+				k.RemoveDomainCooperationByRemoteDomainName(ctx, data.Sender)
+				packetAck.Confirmation = "Confirmed"
+				packetAck.ConfirmedBy = ctx.ChainID()
+				k.AppendCooperationLog(ctx, types.CooperationLog{
+					Creator:     ctx.ChainID(),
+					Transaction: "send-revoke-cooperation",
+					Function:    "OnRecvRevokeCooperationPacket",
+					Timestamp:   cast.ToString(time.Now()),
+					Details:     "Cooperation label: " + domainCooperation.Label,
+					Decision:    "Confirmed",
+				})
+			} else {
+				packetAck.Confirmation = "Not confirmed"
+				packetAck.ConfirmedBy = ctx.ChainID()
+				k.AppendCooperationLog(ctx, types.CooperationLog{
+					Creator:     ctx.ChainID(),
+					Transaction: "send-revoke-cooperation",
+					Function:    "OnRecvRevokeCooperationPacket",
+					Timestamp:   cast.ToString(time.Now()),
+					Details:     "Cooperation label: " + domainCooperation.Label,
+					Decision:    "Not confirmed: cooperation not valid",
+				})
+				k.AppendCooperationLog(ctx, types.CooperationLog{
+					Creator:     ctx.ChainID(),
+					Transaction: "send-revoke-cooperation",
+					Function:    "OnRecvRevokeCooperationPacket",
+					Timestamp:   cast.ToString(time.Now()),
+					Details:     "Cooperation label: " + domainCooperation.Label,
+					Decision:    "Not confirmed: cooperation not valid",
+				})
+			}
+		} else {
+			packetAck.Confirmation = "Not confirmed"
+			packetAck.ConfirmedBy = ctx.ChainID()
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-revoke-cooperation",
+				Function:    "OnRecvRevokeCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + domainCooperation.Label,
+				Decision:    "Not confirmed: domain not authenticated",
+			})
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-revoke-cooperation",
+				Function:    "OnRecvRevokeCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + domainCooperation.Label,
+				Decision:    "Not confirmed: domain not authenticated",
+			})
+		}
+	} else {
+		packetAck.Confirmation = "Not confirmed"
+		packetAck.ConfirmedBy = ctx.ChainID()
+		k.AppendCooperationLog(ctx, types.CooperationLog{
+			Creator:     ctx.ChainID(),
+			Transaction: "send-revoke-cooperation",
+			Function:    "OnRecvRevokeCooperationPacket",
+			Timestamp:   cast.ToString(time.Now()),
+			Details:     "Cooperation label: " + domainCooperation.Label,
+			Decision:    "Not confirmed: cooperation not found",
+		})
+		k.AppendCooperationLog(ctx, types.CooperationLog{
+			Creator:     ctx.ChainID(),
+			Transaction: "send-revoke-cooperation",
+			Function:    "OnRecvRevokeCooperationPacket",
+			Timestamp:   cast.ToString(time.Now()),
+			Details:     "Cooperation label: " + domainCooperation.Label,
+			Decision:    "Not confirmed: cooperation not found",
+		})
+	}
 
 	return packetAck, nil
 }
@@ -98,6 +176,55 @@ func (k Keeper) OnAcknowledgementRevokeCooperationPacket(ctx sdk.Context, packet
 		}
 
 		// TODO: successful acknowledgement logic
+		if packetAck.Confirmation == "Confirmed" {
+			domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, packetAck.ConfirmedBy)
+			if found {
+				k.RemoveDomainCooperationByRemoteDomainName(ctx, packetAck.ConfirmedBy)
+
+				k.AppendCooperationLog(ctx, types.CooperationLog{
+					Creator:     ctx.ChainID(),
+					Transaction: "send-revoke-cooperation",
+					Function:    "OnAcknowledgementRevokeCooperationPacket",
+					Timestamp:   cast.ToString(time.Now()),
+					Details:     "Cooperation label: " + domainCooperation.Label,
+					Decision:    "Confirmed",
+				})
+			} else {
+				k.AppendCooperationLog(ctx, types.CooperationLog{
+					Creator:     ctx.ChainID(),
+					Transaction: "send-revoke-cooperation",
+					Function:    "OnAcknowledgementRevokeCooperationPacket",
+					Timestamp:   cast.ToString(time.Now()),
+					Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
+					Decision:    "Not confirmed: cooperation not found ",
+				})
+				k.AppendCooperationLog(ctx, types.CooperationLog{
+					Creator:     ctx.ChainID(),
+					Transaction: "send-forward-enabled-cooperation",
+					Function:    "OnAcknowledgementRevokeCooperationPacket",
+					Timestamp:   cast.ToString(time.Now()),
+					Details:     "Cooperation label: " + domainCooperation.Label,
+					Decision:    "Not confirmed: cooperation not found ",
+				})
+			}
+		} else {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-revoke-cooperation",
+				Function:    "OnAcknowledgementRevokeCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
+				Decision:    "Not confirmed: revoke operation not confirmed",
+			})
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-forward-enabled-cooperation",
+				Function:    "OnAcknowledgementRevokeCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
+				Decision:    "Not confirmed: revoke operation not confirmed",
+			})
+		}
 
 		return nil
 	default:

@@ -28,6 +28,10 @@ crossdomaind tx cdaccesscontrol send-modify-cooperation-interest  cdaccesscontro
 
 crossdomaind query cdaccesscontrol list-domain-cooperation --node tcp://localhost:26657
 
+crossdomaind tx cdaccesscontrol send-revoke-cooperation  cdaccesscontrol channel-0 --from alice --yes --home ~/.mars --chain-id mars --node tcp://localhost:26659 --gas=auto --gas-adjustment=1.15
+
+crossdomaind query cdaccesscontrol list-domain-cooperation --node tcp://localhost:26657
+
 crossdomaind query cdaccesscontrol list-cooperation-log --node tcp://localhost:26657
 
 

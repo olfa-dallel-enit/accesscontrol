@@ -220,7 +220,7 @@ func (k Keeper) OnAcknowledgementDisableCooperationPacket(ctx sdk.Context, packe
 				Function:    "OnAcknowledgementDisableCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
-				Decision:    "Not confirmed: operation not confirmed",
+				Decision:    "Not confirmed:  disable cooperation operation not confirmed",
 			})
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -228,7 +228,7 @@ func (k Keeper) OnAcknowledgementDisableCooperationPacket(ctx sdk.Context, packe
 				Function:    "OnAcknowledgementDisableCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
-				Decision:    "Not confirmed: operation not confirmed",
+				Decision:    "Not confirmed: disable cooperation operation not confirmed",
 			})
 		}
 

@@ -248,7 +248,7 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 				Function:    "OnAcknowledgementModifyCooperationValidityPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
-				Decision:    "Not confirmed: operation not confirmed",
+				Decision:    "Not confirmed: modify validity operation not confirmed",
 			})
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -256,7 +256,7 @@ func (k Keeper) OnAcknowledgementModifyCooperationValidityPacket(ctx sdk.Context
 				Function:    "OnAcknowledgementModifyCooperationValidityPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
-				Decision:    "Not confirmed: operation not confirmed",
+				Decision:    "Not confirmed: modify validity operation not confirmed",
 			})
 		}
 
