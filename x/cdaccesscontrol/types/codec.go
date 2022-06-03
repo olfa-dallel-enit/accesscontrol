@@ -40,6 +40,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgSendModifyCooperationCost{}, "cdaccesscontrol/SendModifyCooperationCost", nil)
 	cdc.RegisterConcrete(&MsgSendModifyCooperationValidity{}, "cdaccesscontrol/SendModifyCooperationValidity", nil)
 	cdc.RegisterConcrete(&MsgSendModifyCooperationInterest{}, "cdaccesscontrol/SendModifyCooperationInterest", nil)
+	cdc.RegisterConcrete(&MsgSendRevokeCooperation{}, "cdaccesscontrol/SendRevokeCooperation", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -107,6 +108,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSendModifyCooperationInterest{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgSendRevokeCooperation{},
 	)
 	// this line is used by starport scaffolding # 3
 

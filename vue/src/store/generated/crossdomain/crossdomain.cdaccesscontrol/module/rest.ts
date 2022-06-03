@@ -148,6 +148,8 @@ export type CdaccesscontrolMsgSendModifyCooperationInterestResponse = object;
 
 export type CdaccesscontrolMsgSendModifyCooperationValidityResponse = object;
 
+export type CdaccesscontrolMsgSendRevokeCooperationResponse = object;
+
 export type CdaccesscontrolMsgUpdateAuthenticationLogResponse = object;
 
 export type CdaccesscontrolMsgUpdateCertificateResponse = object;

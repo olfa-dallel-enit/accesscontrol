@@ -49158,6 +49158,8 @@ definitions:
     type: object
   crossdomain.cdaccesscontrol.MsgSendModifyCooperationValidityResponse:
     type: object
+  crossdomain.cdaccesscontrol.MsgSendRevokeCooperationResponse:
+    type: object
   crossdomain.cdaccesscontrol.MsgUpdateAuthenticationLogResponse:
     type: object
   crossdomain.cdaccesscontrol.MsgUpdateCertificateResponse:

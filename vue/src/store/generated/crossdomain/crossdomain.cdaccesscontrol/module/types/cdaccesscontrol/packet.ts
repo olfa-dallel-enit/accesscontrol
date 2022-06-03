@@ -6,6 +6,8 @@ export const protobufPackage = "crossdomain.cdaccesscontrol";
 export interface CdaccesscontrolPacketData {
   noData: NoData | undefined;
   /** this line is used by starport scaffolding # ibc/packet/proto/field */
+  revokeCooperationPacket: RevokeCooperationPacketData | undefined;
+  /** this line is used by starport scaffolding # ibc/packet/proto/field/number */
   modifyCooperationInterestPacket:
     | ModifyCooperationInterestPacketData
     | undefined;
@@ -121,10 +123,20 @@ export interface ModifyCooperationValidityPacketAck {
 /** ModifyCooperationInterestPacketData defines a struct for the packet payload */
 export interface ModifyCooperationInterestPacketData {
   interest: string;
+  sender: string;
 }
 
 /** ModifyCooperationInterestPacketAck defines a struct for the packet acknowledgment */
-export interface ModifyCooperationInterestPacketAck {}
+export interface ModifyCooperationInterestPacketAck {
+  confirmation: string;
+  confirmedBy: string;
+}
+
+/** RevokeCooperationPacketData defines a struct for the packet payload */
+export interface RevokeCooperationPacketData {}
+
+/** RevokeCooperationPacketAck defines a struct for the packet acknowledgment */
+export interface RevokeCooperationPacketAck {}
 
 const baseCdaccesscontrolPacketData: object = {};
 
@@ -135,6 +147,12 @@ export const CdaccesscontrolPacketData = {
   ): Writer {
     if (message.noData !== undefined) {
       NoData.encode(message.noData, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.revokeCooperationPacket !== undefined) {
+      RevokeCooperationPacketData.encode(
+        message.revokeCooperationPacket,
+        writer.uint32(82).fork()
+      ).ldelim();
     }
     if (message.modifyCooperationInterestPacket !== undefined) {
       ModifyCooperationInterestPacketData.encode(
@@ -202,6 +220,12 @@ export const CdaccesscontrolPacketData = {
         case 1:
           message.noData = NoData.decode(reader, reader.uint32());
           break;
+        case 10:
+          message.revokeCooperationPacket = RevokeCooperationPacketData.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
         case 9:
           message.modifyCooperationInterestPacket = ModifyCooperationInterestPacketData.decode(
             reader,
@@ -266,6 +290,16 @@ export const CdaccesscontrolPacketData = {
       message.noData = NoData.fromJSON(object.noData);
     } else {
       message.noData = undefined;
+    }
+    if (
+      object.revokeCooperationPacket !== undefined &&
+      object.revokeCooperationPacket !== null
+    ) {
+      message.revokeCooperationPacket = RevokeCooperationPacketData.fromJSON(
+        object.revokeCooperationPacket
+      );
+    } else {
+      message.revokeCooperationPacket = undefined;
     }
     if (
       object.modifyCooperationInterestPacket !== undefined &&
@@ -354,6 +388,10 @@ export const CdaccesscontrolPacketData = {
     const obj: any = {};
     message.noData !== undefined &&
       (obj.noData = message.noData ? NoData.toJSON(message.noData) : undefined);
+    message.revokeCooperationPacket !== undefined &&
+      (obj.revokeCooperationPacket = message.revokeCooperationPacket
+        ? RevokeCooperationPacketData.toJSON(message.revokeCooperationPacket)
+        : undefined);
     message.modifyCooperationInterestPacket !== undefined &&
       (obj.modifyCooperationInterestPacket = message.modifyCooperationInterestPacket
         ? ModifyCooperationInterestPacketData.toJSON(
@@ -409,6 +447,16 @@ export const CdaccesscontrolPacketData = {
       message.noData = NoData.fromPartial(object.noData);
     } else {
       message.noData = undefined;
+    }
+    if (
+      object.revokeCooperationPacket !== undefined &&
+      object.revokeCooperationPacket !== null
+    ) {
+      message.revokeCooperationPacket = RevokeCooperationPacketData.fromPartial(
+        object.revokeCooperationPacket
+      );
+    } else {
+      message.revokeCooperationPacket = undefined;
     }
     if (
       object.modifyCooperationInterestPacket !== undefined &&
@@ -1907,7 +1955,10 @@ export const ModifyCooperationValidityPacketAck = {
   },
 };
 
-const baseModifyCooperationInterestPacketData: object = { interest: "" };
+const baseModifyCooperationInterestPacketData: object = {
+  interest: "",
+  sender: "",
+};
 
 export const ModifyCooperationInterestPacketData = {
   encode(
@@ -1916,6 +1967,9 @@ export const ModifyCooperationInterestPacketData = {
   ): Writer {
     if (message.interest !== "") {
       writer.uint32(10).string(message.interest);
+    }
+    if (message.sender !== "") {
+      writer.uint32(18).string(message.sender);
     }
     return writer;
   },
@@ -1935,6 +1989,9 @@ export const ModifyCooperationInterestPacketData = {
         case 1:
           message.interest = reader.string();
           break;
+        case 2:
+          message.sender = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1952,12 +2009,18 @@ export const ModifyCooperationInterestPacketData = {
     } else {
       message.interest = "";
     }
+    if (object.sender !== undefined && object.sender !== null) {
+      message.sender = String(object.sender);
+    } else {
+      message.sender = "";
+    }
     return message;
   },
 
   toJSON(message: ModifyCooperationInterestPacketData): unknown {
     const obj: any = {};
     message.interest !== undefined && (obj.interest = message.interest);
+    message.sender !== undefined && (obj.sender = message.sender);
     return obj;
   },
 
@@ -1972,17 +2035,31 @@ export const ModifyCooperationInterestPacketData = {
     } else {
       message.interest = "";
     }
+    if (object.sender !== undefined && object.sender !== null) {
+      message.sender = object.sender;
+    } else {
+      message.sender = "";
+    }
     return message;
   },
 };
 
-const baseModifyCooperationInterestPacketAck: object = {};
+const baseModifyCooperationInterestPacketAck: object = {
+  confirmation: "",
+  confirmedBy: "",
+};
 
 export const ModifyCooperationInterestPacketAck = {
   encode(
-    _: ModifyCooperationInterestPacketAck,
+    message: ModifyCooperationInterestPacketAck,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.confirmation !== "") {
+      writer.uint32(10).string(message.confirmation);
+    }
+    if (message.confirmedBy !== "") {
+      writer.uint32(18).string(message.confirmedBy);
+    }
     return writer;
   },
 
@@ -1998,6 +2075,12 @@ export const ModifyCooperationInterestPacketAck = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.confirmation = reader.string();
+          break;
+        case 2:
+          message.confirmedBy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -2006,24 +2089,152 @@ export const ModifyCooperationInterestPacketAck = {
     return message;
   },
 
-  fromJSON(_: any): ModifyCooperationInterestPacketAck {
+  fromJSON(object: any): ModifyCooperationInterestPacketAck {
     const message = {
       ...baseModifyCooperationInterestPacketAck,
     } as ModifyCooperationInterestPacketAck;
+    if (object.confirmation !== undefined && object.confirmation !== null) {
+      message.confirmation = String(object.confirmation);
+    } else {
+      message.confirmation = "";
+    }
+    if (object.confirmedBy !== undefined && object.confirmedBy !== null) {
+      message.confirmedBy = String(object.confirmedBy);
+    } else {
+      message.confirmedBy = "";
+    }
     return message;
   },
 
-  toJSON(_: ModifyCooperationInterestPacketAck): unknown {
+  toJSON(message: ModifyCooperationInterestPacketAck): unknown {
+    const obj: any = {};
+    message.confirmation !== undefined &&
+      (obj.confirmation = message.confirmation);
+    message.confirmedBy !== undefined &&
+      (obj.confirmedBy = message.confirmedBy);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ModifyCooperationInterestPacketAck>
+  ): ModifyCooperationInterestPacketAck {
+    const message = {
+      ...baseModifyCooperationInterestPacketAck,
+    } as ModifyCooperationInterestPacketAck;
+    if (object.confirmation !== undefined && object.confirmation !== null) {
+      message.confirmation = object.confirmation;
+    } else {
+      message.confirmation = "";
+    }
+    if (object.confirmedBy !== undefined && object.confirmedBy !== null) {
+      message.confirmedBy = object.confirmedBy;
+    } else {
+      message.confirmedBy = "";
+    }
+    return message;
+  },
+};
+
+const baseRevokeCooperationPacketData: object = {};
+
+export const RevokeCooperationPacketData = {
+  encode(
+    _: RevokeCooperationPacketData,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): RevokeCooperationPacketData {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseRevokeCooperationPacketData,
+    } as RevokeCooperationPacketData;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): RevokeCooperationPacketData {
+    const message = {
+      ...baseRevokeCooperationPacketData,
+    } as RevokeCooperationPacketData;
+    return message;
+  },
+
+  toJSON(_: RevokeCooperationPacketData): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<ModifyCooperationInterestPacketAck>
-  ): ModifyCooperationInterestPacketAck {
+    _: DeepPartial<RevokeCooperationPacketData>
+  ): RevokeCooperationPacketData {
     const message = {
-      ...baseModifyCooperationInterestPacketAck,
-    } as ModifyCooperationInterestPacketAck;
+      ...baseRevokeCooperationPacketData,
+    } as RevokeCooperationPacketData;
+    return message;
+  },
+};
+
+const baseRevokeCooperationPacketAck: object = {};
+
+export const RevokeCooperationPacketAck = {
+  encode(
+    _: RevokeCooperationPacketAck,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): RevokeCooperationPacketAck {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseRevokeCooperationPacketAck,
+    } as RevokeCooperationPacketAck;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): RevokeCooperationPacketAck {
+    const message = {
+      ...baseRevokeCooperationPacketAck,
+    } as RevokeCooperationPacketAck;
+    return message;
+  },
+
+  toJSON(_: RevokeCooperationPacketAck): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<RevokeCooperationPacketAck>
+  ): RevokeCooperationPacketAck {
+    const message = {
+      ...baseRevokeCooperationPacketAck,
+    } as RevokeCooperationPacketAck;
     return message;
   },
 };
