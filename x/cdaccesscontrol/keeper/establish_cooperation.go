@@ -163,14 +163,6 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-establish-cooperation",
-						Function:    "OnRecvEstablishCooperationPacket",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on hybrid criteria is verified",
-					})
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -689,6 +681,14 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 	//cost & location
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost + location) is verified",
+			})
 			return true
 		}
 	//cost & interest	
@@ -766,11 +766,22 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			return true
 		}
+	//cost & interest & lastUpdate & validity
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
+		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			return true
+		}
+	//location & lastUpdate & validity & interest
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
+		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			return true
+		}
 	//cost & location & interest & lastUpdate & validity
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
+		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			return true
+		}
 	}
-	/*}else if{
-
-	}*/
 	return false
 }
 
