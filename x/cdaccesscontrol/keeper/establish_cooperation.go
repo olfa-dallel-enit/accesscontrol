@@ -87,11 +87,11 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 			//Check decision policy
 			decisionPolicy, exist := k.crossdomainKeeper.GetDecisionPolicy(ctx)
 			if exist{
-				if k.CheckConstraintlessBasedDecisionPolicy(decisionPolicy){
+				if k.CheckConstraintlessBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-				}else if k.CheckCostBasedDecisionPolicy(cast.ToUint64(data.Cost), decisionPolicy) {
+				}else if k.CheckCostBasedDecisionPolicy(ctx, data.Sender, cast.ToUint64(data.Cost), decisionPolicy) {
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
@@ -99,15 +99,15 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-				}else if k.CheckInterestBasedDecisionPolicy(data.Interest, decisionPolicy){
+				}else if k.CheckInterestBasedDecisionPolicy(ctx, data.Sender, data.Interest, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-				}else if k.CheckLastUpdateBasedDecisionPolicy(decisionPolicy){
+				}else if k.CheckLastUpdateBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-				}else if k.CheckValidityBasedDecisionPolicy(data.NotBefore, data.NotAfter, decisionPolicy){
+				}else if k.CheckValidityBasedDecisionPolicy(ctx, data.Sender, data.NotBefore, data.NotAfter, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
@@ -573,14 +573,14 @@ func (k Keeper) OnTimeoutEstablishCooperationPacket(ctx sdk.Context, packet chan
 	return nil
 }
 
-func (k Keeper) CheckConstraintlessBasedDecisionPolicy(decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckConstraintlessBasedDecisionPolicy(ctx sdk.Context, sender string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		k.AppendCooperationLog(ctx, types.CooperationLog{
 			Creator:     ctx.ChainID(),
 			Transaction: "send-establish-cooperation",
 			Function:    "OnRecvEstablishCooperationPacket",
 			Timestamp:   cast.ToString(time.Now()),
-			Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+			Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
 			Decision:    "Confirmed: contraint-less decision policy is verified",
 		})
 		return true
@@ -588,7 +588,7 @@ func (k Keeper) CheckConstraintlessBasedDecisionPolicy(decisionPolicy crossdomai
 	return false
 }
 
-func (k Keeper) CheckCostBasedDecisionPolicy(cost uint64, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckCostBasedDecisionPolicy(ctx sdk.Context, sender string, cost uint64, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		if cost <= decisionPolicy.Cost {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
@@ -596,7 +596,7 @@ func (k Keeper) CheckCostBasedDecisionPolicy(cost uint64, decisionPolicy crossdo
 				Transaction: "send-establish-cooperation",
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
-				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
 				Decision:    "Confirmed: decision policy based on cost is verified",
 			})
 			return true
@@ -614,7 +614,7 @@ func (k Keeper) CheckLocationBasedDecisionPolicy(ctx sdk.Context, sender string,
 				Transaction: "send-establish-cooperation",
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
-				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
 				Decision:    "Confirmed: decision policy based on location is verified",
 			})
 			return true
@@ -623,7 +623,7 @@ func (k Keeper) CheckLocationBasedDecisionPolicy(ctx sdk.Context, sender string,
 	return false
 }
 
-func (k Keeper) CheckInterestBasedDecisionPolicy(interest string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckInterestBasedDecisionPolicy(ctx sdk.Context, sender string, interest string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil{
 		if findString(interest, decisionPolicy.InterestList){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
@@ -631,7 +631,7 @@ func (k Keeper) CheckInterestBasedDecisionPolicy(interest string, decisionPolicy
 				Transaction: "send-establish-cooperation",
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
-				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
 				Decision:    "Confirmed: decision policy based on cooperation interest is verified",
 			})
 			return true
@@ -640,7 +640,7 @@ func (k Keeper) CheckInterestBasedDecisionPolicy(interest string, decisionPolicy
 	return false
 }
 
-func (k Keeper) CheckLastUpdateBasedDecisionPolicy(decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckLastUpdateBasedDecisionPolicy(ctx sdk.Context, sender string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
 		if time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
@@ -648,7 +648,7 @@ func (k Keeper) CheckLastUpdateBasedDecisionPolicy(decisionPolicy crossdomainTyp
 				Transaction: "send-establish-cooperation",
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
-				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
 				Decision:    "Confirmed: decision policy based on lastUpdate time is verified",
 			})
 			return true
@@ -657,7 +657,7 @@ func (k Keeper) CheckLastUpdateBasedDecisionPolicy(decisionPolicy crossdomainTyp
 	return false
 }
 
-func (k Keeper) CheckValidityBasedDecisionPolicy(notBefore string, notAfter string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckValidityBasedDecisionPolicy(ctx sdk.Context, sender string, notBefore string, notAfter string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
 		if cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
@@ -665,7 +665,7 @@ func (k Keeper) CheckValidityBasedDecisionPolicy(notBefore string, notAfter stri
 				Transaction: "send-establish-cooperation",
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
-				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
 				Decision:    "Confirmed: decision policy based on cooperation validity is verified",
 			})
 			return true
@@ -686,134 +686,334 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Transaction: "send-establish-cooperation",
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
-				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-				Decision:    "Confirmed: decision policy based on hybrid criteria (cost + location) is verified",
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location) is verified",
 			})
 			return true
 		}
 	//cost & interest	
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & interest) is verified",
+			})
 			return true
 		}
 	//cost & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
 		if cost <= decisionPolicy.Cost && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & lastUpdate) is verified",
+			})
 			return true
 		}
 	//cost & validity	
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
 		if cost <= decisionPolicy.Cost && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & validity) is verified",
+			})
 			return true
 		}
 	//location & interest
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (location & interest) is verified",
+			})
 			return true
 		}
 	//location & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (location & lastUpdate) is verified",
+			})
 			return true
 		}
 	//location & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (location & validity) is verified",
+			})
 			return true
 		}
 	//interest & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
 		if findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (interest & lastUpdate) is verified",
+			})
 			return true
 		}
 	//interest & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil{
 		if findString(interest, decisionPolicy.InterestList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (interest & validity) is verified",
+			})
 			return true
 		}
 	//lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
 		if time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (lastUpdate & validity) is verified",
+			})
 			return true
 		}
 	//cost & location & interest
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & interest) is verified",
+			})
 			return true
 		}
 	//cost & location & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil{
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & lastUpdate) is verified",
+			})
 			return true
 		}
 	//cost & location & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil{
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & validity) is verified",
+			})
 			return true
 		}
 	//cost & interest & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil{
 		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate) is verified",
+			})
 			return true
 		}
 	//cost & interest & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil{
 		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & interest & validity) is verified",
+			})
 			return true
 		}
 	//cost & lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
 		if cost <= decisionPolicy.Cost && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano() {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & lastUpdate & validity) is verified",
+			})
 			return true
 		}
 	//location & interest & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (location & interest & lastUpdate) is verified",
+			})
 			return true
 		}
 	//location & interest & validity 
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil{
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano() {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (location & interest & validity) is verified",
+			})
 			return true
 		}
 	//location & lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano() {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (location & lastUpdate & validity) is verified",
+			})
 			return true
 		}
 	//interest & lastUpdate & validity 
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
 		if findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano() {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (interest & lastUpdate & validity) is verified",
+			})
 			return true
 		}
 	//cost & location & interest & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & interest & lastUpdate) is verified",
+			})
 			return true
 		}
 	//cost & location & interest & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & interest & validity) is verified",
+			})
 			return true
 		}
 	//cost & location & lastUpdate & validity 
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & lastUpdate & validity) is verified",
+			})
 			return true
 		}
 	//cost & interest & lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
 		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate & validity) is verified",
+			})
 			return true
 		}
 	//location & lastUpdate & validity & interest
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (location & lastUpdate & validity & interest) is verified",
+			})
 			return true
 		}
 	//cost & location & interest & lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & interest & lastUpdate & validity) is verified",
+			})
 			return true
 		}
 	}
