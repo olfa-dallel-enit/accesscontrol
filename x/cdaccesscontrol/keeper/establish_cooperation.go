@@ -91,7 +91,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-				}else if k.CheckCostBasedDecisionPolicy(ctx, data.Sender, cast.ToUint64(data.Cost), decisionPolicy) {
+				/*}else if k.CheckCostBasedDecisionPolicy(ctx, data.Sender, cast.ToUint64(data.Cost), decisionPolicy) {
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
@@ -115,6 +115,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
+				*/
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -574,7 +575,7 @@ func (k Keeper) OnTimeoutEstablishCooperationPacket(ctx sdk.Context, packet chan
 }
 
 func (k Keeper) CheckConstraintlessBasedDecisionPolicy(ctx sdk.Context, sender string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
-	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
+	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		k.AppendCooperationLog(ctx, types.CooperationLog{
 			Creator:     ctx.ChainID(),
 			Transaction: "send-establish-cooperation",
@@ -589,7 +590,7 @@ func (k Keeper) CheckConstraintlessBasedDecisionPolicy(ctx sdk.Context, sender s
 }
 
 func (k Keeper) CheckCostBasedDecisionPolicy(ctx sdk.Context, sender string, cost uint64, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
-	if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
+	if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0)  {
 		if cost <= decisionPolicy.Cost {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -606,7 +607,7 @@ func (k Keeper) CheckCostBasedDecisionPolicy(ctx sdk.Context, sender string, cos
 }
 
 func (k Keeper) CheckLocationBasedDecisionPolicy(ctx sdk.Context, sender string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
-	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
+	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0)  {
 		remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, sender)
 		if findString(remoteDomainLocation, decisionPolicy.LocationList){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
@@ -624,7 +625,7 @@ func (k Keeper) CheckLocationBasedDecisionPolicy(ctx sdk.Context, sender string,
 }
 
 func (k Keeper) CheckInterestBasedDecisionPolicy(ctx sdk.Context, sender string, interest string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
-	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil{
+	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if findString(interest, decisionPolicy.InterestList){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -641,7 +642,7 @@ func (k Keeper) CheckInterestBasedDecisionPolicy(ctx sdk.Context, sender string,
 }
 
 func (k Keeper) CheckLastUpdateBasedDecisionPolicy(ctx sdk.Context, sender string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
-	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
+	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0)  {
 		if time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -658,7 +659,7 @@ func (k Keeper) CheckLastUpdateBasedDecisionPolicy(ctx sdk.Context, sender strin
 }
 
 func (k Keeper) CheckValidityBasedDecisionPolicy(ctx sdk.Context, sender string, notBefore string, notAfter string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
-	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
+	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
 		if cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -679,7 +680,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 	
 	remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, sender)
 	//cost & location
-	if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
+	if decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0)  {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -692,7 +693,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & interest	
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0)  {
 		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -705,7 +706,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & lastUpdate
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if cost <= decisionPolicy.Cost && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -718,7 +719,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & validity	
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
 		if cost <= decisionPolicy.Cost && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -731,7 +732,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//location & interest
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -744,7 +745,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//location & lastUpdate
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -757,7 +758,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//location & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -770,7 +771,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//interest & lastUpdate
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -783,7 +784,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//interest & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if findString(interest, decisionPolicy.InterestList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -796,7 +797,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//lastUpdate & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
 		if time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -809,7 +810,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & location & interest
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0)  {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -822,7 +823,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & location & lastUpdate
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -835,7 +836,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & location & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -848,7 +849,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & interest & lastUpdate
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -861,7 +862,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & interest & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -874,7 +875,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & lastUpdate & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if cost <= decisionPolicy.Cost && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano() {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -887,7 +888,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//location & interest & lastUpdate
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -900,7 +901,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//location & interest & validity 
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano() {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -913,7 +914,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//location & lastUpdate & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano() {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -926,7 +927,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//interest & lastUpdate & validity 
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano() {
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -939,7 +940,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & location & interest & lastUpdate
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -952,7 +953,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & location & interest & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -965,7 +966,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & location & lastUpdate & validity 
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil {
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -978,7 +979,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & interest & lastUpdate & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if cost <= decisionPolicy.Cost && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -991,7 +992,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//location & lastUpdate & validity & interest
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -1004,7 +1005,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 			return true
 		}
 	//cost & location & interest & lastUpdate & validity
-	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity != nil{
+	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
 		if cost <= decisionPolicy.Cost && findString(remoteDomainLocation, decisionPolicy.LocationList) && findString(interest, decisionPolicy.InterestList) && time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano() && cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
@@ -1066,6 +1067,6 @@ func (k Keeper) addDomainCooperation(ctx sdk.Context, packet channeltypes.Packet
 			Function:    "OnRecvEstablishCooperationPacket",
 			Timestamp:   cast.ToString(time.Now()),
 			Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-			Decision:    "Confirmed",
+			Decision:    "Confirmed: cooperation is appended to the store",
 	})
 }
