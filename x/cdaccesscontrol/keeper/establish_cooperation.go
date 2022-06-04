@@ -87,78 +87,30 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 			//Check decision policy
 			decisionPolicy, exist := k.crossdomainKeeper.GetDecisionPolicy(ctx)
 			if exist{
-				if CheckConstraintlessBasedDecisionPolicy(decisionPolicy){
+				if k.CheckConstraintlessBasedDecisionPolicy(decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-establish-cooperation",
-						Function:    "OnRecvEstablishCooperationPacket",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: contraint-less decision policy is verified",
-					})
-				}else if CheckCostBasedDecisionPolicy(cast.ToUint64(data.Cost), decisionPolicy) {
+				}else if k.CheckCostBasedDecisionPolicy(cast.ToUint64(data.Cost), decisionPolicy) {
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-establish-cooperation",
-						Function:    "OnRecvEstablishCooperationPacket",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on cost is verified",
-					})
 				}else if k.CheckLocationBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-establish-cooperation",
-						Function:    "OnRecvEstablishCooperationPacket",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on location is verified",
-					})
-				}else if CheckInterestBasedDecisionPolicy(data.Interest, decisionPolicy){
+				}else if k.CheckInterestBasedDecisionPolicy(data.Interest, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-establish-cooperation",
-						Function:    "OnRecvEstablishCooperationPacket",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on cooperation interest is verified",
-					})
-				}else if CheckLastUpdateBasedDecisionPolicy(decisionPolicy){
+				}else if k.CheckLastUpdateBasedDecisionPolicy(decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-establish-cooperation",
-						Function:    "OnRecvEstablishCooperationPacket",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on last update time is verified",
-					})
-				}else if CheckValidityBasedDecisionPolicy(data.NotBefore, data.NotAfter, decisionPolicy){
+				}else if k.CheckValidityBasedDecisionPolicy(data.NotBefore, data.NotAfter, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.AppendCooperationLog(ctx, types.CooperationLog{
-						Creator:     ctx.ChainID(),
-						Transaction: "send-establish-cooperation",
-						Function:    "OnRecvEstablishCooperationPacket",
-						Timestamp:   cast.ToString(time.Now()),
-						Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
-						Decision:    "Confirmed: decision policy based on cooperation validity is verified",
-					})
 				}else if k.CheckHybridBasedDecisionPolicy(ctx, cast.ToUint64(data.Cost), data.Sender, data.Interest, data.NotBefore, data.NotAfter, decisionPolicy){
 					k.addDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
@@ -621,16 +573,32 @@ func (k Keeper) OnTimeoutEstablishCooperationPacket(ctx sdk.Context, packet chan
 	return nil
 }
 
-func CheckConstraintlessBasedDecisionPolicy(decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckConstraintlessBasedDecisionPolicy(decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
+		k.AppendCooperationLog(ctx, types.CooperationLog{
+			Creator:     ctx.ChainID(),
+			Transaction: "send-establish-cooperation",
+			Function:    "OnRecvEstablishCooperationPacket",
+			Timestamp:   cast.ToString(time.Now()),
+			Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+			Decision:    "Confirmed: contraint-less decision policy is verified",
+		})
 		return true
 	}
 	return false
 }
 
-func CheckCostBasedDecisionPolicy(cost uint64, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckCostBasedDecisionPolicy(cost uint64, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		if cost <= decisionPolicy.Cost {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Decision:    "Confirmed: decision policy based on cost is verified",
+			})
 			return true
 		}
 	}
@@ -641,34 +609,66 @@ func (k Keeper) CheckLocationBasedDecisionPolicy(ctx sdk.Context, sender string,
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil {
 		remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, sender)
 		if findString(remoteDomainLocation, decisionPolicy.LocationList){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Decision:    "Confirmed: decision policy based on location is verified",
+			})
 			return true
 		}
 	}
 	return false
 }
 
-func CheckInterestBasedDecisionPolicy(interest string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckInterestBasedDecisionPolicy(interest string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity == nil{
 		if findString(interest, decisionPolicy.InterestList){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Decision:    "Confirmed: decision policy based on cooperation interest is verified",
+			})
 			return true
 		}
 	}
 	return false
 }
 
-func CheckLastUpdateBasedDecisionPolicy(decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckLastUpdateBasedDecisionPolicy(decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && decisionPolicy.Validity == nil {
 		if time.Now().UnixNano() >= cast.ToTime(decisionPolicy.LastUpdate).UnixNano(){
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Decision:    "Confirmed: decision policy based on lastUpdate time is verified",
+			})
 			return true
 		}
 	}
 	return false
 }
 
-func CheckValidityBasedDecisionPolicy(notBefore string, notAfter string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
+func (k Keeper) CheckValidityBasedDecisionPolicy(notBefore string, notAfter string, decisionPolicy crossdomainTypes.DecisionPolicy) (verified bool){
 	if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && decisionPolicy.Validity != nil {
 		if cast.ToTime(notBefore).UnixNano() >= cast.ToTime(decisionPolicy.Validity.NotBefore).UnixNano() && cast.ToTime(notAfter).UnixNano() <= cast.ToTime(decisionPolicy.Validity.NotAfter).UnixNano(){
-		return true
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + data.Sender,
+				Decision:    "Confirmed: decision policy based on cooperation validity is verified",
+			})
+			return true
 		}
 	}
 	return false
