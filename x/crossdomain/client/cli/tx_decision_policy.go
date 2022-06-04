@@ -14,26 +14,26 @@ import (
 
 func CmdCreateDecisionPolicy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-decision-policy [depth] [cost] [location] [interest] [validity] [last-update]",
+		Use:   "create-decision-policy [cost] [location] [interest] [validity] [last-update]",
 		Short: "Create decisionPolicy",
-		Args:  cobra.ExactArgs(6),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argDepth, err := cast.ToUint64E(args[0])
+			argDepth, err := cast.ToUint64E(0)
 			if err != nil {
 				return err
 			}
-			argCost, err := cast.ToUint64E(args[1])
+			argCost, err := cast.ToUint64E(args[0])
 			if err != nil {
 				return err
 			}
-			argLocationList := strings.Split(args[2], listSeparator)
-			argInterestList := strings.Split(args[3], listSeparator)
+			argLocationList := strings.Split(args[1], listSeparator)
+			argInterestList := strings.Split(args[2], listSeparator)
 			argValidity := new(types.Validity)
-			err = json.Unmarshal([]byte(args[4]), argValidity)
+			err = json.Unmarshal([]byte(args[3]), argValidity)
 			if err != nil {
 				return err
 			}
-			argLastUpdate := args[5]
+			argLastUpdate := args[4]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -55,26 +55,26 @@ func CmdCreateDecisionPolicy() *cobra.Command {
 
 func CmdUpdateDecisionPolicy() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-decision-policy [depth] [cost] [location] [interest] [validity] [last-update]",
+		Use:   "update-decision-policy [cost] [location] [interest] [validity] [last-update]",
 		Short: "Update decisionPolicy",
-		Args:  cobra.ExactArgs(6),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argDepth, err := cast.ToUint64E(args[0])
+			argDepth, err := cast.ToUint64E(0)
 			if err != nil {
 				return err
 			}
-			argCost, err := cast.ToUint64E(args[1])
+			argCost, err := cast.ToUint64E(args[0])
 			if err != nil {
 				return err
 			}
-			argLocationList := strings.Split(args[2], listSeparator)
-			argInterestList := strings.Split(args[3], listSeparator)
+			argLocationList := strings.Split(args[1], listSeparator)
+			argInterestList := strings.Split(args[2], listSeparator)
 			argValidity := new(types.Validity)
-			err = json.Unmarshal([]byte(args[4]), argValidity)
+			err = json.Unmarshal([]byte(args[3]), argValidity)
 			if err != nil {
 				return err
 			}
-			argLastUpdate := args[5]
+			argLastUpdate := args[4]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
