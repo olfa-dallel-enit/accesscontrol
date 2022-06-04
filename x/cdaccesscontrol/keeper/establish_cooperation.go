@@ -585,6 +585,14 @@ func (k Keeper) CheckConstraintlessBasedDecisionPolicy(ctx sdk.Context, sender s
 		})
 		return true
 	}
+	k.AppendCooperationLog(ctx, types.CooperationLog{
+		Creator:     ctx.ChainID(),
+		Transaction: "send-establish-cooperation",
+		Function:    "OnRecvEstablishCooperationPacket",
+		Timestamp:   cast.ToString(time.Now()),
+		Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+		Decision:    "Not confirmed: contraint-less decision policy is not verified",
+	})
 	return false
 }
 
@@ -602,6 +610,14 @@ func (k Keeper) CheckCostBasedDecisionPolicy(ctx sdk.Context, sender string, cos
 			return true
 		}
 	}
+	k.AppendCooperationLog(ctx, types.CooperationLog{
+		Creator:     ctx.ChainID(),
+		Transaction: "send-establish-cooperation",
+		Function:    "OnRecvEstablishCooperationPacket",
+		Timestamp:   cast.ToString(time.Now()),
+		Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+		Decision:    "Not confirmed: decision policy based on cost is not verified",
+	})
 	return false
 }
 
@@ -620,6 +636,14 @@ func (k Keeper) CheckLocationBasedDecisionPolicy(ctx sdk.Context, sender string,
 			return true
 		}
 	}
+	k.AppendCooperationLog(ctx, types.CooperationLog{
+		Creator:     ctx.ChainID(),
+		Transaction: "send-establish-cooperation",
+		Function:    "OnRecvEstablishCooperationPacket",
+		Timestamp:   cast.ToString(time.Now()),
+		Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+		Decision:    "Not confirmed: decision policy based on location is not verified",
+	})
 	return false
 }
 
@@ -637,6 +661,14 @@ func (k Keeper) CheckInterestBasedDecisionPolicy(ctx sdk.Context, sender string,
 			return true
 		}
 	}
+	k.AppendCooperationLog(ctx, types.CooperationLog{
+		Creator:     ctx.ChainID(),
+		Transaction: "send-establish-cooperation",
+		Function:    "OnRecvEstablishCooperationPacket",
+		Timestamp:   cast.ToString(time.Now()),
+		Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+		Decision:    "Not confirmed: decision policy based on cooperation interest is not verified",
+	})
 	return false
 }
 
@@ -654,6 +686,14 @@ func (k Keeper) CheckLastUpdateBasedDecisionPolicy(ctx sdk.Context, sender strin
 			return true
 		}
 	}
+	k.AppendCooperationLog(ctx, types.CooperationLog{
+		Creator:     ctx.ChainID(),
+		Transaction: "send-establish-cooperation",
+		Function:    "OnRecvEstablishCooperationPacket",
+		Timestamp:   cast.ToString(time.Now()),
+		Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+		Decision:    "Not confirmed: decision policy based on lastUpdate time is not verified",
+	})
 	return false
 }
 
@@ -671,6 +711,14 @@ func (k Keeper) CheckValidityBasedDecisionPolicy(ctx sdk.Context, sender string,
 			return true
 		}
 	}
+	k.AppendCooperationLog(ctx, types.CooperationLog{
+		Creator:     ctx.ChainID(),
+		Transaction: "send-establish-cooperation",
+		Function:    "OnRecvEstablishCooperationPacket",
+		Timestamp:   cast.ToString(time.Now()),
+		Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+		Decision:    "Not confirmed: decision policy based on cooperation validity is not verified",
+	})
 	return false
 }
 
@@ -690,6 +738,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location) is not verified",
+			})
 		}
 	//cost & interest	
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0)  {
@@ -703,6 +760,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & interest) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & interest) is not verified",
+			})
 		}
 	//cost & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
@@ -716,6 +782,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & lastUpdate) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & lastUpdate) is not verified",
+			})
 		}
 	//cost & validity	
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
@@ -729,6 +804,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & validity) is not verified",
+			})
 		}
 	//location & interest
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
@@ -742,6 +826,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (location & interest) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & interest) is not verified",
+			})
 		}
 	//location & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
@@ -755,6 +848,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (location & lastUpdate) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & lastUpdate) is not verified",
+			})
 		}
 	//location & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
@@ -768,6 +870,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (location & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & validity) is not verified",
+			})
 		}
 	//interest & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
@@ -781,6 +892,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (interest & lastUpdate) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (interest & lastUpdate) is not verified",
+			})
 		}
 	//interest & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -794,6 +914,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (interest & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (interest & validity) is not verified",
+			})
 		}
 	//lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
@@ -807,6 +936,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (lastUpdate & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (lastUpdate & validity) is not verified",
+			})
 		}
 	//cost & location & interest
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0)  {
@@ -820,6 +958,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & interest) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & interest) is not verified",
+			})
 		}
 	//cost & location & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
@@ -833,6 +980,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & lastUpdate) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & lastUpdate) is not verified",
+			})
 		}
 	//cost & location & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -846,6 +1002,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & validity) is not verified",
+			})
 		}
 	//cost & interest & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
@@ -859,6 +1024,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate) is not verified",
+			})
 		}
 	//cost & interest & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -872,6 +1046,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & interest & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & interest & validity) is not verified",
+			})
 		}
 	//cost & lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -885,6 +1068,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & lastUpdate & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & lastUpdate & validity) is not verified",
+			})
 		}
 	//location & interest & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
@@ -898,6 +1090,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (location & interest & lastUpdate) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & interest & lastUpdate) is not verified",
+			})
 		}
 	//location & interest & validity 
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -911,6 +1112,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (location & interest & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & interest & validity) is not verified",
+			})
 		}
 	//location & lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0)  {
@@ -924,6 +1134,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (location & lastUpdate & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & lastUpdate & validity) is not verified",
+			})
 		}
 	//interest & lastUpdate & validity 
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -937,6 +1156,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (interest & lastUpdate & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (interest & lastUpdate & validity) is not verified",
+			})
 		}
 	//cost & location & interest & lastUpdate
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) == 0 && len(decisionPolicy.Validity.NotAfter) == 0) {
@@ -950,6 +1178,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & interest & lastUpdate) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & interest & lastUpdate) is not verified",
+			})
 		}
 	//cost & location & interest & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0  && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) == 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -963,6 +1200,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & interest & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & interest & validity) is not verified",
+			})
 		}
 	//cost & location & lastUpdate & validity 
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) == 1 && len(decisionPolicy.InterestList[0]) == 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -976,6 +1222,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & lastUpdate & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & lastUpdate & validity) is not verified",
+			})
 		}
 	//cost & interest & lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) == 1 && len(decisionPolicy.LocationList[0]) == 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -989,6 +1244,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate & validity) is not verified",
+			})
 		}
 	//location & lastUpdate & validity & interest
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost == 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -1002,6 +1266,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (location & lastUpdate & validity & interest) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & lastUpdate & validity & interest) is not verified",
+			})
 		}
 	//cost & location & interest & lastUpdate & validity
 	}else if decisionPolicy.Depth == 0 && decisionPolicy.Cost > 0 && len(decisionPolicy.LocationList) > 0 && len(decisionPolicy.LocationList[0]) > 0 && len(decisionPolicy.InterestList) > 0 && len(decisionPolicy.InterestList[0]) > 0 && len(decisionPolicy.LastUpdate) > 0 && (len(decisionPolicy.Validity.NotBefore) > 0 && len(decisionPolicy.Validity.NotAfter) > 0) {
@@ -1015,6 +1288,15 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Decision:    "Confirmed: decision policy based on hybrid criteria (cost & location & interest & lastUpdate & validity) is verified",
 			})
 			return true
+		}else{
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnRecvEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
+				Decision:    "Not onfirmed: decision policy based on hybrid criteria  (cost & location & interest & lastUpdate & validity) is not verified",
+			})
 		}
 	}
 	return false
