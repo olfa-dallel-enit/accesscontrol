@@ -25,4 +25,8 @@ crossdomaind tx crossdomain  create-decision-policy 0 '' '' '{}' "" --from alice
 #lastUpdateBased
 #crossdomaind tx crossdomain  update-decision-policy 0 '' '' '{}' "2022-05-31 00:00:00 +0000 UTC" --from alice --yes --home ~/.mars --chain-id mars --node tcp://localhost:26659 --gas=auto --gas-adjustment=1.15
 
+#validityBased
+crossdomaind tx crossdomain  update-decision-policy 0 '' '' '{"notBefore":"2022-01-01 00:00:00 +0000 UTC","notAfter":"2026-01-01 00:00:00 +0000 UTC"}' "" --from alice --yes --home ~/.mars --chain-id mars --node tcp://localhost:26659 --gas=auto --gas-adjustment=1.15
+
+
 crossdomaind query crossdomain show-decision-policy --node tcp://localhost:26659
