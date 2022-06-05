@@ -57,6 +57,11 @@ func TestGenesis(t *testing.T) {
 			LocationList: []string{"9"},
 			LastUpdate:   "18",
 		},
+		UpdatePolicy: &types.UpdatePolicy{
+			Query:           true,
+			Event:           false,
+			PeriodicalQuery: false,
+		},
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -77,5 +82,6 @@ func TestGenesis(t *testing.T) {
 	require.Equal(t, genesisState.ValidityCount, got.ValidityCount)
 	require.Equal(t, genesisState.DecisionPolicy, got.DecisionPolicy)
 	require.Equal(t, genesisState.CooperationNetworkFeatures, got.CooperationNetworkFeatures)
+	require.Equal(t, genesisState.UpdatePolicy, got.UpdatePolicy)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

@@ -65,6 +65,11 @@ func TestGenesisState_Validate(t *testing.T) {
 					LocationList: []string{"20"},
 					LastUpdate:   "8",
 				},
+				UpdatePolicy: &types.UpdatePolicy{
+					Query:           true,
+					Event:           true,
+					PeriodicalQuery: false,
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,

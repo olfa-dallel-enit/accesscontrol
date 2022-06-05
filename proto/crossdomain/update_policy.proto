@@ -1,0 +1,11 @@
+syntax = "proto3";
+package crossdomain.crossdomain;
+
+option go_package = "crossdomain/x/crossdomain/types";
+
+message UpdatePolicy {
+  bool query = 1; 
+  bool event = 2; 
+  bool periodicalQuery = 3; 
+  string creator = 4;
+}

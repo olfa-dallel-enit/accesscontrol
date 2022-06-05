@@ -15,13 +15,13 @@ var _ sdk.Msg = &MsgCreateDecisionPolicy{}
 
 func NewMsgCreateDecisionPolicy(creator string, depth uint64, cost uint64, locationList []string, interestList []string, validity *Validity, lastUpdate string) *MsgCreateDecisionPolicy {
 	return &MsgCreateDecisionPolicy{
-		Creator:    creator,
-		Depth:      depth,
-		Cost:       cost,
-		LocationList:   locationList,
-		InterestList:   interestList,
-		Validity:   validity,
-		LastUpdate: lastUpdate,
+		Creator:      creator,
+		Depth:        depth,
+		Cost:         cost,
+		LocationList: locationList,
+		InterestList: interestList,
+		Validity:     validity,
+		LastUpdate:   lastUpdate,
 	}
 }
 
@@ -58,13 +58,13 @@ var _ sdk.Msg = &MsgUpdateDecisionPolicy{}
 
 func NewMsgUpdateDecisionPolicy(creator string, depth uint64, cost uint64, locationList []string, interestList []string, validity *Validity, lastUpdate string) *MsgUpdateDecisionPolicy {
 	return &MsgUpdateDecisionPolicy{
-		Creator:    creator,
-		Depth:      depth,
-		Cost:       cost,
-		LocationList:   locationList,
-		InterestList:   interestList,
-		Validity:   validity,
-		LastUpdate: lastUpdate,
+		Creator:      creator,
+		Depth:        depth,
+		Cost:         cost,
+		LocationList: locationList,
+		InterestList: interestList,
+		Validity:     validity,
+		LastUpdate:   lastUpdate,
 	}
 }
 

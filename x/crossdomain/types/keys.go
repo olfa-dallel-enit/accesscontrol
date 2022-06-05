@@ -53,3 +53,7 @@ const (
 const (
 	CooperationNetworkFeaturesKey = "CooperationNetworkFeatures-value-"
 )
+
+const (
+	UpdatePolicyKey = "UpdatePolicy-value-"
+)

@@ -18,13 +18,13 @@ func (k msgServer) CreateDecisionPolicy(goCtx context.Context, msg *types.MsgCre
 	}
 
 	var decisionPolicy = types.DecisionPolicy{
-		Creator:    msg.Creator,
-		Depth:      msg.Depth,
-		Cost:       msg.Cost,
-		LocationList:   msg.LocationList,
-		InterestList:   msg.InterestList,
-		Validity:   msg.Validity,
-		LastUpdate: msg.LastUpdate,
+		Creator:      msg.Creator,
+		Depth:        msg.Depth,
+		Cost:         msg.Cost,
+		LocationList: msg.LocationList,
+		InterestList: msg.InterestList,
+		Validity:     msg.Validity,
+		LastUpdate:   msg.LastUpdate,
 	}
 
 	k.SetDecisionPolicy(
@@ -49,13 +49,13 @@ func (k msgServer) UpdateDecisionPolicy(goCtx context.Context, msg *types.MsgUpd
 	}
 
 	var decisionPolicy = types.DecisionPolicy{
-		Creator:    msg.Creator,
-		Depth:      msg.Depth,
-		Cost:       msg.Cost,
-		LocationList:   msg.LocationList,
-		InterestList:   msg.InterestList,
-		Validity:   msg.Validity,
-		LastUpdate: msg.LastUpdate,
+		Creator:      msg.Creator,
+		Depth:        msg.Depth,
+		Cost:         msg.Cost,
+		LocationList: msg.LocationList,
+		InterestList: msg.InterestList,
+		Validity:     msg.Validity,
+		LastUpdate:   msg.LastUpdate,
 	}
 
 	k.SetDecisionPolicy(ctx, decisionPolicy)

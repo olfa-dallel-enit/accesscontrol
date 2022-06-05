@@ -153,8 +153,8 @@ export interface MsgCreateDecisionPolicy {
   creator: string;
   depth: number;
   cost: number;
-  location: string;
-  interest: string;
+  locationList: string[];
+  interestList: string[];
   validity: Validity | undefined;
   lastUpdate: string;
 }
@@ -165,8 +165,8 @@ export interface MsgUpdateDecisionPolicy {
   creator: string;
   depth: number;
   cost: number;
-  location: string;
-  interest: string;
+  locationList: string[];
+  interestList: string[];
   validity: Validity | undefined;
   lastUpdate: string;
 }
@@ -206,6 +206,30 @@ export interface MsgDeleteCooperationNetworkFeatures {
 }
 
 export interface MsgDeleteCooperationNetworkFeaturesResponse {}
+
+export interface MsgCreateUpdatePolicy {
+  creator: string;
+  query: boolean;
+  event: boolean;
+  periodicalQuery: boolean;
+}
+
+export interface MsgCreateUpdatePolicyResponse {}
+
+export interface MsgUpdateUpdatePolicy {
+  creator: string;
+  query: boolean;
+  event: boolean;
+  periodicalQuery: boolean;
+}
+
+export interface MsgUpdateUpdatePolicyResponse {}
+
+export interface MsgDeleteUpdatePolicy {
+  creator: string;
+}
+
+export interface MsgDeleteUpdatePolicyResponse {}
 
 const baseMsgCreatePrivateKey: object = { creator: "", value: "" };
 
@@ -2952,8 +2976,8 @@ const baseMsgCreateDecisionPolicy: object = {
   creator: "",
   depth: 0,
   cost: 0,
-  location: "",
-  interest: "",
+  locationList: "",
+  interestList: "",
   lastUpdate: "",
 };
 
@@ -2971,11 +2995,11 @@ export const MsgCreateDecisionPolicy = {
     if (message.cost !== 0) {
       writer.uint32(32).uint64(message.cost);
     }
-    if (message.location !== "") {
-      writer.uint32(42).string(message.location);
+    for (const v of message.locationList) {
+      writer.uint32(42).string(v!);
     }
-    if (message.interest !== "") {
-      writer.uint32(50).string(message.interest);
+    for (const v of message.interestList) {
+      writer.uint32(50).string(v!);
     }
     if (message.validity !== undefined) {
       Validity.encode(message.validity, writer.uint32(58).fork()).ldelim();
@@ -2992,6 +3016,8 @@ export const MsgCreateDecisionPolicy = {
     const message = {
       ...baseMsgCreateDecisionPolicy,
     } as MsgCreateDecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3005,10 +3031,10 @@ export const MsgCreateDecisionPolicy = {
           message.cost = longToNumber(reader.uint64() as Long);
           break;
         case 5:
-          message.location = reader.string();
+          message.locationList.push(reader.string());
           break;
         case 6:
-          message.interest = reader.string();
+          message.interestList.push(reader.string());
           break;
         case 7:
           message.validity = Validity.decode(reader, reader.uint32());
@@ -3028,6 +3054,8 @@ export const MsgCreateDecisionPolicy = {
     const message = {
       ...baseMsgCreateDecisionPolicy,
     } as MsgCreateDecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
@@ -3043,15 +3071,15 @@ export const MsgCreateDecisionPolicy = {
     } else {
       message.cost = 0;
     }
-    if (object.location !== undefined && object.location !== null) {
-      message.location = String(object.location);
-    } else {
-      message.location = "";
+    if (object.locationList !== undefined && object.locationList !== null) {
+      for (const e of object.locationList) {
+        message.locationList.push(String(e));
+      }
     }
-    if (object.interest !== undefined && object.interest !== null) {
-      message.interest = String(object.interest);
-    } else {
-      message.interest = "";
+    if (object.interestList !== undefined && object.interestList !== null) {
+      for (const e of object.interestList) {
+        message.interestList.push(String(e));
+      }
     }
     if (object.validity !== undefined && object.validity !== null) {
       message.validity = Validity.fromJSON(object.validity);
@@ -3071,8 +3099,16 @@ export const MsgCreateDecisionPolicy = {
     message.creator !== undefined && (obj.creator = message.creator);
     message.depth !== undefined && (obj.depth = message.depth);
     message.cost !== undefined && (obj.cost = message.cost);
-    message.location !== undefined && (obj.location = message.location);
-    message.interest !== undefined && (obj.interest = message.interest);
+    if (message.locationList) {
+      obj.locationList = message.locationList.map((e) => e);
+    } else {
+      obj.locationList = [];
+    }
+    if (message.interestList) {
+      obj.interestList = message.interestList.map((e) => e);
+    } else {
+      obj.interestList = [];
+    }
     message.validity !== undefined &&
       (obj.validity = message.validity
         ? Validity.toJSON(message.validity)
@@ -3087,6 +3123,8 @@ export const MsgCreateDecisionPolicy = {
     const message = {
       ...baseMsgCreateDecisionPolicy,
     } as MsgCreateDecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
@@ -3102,15 +3140,15 @@ export const MsgCreateDecisionPolicy = {
     } else {
       message.cost = 0;
     }
-    if (object.location !== undefined && object.location !== null) {
-      message.location = object.location;
-    } else {
-      message.location = "";
+    if (object.locationList !== undefined && object.locationList !== null) {
+      for (const e of object.locationList) {
+        message.locationList.push(e);
+      }
     }
-    if (object.interest !== undefined && object.interest !== null) {
-      message.interest = object.interest;
-    } else {
-      message.interest = "";
+    if (object.interestList !== undefined && object.interestList !== null) {
+      for (const e of object.interestList) {
+        message.interestList.push(e);
+      }
     }
     if (object.validity !== undefined && object.validity !== null) {
       message.validity = Validity.fromPartial(object.validity);
@@ -3182,8 +3220,8 @@ const baseMsgUpdateDecisionPolicy: object = {
   creator: "",
   depth: 0,
   cost: 0,
-  location: "",
-  interest: "",
+  locationList: "",
+  interestList: "",
   lastUpdate: "",
 };
 
@@ -3201,11 +3239,11 @@ export const MsgUpdateDecisionPolicy = {
     if (message.cost !== 0) {
       writer.uint32(32).uint64(message.cost);
     }
-    if (message.location !== "") {
-      writer.uint32(42).string(message.location);
+    for (const v of message.locationList) {
+      writer.uint32(42).string(v!);
     }
-    if (message.interest !== "") {
-      writer.uint32(50).string(message.interest);
+    for (const v of message.interestList) {
+      writer.uint32(50).string(v!);
     }
     if (message.validity !== undefined) {
       Validity.encode(message.validity, writer.uint32(58).fork()).ldelim();
@@ -3222,6 +3260,8 @@ export const MsgUpdateDecisionPolicy = {
     const message = {
       ...baseMsgUpdateDecisionPolicy,
     } as MsgUpdateDecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -3235,10 +3275,10 @@ export const MsgUpdateDecisionPolicy = {
           message.cost = longToNumber(reader.uint64() as Long);
           break;
         case 5:
-          message.location = reader.string();
+          message.locationList.push(reader.string());
           break;
         case 6:
-          message.interest = reader.string();
+          message.interestList.push(reader.string());
           break;
         case 7:
           message.validity = Validity.decode(reader, reader.uint32());
@@ -3258,6 +3298,8 @@ export const MsgUpdateDecisionPolicy = {
     const message = {
       ...baseMsgUpdateDecisionPolicy,
     } as MsgUpdateDecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
@@ -3273,15 +3315,15 @@ export const MsgUpdateDecisionPolicy = {
     } else {
       message.cost = 0;
     }
-    if (object.location !== undefined && object.location !== null) {
-      message.location = String(object.location);
-    } else {
-      message.location = "";
+    if (object.locationList !== undefined && object.locationList !== null) {
+      for (const e of object.locationList) {
+        message.locationList.push(String(e));
+      }
     }
-    if (object.interest !== undefined && object.interest !== null) {
-      message.interest = String(object.interest);
-    } else {
-      message.interest = "";
+    if (object.interestList !== undefined && object.interestList !== null) {
+      for (const e of object.interestList) {
+        message.interestList.push(String(e));
+      }
     }
     if (object.validity !== undefined && object.validity !== null) {
       message.validity = Validity.fromJSON(object.validity);
@@ -3301,8 +3343,16 @@ export const MsgUpdateDecisionPolicy = {
     message.creator !== undefined && (obj.creator = message.creator);
     message.depth !== undefined && (obj.depth = message.depth);
     message.cost !== undefined && (obj.cost = message.cost);
-    message.location !== undefined && (obj.location = message.location);
-    message.interest !== undefined && (obj.interest = message.interest);
+    if (message.locationList) {
+      obj.locationList = message.locationList.map((e) => e);
+    } else {
+      obj.locationList = [];
+    }
+    if (message.interestList) {
+      obj.interestList = message.interestList.map((e) => e);
+    } else {
+      obj.interestList = [];
+    }
     message.validity !== undefined &&
       (obj.validity = message.validity
         ? Validity.toJSON(message.validity)
@@ -3317,6 +3367,8 @@ export const MsgUpdateDecisionPolicy = {
     const message = {
       ...baseMsgUpdateDecisionPolicy,
     } as MsgUpdateDecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
@@ -3332,15 +3384,15 @@ export const MsgUpdateDecisionPolicy = {
     } else {
       message.cost = 0;
     }
-    if (object.location !== undefined && object.location !== null) {
-      message.location = object.location;
-    } else {
-      message.location = "";
+    if (object.locationList !== undefined && object.locationList !== null) {
+      for (const e of object.locationList) {
+        message.locationList.push(e);
+      }
     }
-    if (object.interest !== undefined && object.interest !== null) {
-      message.interest = object.interest;
-    } else {
-      message.interest = "";
+    if (object.interestList !== undefined && object.interestList !== null) {
+      for (const e of object.interestList) {
+        message.interestList.push(e);
+      }
     }
     if (object.validity !== undefined && object.validity !== null) {
       message.validity = Validity.fromPartial(object.validity);
@@ -4101,6 +4153,468 @@ export const MsgDeleteCooperationNetworkFeaturesResponse = {
   },
 };
 
+const baseMsgCreateUpdatePolicy: object = {
+  creator: "",
+  query: false,
+  event: false,
+  periodicalQuery: false,
+};
+
+export const MsgCreateUpdatePolicy = {
+  encode(
+    message: MsgCreateUpdatePolicy,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.query === true) {
+      writer.uint32(24).bool(message.query);
+    }
+    if (message.event === true) {
+      writer.uint32(32).bool(message.event);
+    }
+    if (message.periodicalQuery === true) {
+      writer.uint32(40).bool(message.periodicalQuery);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgCreateUpdatePolicy {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateUpdatePolicy } as MsgCreateUpdatePolicy;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 3:
+          message.query = reader.bool();
+          break;
+        case 4:
+          message.event = reader.bool();
+          break;
+        case 5:
+          message.periodicalQuery = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateUpdatePolicy {
+    const message = { ...baseMsgCreateUpdatePolicy } as MsgCreateUpdatePolicy;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.query !== undefined && object.query !== null) {
+      message.query = Boolean(object.query);
+    } else {
+      message.query = false;
+    }
+    if (object.event !== undefined && object.event !== null) {
+      message.event = Boolean(object.event);
+    } else {
+      message.event = false;
+    }
+    if (
+      object.periodicalQuery !== undefined &&
+      object.periodicalQuery !== null
+    ) {
+      message.periodicalQuery = Boolean(object.periodicalQuery);
+    } else {
+      message.periodicalQuery = false;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateUpdatePolicy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.query !== undefined && (obj.query = message.query);
+    message.event !== undefined && (obj.event = message.event);
+    message.periodicalQuery !== undefined &&
+      (obj.periodicalQuery = message.periodicalQuery);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateUpdatePolicy>
+  ): MsgCreateUpdatePolicy {
+    const message = { ...baseMsgCreateUpdatePolicy } as MsgCreateUpdatePolicy;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.query !== undefined && object.query !== null) {
+      message.query = object.query;
+    } else {
+      message.query = false;
+    }
+    if (object.event !== undefined && object.event !== null) {
+      message.event = object.event;
+    } else {
+      message.event = false;
+    }
+    if (
+      object.periodicalQuery !== undefined &&
+      object.periodicalQuery !== null
+    ) {
+      message.periodicalQuery = object.periodicalQuery;
+    } else {
+      message.periodicalQuery = false;
+    }
+    return message;
+  },
+};
+
+const baseMsgCreateUpdatePolicyResponse: object = {};
+
+export const MsgCreateUpdatePolicyResponse = {
+  encode(
+    _: MsgCreateUpdatePolicyResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgCreateUpdatePolicyResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateUpdatePolicyResponse,
+    } as MsgCreateUpdatePolicyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCreateUpdatePolicyResponse {
+    const message = {
+      ...baseMsgCreateUpdatePolicyResponse,
+    } as MsgCreateUpdatePolicyResponse;
+    return message;
+  },
+
+  toJSON(_: MsgCreateUpdatePolicyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgCreateUpdatePolicyResponse>
+  ): MsgCreateUpdatePolicyResponse {
+    const message = {
+      ...baseMsgCreateUpdatePolicyResponse,
+    } as MsgCreateUpdatePolicyResponse;
+    return message;
+  },
+};
+
+const baseMsgUpdateUpdatePolicy: object = {
+  creator: "",
+  query: false,
+  event: false,
+  periodicalQuery: false,
+};
+
+export const MsgUpdateUpdatePolicy = {
+  encode(
+    message: MsgUpdateUpdatePolicy,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.query === true) {
+      writer.uint32(24).bool(message.query);
+    }
+    if (message.event === true) {
+      writer.uint32(32).bool(message.event);
+    }
+    if (message.periodicalQuery === true) {
+      writer.uint32(40).bool(message.periodicalQuery);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdateUpdatePolicy {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateUpdatePolicy } as MsgUpdateUpdatePolicy;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 3:
+          message.query = reader.bool();
+          break;
+        case 4:
+          message.event = reader.bool();
+          break;
+        case 5:
+          message.periodicalQuery = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateUpdatePolicy {
+    const message = { ...baseMsgUpdateUpdatePolicy } as MsgUpdateUpdatePolicy;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.query !== undefined && object.query !== null) {
+      message.query = Boolean(object.query);
+    } else {
+      message.query = false;
+    }
+    if (object.event !== undefined && object.event !== null) {
+      message.event = Boolean(object.event);
+    } else {
+      message.event = false;
+    }
+    if (
+      object.periodicalQuery !== undefined &&
+      object.periodicalQuery !== null
+    ) {
+      message.periodicalQuery = Boolean(object.periodicalQuery);
+    } else {
+      message.periodicalQuery = false;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgUpdateUpdatePolicy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.query !== undefined && (obj.query = message.query);
+    message.event !== undefined && (obj.event = message.event);
+    message.periodicalQuery !== undefined &&
+      (obj.periodicalQuery = message.periodicalQuery);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateUpdatePolicy>
+  ): MsgUpdateUpdatePolicy {
+    const message = { ...baseMsgUpdateUpdatePolicy } as MsgUpdateUpdatePolicy;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.query !== undefined && object.query !== null) {
+      message.query = object.query;
+    } else {
+      message.query = false;
+    }
+    if (object.event !== undefined && object.event !== null) {
+      message.event = object.event;
+    } else {
+      message.event = false;
+    }
+    if (
+      object.periodicalQuery !== undefined &&
+      object.periodicalQuery !== null
+    ) {
+      message.periodicalQuery = object.periodicalQuery;
+    } else {
+      message.periodicalQuery = false;
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdateUpdatePolicyResponse: object = {};
+
+export const MsgUpdateUpdatePolicyResponse = {
+  encode(
+    _: MsgUpdateUpdatePolicyResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateUpdatePolicyResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateUpdatePolicyResponse,
+    } as MsgUpdateUpdatePolicyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateUpdatePolicyResponse {
+    const message = {
+      ...baseMsgUpdateUpdatePolicyResponse,
+    } as MsgUpdateUpdatePolicyResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateUpdatePolicyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateUpdatePolicyResponse>
+  ): MsgUpdateUpdatePolicyResponse {
+    const message = {
+      ...baseMsgUpdateUpdatePolicyResponse,
+    } as MsgUpdateUpdatePolicyResponse;
+    return message;
+  },
+};
+
+const baseMsgDeleteUpdatePolicy: object = { creator: "" };
+
+export const MsgDeleteUpdatePolicy = {
+  encode(
+    message: MsgDeleteUpdatePolicy,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgDeleteUpdatePolicy {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeleteUpdatePolicy } as MsgDeleteUpdatePolicy;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteUpdatePolicy {
+    const message = { ...baseMsgDeleteUpdatePolicy } as MsgDeleteUpdatePolicy;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDeleteUpdatePolicy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeleteUpdatePolicy>
+  ): MsgDeleteUpdatePolicy {
+    const message = { ...baseMsgDeleteUpdatePolicy } as MsgDeleteUpdatePolicy;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgDeleteUpdatePolicyResponse: object = {};
+
+export const MsgDeleteUpdatePolicyResponse = {
+  encode(
+    _: MsgDeleteUpdatePolicyResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteUpdatePolicyResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteUpdatePolicyResponse,
+    } as MsgDeleteUpdatePolicyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeleteUpdatePolicyResponse {
+    const message = {
+      ...baseMsgDeleteUpdatePolicyResponse,
+    } as MsgDeleteUpdatePolicyResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeleteUpdatePolicyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeleteUpdatePolicyResponse>
+  ): MsgDeleteUpdatePolicyResponse {
+    const message = {
+      ...baseMsgDeleteUpdatePolicyResponse,
+    } as MsgDeleteUpdatePolicyResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreatePrivateKey(
@@ -4175,10 +4689,19 @@ export interface Msg {
   UpdateCooperationNetworkFeatures(
     request: MsgUpdateCooperationNetworkFeatures
   ): Promise<MsgUpdateCooperationNetworkFeaturesResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   DeleteCooperationNetworkFeatures(
     request: MsgDeleteCooperationNetworkFeatures
   ): Promise<MsgDeleteCooperationNetworkFeaturesResponse>;
+  CreateUpdatePolicy(
+    request: MsgCreateUpdatePolicy
+  ): Promise<MsgCreateUpdatePolicyResponse>;
+  UpdateUpdatePolicy(
+    request: MsgUpdateUpdatePolicy
+  ): Promise<MsgUpdateUpdatePolicyResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  DeleteUpdatePolicy(
+    request: MsgDeleteUpdatePolicy
+  ): Promise<MsgDeleteUpdatePolicyResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -4533,6 +5056,48 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgDeleteCooperationNetworkFeaturesResponse.decode(new Reader(data))
+    );
+  }
+
+  CreateUpdatePolicy(
+    request: MsgCreateUpdatePolicy
+  ): Promise<MsgCreateUpdatePolicyResponse> {
+    const data = MsgCreateUpdatePolicy.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.crossdomain.Msg",
+      "CreateUpdatePolicy",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateUpdatePolicyResponse.decode(new Reader(data))
+    );
+  }
+
+  UpdateUpdatePolicy(
+    request: MsgUpdateUpdatePolicy
+  ): Promise<MsgUpdateUpdatePolicyResponse> {
+    const data = MsgUpdateUpdatePolicy.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.crossdomain.Msg",
+      "UpdateUpdatePolicy",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateUpdatePolicyResponse.decode(new Reader(data))
+    );
+  }
+
+  DeleteUpdatePolicy(
+    request: MsgDeleteUpdatePolicy
+  ): Promise<MsgDeleteUpdatePolicyResponse> {
+    const data = MsgDeleteUpdatePolicy.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.crossdomain.Msg",
+      "DeleteUpdatePolicy",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeleteUpdatePolicyResponse.decode(new Reader(data))
     );
   }
 }

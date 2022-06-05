@@ -10,6 +10,7 @@ import { ForwardPolicy } from "../crossdomain/forward_policy";
 import { Validity } from "../crossdomain/validity";
 import { DecisionPolicy } from "../crossdomain/decision_policy";
 import { CooperationNetworkFeatures } from "../crossdomain/cooperation_network_features";
+import { UpdatePolicy } from "../crossdomain/update_policy";
 
 export const protobufPackage = "crossdomain.crossdomain";
 
@@ -24,8 +25,9 @@ export interface GenesisState {
   validityList: Validity[];
   validityCount: number;
   decisionPolicy: DecisionPolicy | undefined;
-  /** this line is used by starport scaffolding # genesis/proto/state */
   cooperationNetworkFeatures: CooperationNetworkFeatures | undefined;
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  updatePolicy: UpdatePolicy | undefined;
 }
 
 const baseGenesisState: object = { validityCount: 0 };
@@ -80,6 +82,12 @@ export const GenesisState = {
         writer.uint32(82).fork()
       ).ldelim();
     }
+    if (message.updatePolicy !== undefined) {
+      UpdatePolicy.encode(
+        message.updatePolicy,
+        writer.uint32(90).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -132,6 +140,9 @@ export const GenesisState = {
             reader,
             reader.uint32()
           );
+          break;
+        case 11:
+          message.updatePolicy = UpdatePolicy.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -209,6 +220,11 @@ export const GenesisState = {
     } else {
       message.cooperationNetworkFeatures = undefined;
     }
+    if (object.updatePolicy !== undefined && object.updatePolicy !== null) {
+      message.updatePolicy = UpdatePolicy.fromJSON(object.updatePolicy);
+    } else {
+      message.updatePolicy = undefined;
+    }
     return message;
   },
 
@@ -252,6 +268,10 @@ export const GenesisState = {
     message.cooperationNetworkFeatures !== undefined &&
       (obj.cooperationNetworkFeatures = message.cooperationNetworkFeatures
         ? CooperationNetworkFeatures.toJSON(message.cooperationNetworkFeatures)
+        : undefined);
+    message.updatePolicy !== undefined &&
+      (obj.updatePolicy = message.updatePolicy
+        ? UpdatePolicy.toJSON(message.updatePolicy)
         : undefined);
     return obj;
   },
@@ -325,6 +345,11 @@ export const GenesisState = {
       );
     } else {
       message.cooperationNetworkFeatures = undefined;
+    }
+    if (object.updatePolicy !== undefined && object.updatePolicy !== null) {
+      message.updatePolicy = UpdatePolicy.fromPartial(object.updatePolicy);
+    } else {
+      message.updatePolicy = undefined;
     }
     return message;
   },

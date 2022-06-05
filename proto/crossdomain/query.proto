@@ -13,6 +13,7 @@ import "crossdomain/forward_policy.proto";
 import "crossdomain/validity.proto";
 import "crossdomain/decision_policy.proto";
 import "crossdomain/cooperation_network_features.proto";
+import "crossdomain/update_policy.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "crossdomain/x/crossdomain/types";
@@ -60,6 +61,10 @@ service Query {
 // Queries a CooperationNetworkFeatures by index.
 	rpc CooperationNetworkFeatures(QueryGetCooperationNetworkFeaturesRequest) returns (QueryGetCooperationNetworkFeaturesResponse) {
 		option (google.api.http).get = "/crossdomain/crossdomain/cooperation_network_features";
+	}
+// Queries a UpdatePolicy by index.
+	rpc UpdatePolicy(QueryGetUpdatePolicyRequest) returns (QueryGetUpdatePolicyResponse) {
+		option (google.api.http).get = "/crossdomain/crossdomain/update_policy";
 	}
 // this line is used by starport scaffolding # 2
 }
@@ -124,5 +129,10 @@ message QueryGetCooperationNetworkFeaturesRequest {}
 
 message QueryGetCooperationNetworkFeaturesResponse {
 	CooperationNetworkFeatures CooperationNetworkFeatures = 1 [(gogoproto.nullable) = false];
+}
+message QueryGetUpdatePolicyRequest {}
+
+message QueryGetUpdatePolicyResponse {
+	UpdatePolicy UpdatePolicy = 1 [(gogoproto.nullable) = false];
 }
 // this line is used by starport scaffolding # 3

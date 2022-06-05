@@ -18,6 +18,7 @@ func DefaultGenesis() *GenesisState {
 		ValidityList:               []Validity{},
 		DecisionPolicy:             nil,
 		CooperationNetworkFeatures: nil,
+		UpdatePolicy:               nil,
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}

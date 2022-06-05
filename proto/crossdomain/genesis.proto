@@ -11,6 +11,7 @@ import "crossdomain/forward_policy.proto";
 import "crossdomain/validity.proto";
 import "crossdomain/decision_policy.proto";
 import "crossdomain/cooperation_network_features.proto";
+import "crossdomain/update_policy.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "crossdomain/x/crossdomain/types";
@@ -27,5 +28,6 @@ message GenesisState {
   uint64 validityCount = 8;
   DecisionPolicy decisionPolicy = 9;
   CooperationNetworkFeatures cooperationNetworkFeatures = 10;
+  UpdatePolicy updatePolicy = 11;
   // this line is used by starport scaffolding # genesis/proto/state
 }

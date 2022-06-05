@@ -33,6 +33,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateCooperationNetworkFeatures{}, "crossdomain/CreateCooperationNetworkFeatures", nil)
 	cdc.RegisterConcrete(&MsgUpdateCooperationNetworkFeatures{}, "crossdomain/UpdateCooperationNetworkFeatures", nil)
 	cdc.RegisterConcrete(&MsgDeleteCooperationNetworkFeatures{}, "crossdomain/DeleteCooperationNetworkFeatures", nil)
+	cdc.RegisterConcrete(&MsgCreateUpdatePolicy{}, "crossdomain/CreateUpdatePolicy", nil)
+	cdc.RegisterConcrete(&MsgUpdateUpdatePolicy{}, "crossdomain/UpdateUpdatePolicy", nil)
+	cdc.RegisterConcrete(&MsgDeleteUpdatePolicy{}, "crossdomain/DeleteUpdatePolicy", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -79,6 +82,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCreateCooperationNetworkFeatures{},
 		&MsgUpdateCooperationNetworkFeatures{},
 		&MsgDeleteCooperationNetworkFeatures{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateUpdatePolicy{},
+		&MsgUpdateUpdatePolicy{},
+		&MsgDeleteUpdatePolicy{},
 	)
 	// this line is used by starport scaffolding # 3
 

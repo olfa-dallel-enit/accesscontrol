@@ -8,6 +8,7 @@ import "crossdomain/local_domain.proto";
 import "crossdomain/forward_policy.proto";
 import "crossdomain/decision_policy.proto";
 import "crossdomain/cooperation_network_features.proto";
+import "crossdomain/update_policy.proto";
 // this line is used by starport scaffolding # proto/tx/import
 import "crossdomain/validity.proto";
 
@@ -40,6 +41,9 @@ rpc CreateValidity(MsgCreateValidity) returns (MsgCreateValidityResponse);
   rpc CreateCooperationNetworkFeatures(MsgCreateCooperationNetworkFeatures) returns (MsgCreateCooperationNetworkFeaturesResponse);
   rpc UpdateCooperationNetworkFeatures(MsgUpdateCooperationNetworkFeatures) returns (MsgUpdateCooperationNetworkFeaturesResponse);
   rpc DeleteCooperationNetworkFeatures(MsgDeleteCooperationNetworkFeatures) returns (MsgDeleteCooperationNetworkFeaturesResponse);
+  rpc CreateUpdatePolicy(MsgCreateUpdatePolicy) returns (MsgCreateUpdatePolicyResponse);
+  rpc UpdateUpdatePolicy(MsgUpdateUpdatePolicy) returns (MsgUpdateUpdatePolicyResponse);
+  rpc DeleteUpdatePolicy(MsgDeleteUpdatePolicy) returns (MsgDeleteUpdatePolicyResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -218,4 +222,24 @@ message MsgDeleteCooperationNetworkFeatures {
   string creator = 1;
 }
 message MsgDeleteCooperationNetworkFeaturesResponse {}
+message MsgCreateUpdatePolicy {
+  string creator = 1;
+  bool query = 3;
+  bool event = 4;
+  bool periodicalQuery = 5;
+}
+message MsgCreateUpdatePolicyResponse {}
+
+message MsgUpdateUpdatePolicy {
+  string creator = 1;
+  bool query = 3;
+  bool event = 4;
+  bool periodicalQuery = 5;
+}
+message MsgUpdateUpdatePolicyResponse {}
+
+message MsgDeleteUpdatePolicy {
+  string creator = 1;
+}
+message MsgDeleteUpdatePolicyResponse {}
 // this line is used by starport scaffolding # proto/tx/message

@@ -21717,10 +21717,14 @@ paths:
                   cost:
                     type: string
                     format: uint64
-                  location:
-                    type: string
-                  interest:
-                    type: string
+                  locationList:
+                    type: array
+                    items:
+                      type: string
+                  interestList:
+                    type: array
+                    items:
+                      type: string
                   validity:
                     type: object
                     properties:
@@ -21968,6 +21972,47 @@ paths:
                 properties:
                   value:
                     type: string
+                  creator:
+                    type: string
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /crossdomain/crossdomain/update_policy:
+    get:
+      summary: Queries a UpdatePolicy by index.
+      operationId: CrossdomainCrossdomainUpdatePolicy
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              UpdatePolicy:
+                type: object
+                properties:
+                  query:
+                    type: boolean
+                  event:
+                    type: boolean
+                  periodicalQuery:
+                    type: boolean
                   creator:
                     type: string
         default:
@@ -50152,10 +50197,14 @@ definitions:
       cost:
         type: string
         format: uint64
-      location:
-        type: string
-      interest:
-        type: string
+      locationList:
+        type: array
+        items:
+          type: string
+      interestList:
+        type: array
+        items:
+          type: string
       validity:
         type: object
         properties:
@@ -50221,6 +50270,8 @@ definitions:
     type: object
   crossdomain.crossdomain.MsgCreateRootCertificateResponse:
     type: object
+  crossdomain.crossdomain.MsgCreateUpdatePolicyResponse:
+    type: object
   crossdomain.crossdomain.MsgCreateValidityResponse:
     type: object
     properties:
@@ -50241,6 +50292,8 @@ definitions:
     type: object
   crossdomain.crossdomain.MsgDeleteRootCertificateResponse:
     type: object
+  crossdomain.crossdomain.MsgDeleteUpdatePolicyResponse:
+    type: object
   crossdomain.crossdomain.MsgDeleteValidityResponse:
     type: object
   crossdomain.crossdomain.MsgUpdateCooperationNetworkFeaturesResponse:
@@ -50256,6 +50309,8 @@ definitions:
   crossdomain.crossdomain.MsgUpdatePrivateKeyResponse:
     type: object
   crossdomain.crossdomain.MsgUpdateRootCertificateResponse:
+    type: object
+  crossdomain.crossdomain.MsgUpdateUpdatePolicyResponse:
     type: object
   crossdomain.crossdomain.MsgUpdateValidityResponse:
     type: object
@@ -50347,10 +50402,14 @@ definitions:
           cost:
             type: string
             format: uint64
-          location:
-            type: string
-          interest:
-            type: string
+          locationList:
+            type: array
+            items:
+              type: string
+          interestList:
+            type: array
+            items:
+              type: string
           validity:
             type: object
             properties:
@@ -50429,6 +50488,20 @@ definitions:
             type: string
           creator:
             type: string
+  crossdomain.crossdomain.QueryGetUpdatePolicyResponse:
+    type: object
+    properties:
+      UpdatePolicy:
+        type: object
+        properties:
+          query:
+            type: boolean
+          event:
+            type: boolean
+          periodicalQuery:
+            type: boolean
+          creator:
+            type: string
   crossdomain.crossdomain.QueryGetValidityResponse:
     type: object
     properties:
@@ -50456,6 +50529,17 @@ definitions:
     properties:
       value:
         type: string
+      creator:
+        type: string
+  crossdomain.crossdomain.UpdatePolicy:
+    type: object
+    properties:
+      query:
+        type: boolean
+      event:
+        type: boolean
+      periodicalQuery:
+        type: boolean
       creator:
         type: string
   crossdomain.crossdomain.Validity:

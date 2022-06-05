@@ -8,8 +8,8 @@ export const protobufPackage = "crossdomain.crossdomain";
 export interface DecisionPolicy {
   depth: number;
   cost: number;
-  location: string;
-  interest: string;
+  locationList: string[];
+  interestList: string[];
   validity: Validity | undefined;
   lastUpdate: string;
   creator: string;
@@ -18,8 +18,8 @@ export interface DecisionPolicy {
 const baseDecisionPolicy: object = {
   depth: 0,
   cost: 0,
-  location: "",
-  interest: "",
+  locationList: "",
+  interestList: "",
   lastUpdate: "",
   creator: "",
 };
@@ -32,11 +32,11 @@ export const DecisionPolicy = {
     if (message.cost !== 0) {
       writer.uint32(16).uint64(message.cost);
     }
-    if (message.location !== "") {
-      writer.uint32(26).string(message.location);
+    for (const v of message.locationList) {
+      writer.uint32(26).string(v!);
     }
-    if (message.interest !== "") {
-      writer.uint32(34).string(message.interest);
+    for (const v of message.interestList) {
+      writer.uint32(34).string(v!);
     }
     if (message.validity !== undefined) {
       Validity.encode(message.validity, writer.uint32(42).fork()).ldelim();
@@ -54,6 +54,8 @@ export const DecisionPolicy = {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseDecisionPolicy } as DecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -64,10 +66,10 @@ export const DecisionPolicy = {
           message.cost = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.location = reader.string();
+          message.locationList.push(reader.string());
           break;
         case 4:
-          message.interest = reader.string();
+          message.interestList.push(reader.string());
           break;
         case 5:
           message.validity = Validity.decode(reader, reader.uint32());
@@ -88,6 +90,8 @@ export const DecisionPolicy = {
 
   fromJSON(object: any): DecisionPolicy {
     const message = { ...baseDecisionPolicy } as DecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     if (object.depth !== undefined && object.depth !== null) {
       message.depth = Number(object.depth);
     } else {
@@ -98,15 +102,15 @@ export const DecisionPolicy = {
     } else {
       message.cost = 0;
     }
-    if (object.location !== undefined && object.location !== null) {
-      message.location = String(object.location);
-    } else {
-      message.location = "";
+    if (object.locationList !== undefined && object.locationList !== null) {
+      for (const e of object.locationList) {
+        message.locationList.push(String(e));
+      }
     }
-    if (object.interest !== undefined && object.interest !== null) {
-      message.interest = String(object.interest);
-    } else {
-      message.interest = "";
+    if (object.interestList !== undefined && object.interestList !== null) {
+      for (const e of object.interestList) {
+        message.interestList.push(String(e));
+      }
     }
     if (object.validity !== undefined && object.validity !== null) {
       message.validity = Validity.fromJSON(object.validity);
@@ -130,8 +134,16 @@ export const DecisionPolicy = {
     const obj: any = {};
     message.depth !== undefined && (obj.depth = message.depth);
     message.cost !== undefined && (obj.cost = message.cost);
-    message.location !== undefined && (obj.location = message.location);
-    message.interest !== undefined && (obj.interest = message.interest);
+    if (message.locationList) {
+      obj.locationList = message.locationList.map((e) => e);
+    } else {
+      obj.locationList = [];
+    }
+    if (message.interestList) {
+      obj.interestList = message.interestList.map((e) => e);
+    } else {
+      obj.interestList = [];
+    }
     message.validity !== undefined &&
       (obj.validity = message.validity
         ? Validity.toJSON(message.validity)
@@ -143,6 +155,8 @@ export const DecisionPolicy = {
 
   fromPartial(object: DeepPartial<DecisionPolicy>): DecisionPolicy {
     const message = { ...baseDecisionPolicy } as DecisionPolicy;
+    message.locationList = [];
+    message.interestList = [];
     if (object.depth !== undefined && object.depth !== null) {
       message.depth = object.depth;
     } else {
@@ -153,15 +167,15 @@ export const DecisionPolicy = {
     } else {
       message.cost = 0;
     }
-    if (object.location !== undefined && object.location !== null) {
-      message.location = object.location;
-    } else {
-      message.location = "";
+    if (object.locationList !== undefined && object.locationList !== null) {
+      for (const e of object.locationList) {
+        message.locationList.push(e);
+      }
     }
-    if (object.interest !== undefined && object.interest !== null) {
-      message.interest = object.interest;
-    } else {
-      message.interest = "";
+    if (object.interestList !== undefined && object.interestList !== null) {
+      for (const e of object.interestList) {
+        message.interestList.push(e);
+      }
     }
     if (object.validity !== undefined && object.validity !== null) {
       message.validity = Validity.fromPartial(object.validity);

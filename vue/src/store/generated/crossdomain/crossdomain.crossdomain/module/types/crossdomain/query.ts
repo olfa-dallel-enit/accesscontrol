@@ -14,6 +14,7 @@ import {
 } from "../cosmos/base/query/v1beta1/pagination";
 import { DecisionPolicy } from "../crossdomain/decision_policy";
 import { CooperationNetworkFeatures } from "../crossdomain/cooperation_network_features";
+import { UpdatePolicy } from "../crossdomain/update_policy";
 
 export const protobufPackage = "crossdomain.crossdomain";
 
@@ -83,6 +84,12 @@ export interface QueryGetCooperationNetworkFeaturesRequest {}
 
 export interface QueryGetCooperationNetworkFeaturesResponse {
   CooperationNetworkFeatures: CooperationNetworkFeatures | undefined;
+}
+
+export interface QueryGetUpdatePolicyRequest {}
+
+export interface QueryGetUpdatePolicyResponse {
+  UpdatePolicy: UpdatePolicy | undefined;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -1420,6 +1427,133 @@ export const QueryGetCooperationNetworkFeaturesResponse = {
   },
 };
 
+const baseQueryGetUpdatePolicyRequest: object = {};
+
+export const QueryGetUpdatePolicyRequest = {
+  encode(
+    _: QueryGetUpdatePolicyRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetUpdatePolicyRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetUpdatePolicyRequest,
+    } as QueryGetUpdatePolicyRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryGetUpdatePolicyRequest {
+    const message = {
+      ...baseQueryGetUpdatePolicyRequest,
+    } as QueryGetUpdatePolicyRequest;
+    return message;
+  },
+
+  toJSON(_: QueryGetUpdatePolicyRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryGetUpdatePolicyRequest>
+  ): QueryGetUpdatePolicyRequest {
+    const message = {
+      ...baseQueryGetUpdatePolicyRequest,
+    } as QueryGetUpdatePolicyRequest;
+    return message;
+  },
+};
+
+const baseQueryGetUpdatePolicyResponse: object = {};
+
+export const QueryGetUpdatePolicyResponse = {
+  encode(
+    message: QueryGetUpdatePolicyResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.UpdatePolicy !== undefined) {
+      UpdatePolicy.encode(
+        message.UpdatePolicy,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetUpdatePolicyResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetUpdatePolicyResponse,
+    } as QueryGetUpdatePolicyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.UpdatePolicy = UpdatePolicy.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetUpdatePolicyResponse {
+    const message = {
+      ...baseQueryGetUpdatePolicyResponse,
+    } as QueryGetUpdatePolicyResponse;
+    if (object.UpdatePolicy !== undefined && object.UpdatePolicy !== null) {
+      message.UpdatePolicy = UpdatePolicy.fromJSON(object.UpdatePolicy);
+    } else {
+      message.UpdatePolicy = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetUpdatePolicyResponse): unknown {
+    const obj: any = {};
+    message.UpdatePolicy !== undefined &&
+      (obj.UpdatePolicy = message.UpdatePolicy
+        ? UpdatePolicy.toJSON(message.UpdatePolicy)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetUpdatePolicyResponse>
+  ): QueryGetUpdatePolicyResponse {
+    const message = {
+      ...baseQueryGetUpdatePolicyResponse,
+    } as QueryGetUpdatePolicyResponse;
+    if (object.UpdatePolicy !== undefined && object.UpdatePolicy !== null) {
+      message.UpdatePolicy = UpdatePolicy.fromPartial(object.UpdatePolicy);
+    } else {
+      message.UpdatePolicy = undefined;
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -1458,6 +1592,10 @@ export interface Query {
   CooperationNetworkFeatures(
     request: QueryGetCooperationNetworkFeaturesRequest
   ): Promise<QueryGetCooperationNetworkFeaturesResponse>;
+  /** Queries a UpdatePolicy by index. */
+  UpdatePolicy(
+    request: QueryGetUpdatePolicyRequest
+  ): Promise<QueryGetUpdatePolicyResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1600,6 +1738,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetCooperationNetworkFeaturesResponse.decode(new Reader(data))
+    );
+  }
+
+  UpdatePolicy(
+    request: QueryGetUpdatePolicyRequest
+  ): Promise<QueryGetUpdatePolicyResponse> {
+    const data = QueryGetUpdatePolicyRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "crossdomain.crossdomain.Query",
+      "UpdatePolicy",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetUpdatePolicyResponse.decode(new Reader(data))
     );
   }
 }

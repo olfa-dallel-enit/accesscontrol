@@ -31,4 +31,3 @@ func (k Keeper) RemoveDecisionPolicy(ctx sdk.Context) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DecisionPolicyKey))
 	store.Delete([]byte{0})
 }
-

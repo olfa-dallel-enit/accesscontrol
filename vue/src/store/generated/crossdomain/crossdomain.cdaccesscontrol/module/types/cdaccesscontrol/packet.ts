@@ -68,7 +68,16 @@ export interface EstablishCooperationPacketAck {
 }
 
 /** ForwardCooperationDataPacketData defines a struct for the packet payload */
-export interface ForwardCooperationDataPacketData {}
+export interface ForwardCooperationDataPacketData {
+  notBefore: string;
+  notAfter: string;
+  interest: string;
+  cost: string;
+  domain1Name: string;
+  domain2Name: string;
+  domain1Location: string;
+  domain2Location: string;
+}
 
 /** ForwardCooperationDataPacketAck defines a struct for the packet acknowledgment */
 export interface ForwardCooperationDataPacketAck {}
@@ -133,10 +142,15 @@ export interface ModifyCooperationInterestPacketAck {
 }
 
 /** RevokeCooperationPacketData defines a struct for the packet payload */
-export interface RevokeCooperationPacketData {}
+export interface RevokeCooperationPacketData {
+  sender: string;
+}
 
 /** RevokeCooperationPacketAck defines a struct for the packet acknowledgment */
-export interface RevokeCooperationPacketAck {}
+export interface RevokeCooperationPacketAck {
+  confirmation: string;
+  confirmedBy: string;
+}
 
 const baseCdaccesscontrolPacketData: object = {};
 
@@ -1156,13 +1170,46 @@ export const EstablishCooperationPacketAck = {
   },
 };
 
-const baseForwardCooperationDataPacketData: object = {};
+const baseForwardCooperationDataPacketData: object = {
+  notBefore: "",
+  notAfter: "",
+  interest: "",
+  cost: "",
+  domain1Name: "",
+  domain2Name: "",
+  domain1Location: "",
+  domain2Location: "",
+};
 
 export const ForwardCooperationDataPacketData = {
   encode(
-    _: ForwardCooperationDataPacketData,
+    message: ForwardCooperationDataPacketData,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.notBefore !== "") {
+      writer.uint32(10).string(message.notBefore);
+    }
+    if (message.notAfter !== "") {
+      writer.uint32(18).string(message.notAfter);
+    }
+    if (message.interest !== "") {
+      writer.uint32(26).string(message.interest);
+    }
+    if (message.cost !== "") {
+      writer.uint32(34).string(message.cost);
+    }
+    if (message.domain1Name !== "") {
+      writer.uint32(42).string(message.domain1Name);
+    }
+    if (message.domain2Name !== "") {
+      writer.uint32(50).string(message.domain2Name);
+    }
+    if (message.domain1Location !== "") {
+      writer.uint32(58).string(message.domain1Location);
+    }
+    if (message.domain2Location !== "") {
+      writer.uint32(66).string(message.domain2Location);
+    }
     return writer;
   },
 
@@ -1178,6 +1225,30 @@ export const ForwardCooperationDataPacketData = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.notBefore = reader.string();
+          break;
+        case 2:
+          message.notAfter = reader.string();
+          break;
+        case 3:
+          message.interest = reader.string();
+          break;
+        case 4:
+          message.cost = reader.string();
+          break;
+        case 5:
+          message.domain1Name = reader.string();
+          break;
+        case 6:
+          message.domain2Name = reader.string();
+          break;
+        case 7:
+          message.domain1Location = reader.string();
+          break;
+        case 8:
+          message.domain2Location = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1186,24 +1257,128 @@ export const ForwardCooperationDataPacketData = {
     return message;
   },
 
-  fromJSON(_: any): ForwardCooperationDataPacketData {
+  fromJSON(object: any): ForwardCooperationDataPacketData {
     const message = {
       ...baseForwardCooperationDataPacketData,
     } as ForwardCooperationDataPacketData;
+    if (object.notBefore !== undefined && object.notBefore !== null) {
+      message.notBefore = String(object.notBefore);
+    } else {
+      message.notBefore = "";
+    }
+    if (object.notAfter !== undefined && object.notAfter !== null) {
+      message.notAfter = String(object.notAfter);
+    } else {
+      message.notAfter = "";
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = String(object.interest);
+    } else {
+      message.interest = "";
+    }
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = String(object.cost);
+    } else {
+      message.cost = "";
+    }
+    if (object.domain1Name !== undefined && object.domain1Name !== null) {
+      message.domain1Name = String(object.domain1Name);
+    } else {
+      message.domain1Name = "";
+    }
+    if (object.domain2Name !== undefined && object.domain2Name !== null) {
+      message.domain2Name = String(object.domain2Name);
+    } else {
+      message.domain2Name = "";
+    }
+    if (
+      object.domain1Location !== undefined &&
+      object.domain1Location !== null
+    ) {
+      message.domain1Location = String(object.domain1Location);
+    } else {
+      message.domain1Location = "";
+    }
+    if (
+      object.domain2Location !== undefined &&
+      object.domain2Location !== null
+    ) {
+      message.domain2Location = String(object.domain2Location);
+    } else {
+      message.domain2Location = "";
+    }
     return message;
   },
 
-  toJSON(_: ForwardCooperationDataPacketData): unknown {
+  toJSON(message: ForwardCooperationDataPacketData): unknown {
     const obj: any = {};
+    message.notBefore !== undefined && (obj.notBefore = message.notBefore);
+    message.notAfter !== undefined && (obj.notAfter = message.notAfter);
+    message.interest !== undefined && (obj.interest = message.interest);
+    message.cost !== undefined && (obj.cost = message.cost);
+    message.domain1Name !== undefined &&
+      (obj.domain1Name = message.domain1Name);
+    message.domain2Name !== undefined &&
+      (obj.domain2Name = message.domain2Name);
+    message.domain1Location !== undefined &&
+      (obj.domain1Location = message.domain1Location);
+    message.domain2Location !== undefined &&
+      (obj.domain2Location = message.domain2Location);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<ForwardCooperationDataPacketData>
+    object: DeepPartial<ForwardCooperationDataPacketData>
   ): ForwardCooperationDataPacketData {
     const message = {
       ...baseForwardCooperationDataPacketData,
     } as ForwardCooperationDataPacketData;
+    if (object.notBefore !== undefined && object.notBefore !== null) {
+      message.notBefore = object.notBefore;
+    } else {
+      message.notBefore = "";
+    }
+    if (object.notAfter !== undefined && object.notAfter !== null) {
+      message.notAfter = object.notAfter;
+    } else {
+      message.notAfter = "";
+    }
+    if (object.interest !== undefined && object.interest !== null) {
+      message.interest = object.interest;
+    } else {
+      message.interest = "";
+    }
+    if (object.cost !== undefined && object.cost !== null) {
+      message.cost = object.cost;
+    } else {
+      message.cost = "";
+    }
+    if (object.domain1Name !== undefined && object.domain1Name !== null) {
+      message.domain1Name = object.domain1Name;
+    } else {
+      message.domain1Name = "";
+    }
+    if (object.domain2Name !== undefined && object.domain2Name !== null) {
+      message.domain2Name = object.domain2Name;
+    } else {
+      message.domain2Name = "";
+    }
+    if (
+      object.domain1Location !== undefined &&
+      object.domain1Location !== null
+    ) {
+      message.domain1Location = object.domain1Location;
+    } else {
+      message.domain1Location = "";
+    }
+    if (
+      object.domain2Location !== undefined &&
+      object.domain2Location !== null
+    ) {
+      message.domain2Location = object.domain2Location;
+    } else {
+      message.domain2Location = "";
+    }
     return message;
   },
 };
@@ -2135,13 +2310,16 @@ export const ModifyCooperationInterestPacketAck = {
   },
 };
 
-const baseRevokeCooperationPacketData: object = {};
+const baseRevokeCooperationPacketData: object = { sender: "" };
 
 export const RevokeCooperationPacketData = {
   encode(
-    _: RevokeCooperationPacketData,
+    message: RevokeCooperationPacketData,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
     return writer;
   },
 
@@ -2157,6 +2335,9 @@ export const RevokeCooperationPacketData = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.sender = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -2165,35 +2346,55 @@ export const RevokeCooperationPacketData = {
     return message;
   },
 
-  fromJSON(_: any): RevokeCooperationPacketData {
+  fromJSON(object: any): RevokeCooperationPacketData {
     const message = {
       ...baseRevokeCooperationPacketData,
     } as RevokeCooperationPacketData;
+    if (object.sender !== undefined && object.sender !== null) {
+      message.sender = String(object.sender);
+    } else {
+      message.sender = "";
+    }
     return message;
   },
 
-  toJSON(_: RevokeCooperationPacketData): unknown {
+  toJSON(message: RevokeCooperationPacketData): unknown {
     const obj: any = {};
+    message.sender !== undefined && (obj.sender = message.sender);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<RevokeCooperationPacketData>
+    object: DeepPartial<RevokeCooperationPacketData>
   ): RevokeCooperationPacketData {
     const message = {
       ...baseRevokeCooperationPacketData,
     } as RevokeCooperationPacketData;
+    if (object.sender !== undefined && object.sender !== null) {
+      message.sender = object.sender;
+    } else {
+      message.sender = "";
+    }
     return message;
   },
 };
 
-const baseRevokeCooperationPacketAck: object = {};
+const baseRevokeCooperationPacketAck: object = {
+  confirmation: "",
+  confirmedBy: "",
+};
 
 export const RevokeCooperationPacketAck = {
   encode(
-    _: RevokeCooperationPacketAck,
+    message: RevokeCooperationPacketAck,
     writer: Writer = Writer.create()
   ): Writer {
+    if (message.confirmation !== "") {
+      writer.uint32(10).string(message.confirmation);
+    }
+    if (message.confirmedBy !== "") {
+      writer.uint32(18).string(message.confirmedBy);
+    }
     return writer;
   },
 
@@ -2209,6 +2410,12 @@ export const RevokeCooperationPacketAck = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.confirmation = reader.string();
+          break;
+        case 2:
+          message.confirmedBy = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -2217,24 +2424,48 @@ export const RevokeCooperationPacketAck = {
     return message;
   },
 
-  fromJSON(_: any): RevokeCooperationPacketAck {
+  fromJSON(object: any): RevokeCooperationPacketAck {
     const message = {
       ...baseRevokeCooperationPacketAck,
     } as RevokeCooperationPacketAck;
+    if (object.confirmation !== undefined && object.confirmation !== null) {
+      message.confirmation = String(object.confirmation);
+    } else {
+      message.confirmation = "";
+    }
+    if (object.confirmedBy !== undefined && object.confirmedBy !== null) {
+      message.confirmedBy = String(object.confirmedBy);
+    } else {
+      message.confirmedBy = "";
+    }
     return message;
   },
 
-  toJSON(_: RevokeCooperationPacketAck): unknown {
+  toJSON(message: RevokeCooperationPacketAck): unknown {
     const obj: any = {};
+    message.confirmation !== undefined &&
+      (obj.confirmation = message.confirmation);
+    message.confirmedBy !== undefined &&
+      (obj.confirmedBy = message.confirmedBy);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<RevokeCooperationPacketAck>
+    object: DeepPartial<RevokeCooperationPacketAck>
   ): RevokeCooperationPacketAck {
     const message = {
       ...baseRevokeCooperationPacketAck,
     } as RevokeCooperationPacketAck;
+    if (object.confirmation !== undefined && object.confirmation !== null) {
+      message.confirmation = object.confirmation;
+    } else {
+      message.confirmation = "";
+    }
+    if (object.confirmedBy !== undefined && object.confirmedBy !== null) {
+      message.confirmedBy = object.confirmedBy;
+    } else {
+      message.confirmedBy = "";
+    }
     return message;
   },
 };

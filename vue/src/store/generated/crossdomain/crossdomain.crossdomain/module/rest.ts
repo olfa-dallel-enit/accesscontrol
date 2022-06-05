@@ -27,8 +27,8 @@ export interface CrossdomainDecisionPolicy {
 
   /** @format uint64 */
   cost?: string;
-  location?: string;
-  interest?: string;
+  locationList?: string[];
+  interestList?: string[];
   validity?: CrossdomainValidity;
   lastUpdate?: string;
   creator?: string;
@@ -69,6 +69,8 @@ export type CrossdomainMsgCreatePrivateKeyResponse = object;
 
 export type CrossdomainMsgCreateRootCertificateResponse = object;
 
+export type CrossdomainMsgCreateUpdatePolicyResponse = object;
+
 export interface CrossdomainMsgCreateValidityResponse {
   /** @format uint64 */
   id?: string;
@@ -88,6 +90,8 @@ export type CrossdomainMsgDeletePrivateKeyResponse = object;
 
 export type CrossdomainMsgDeleteRootCertificateResponse = object;
 
+export type CrossdomainMsgDeleteUpdatePolicyResponse = object;
+
 export type CrossdomainMsgDeleteValidityResponse = object;
 
 export type CrossdomainMsgUpdateCooperationNetworkFeaturesResponse = object;
@@ -103,6 +107,8 @@ export type CrossdomainMsgUpdateLocalDomainResponse = object;
 export type CrossdomainMsgUpdatePrivateKeyResponse = object;
 
 export type CrossdomainMsgUpdateRootCertificateResponse = object;
+
+export type CrossdomainMsgUpdateUpdatePolicyResponse = object;
 
 export type CrossdomainMsgUpdateValidityResponse = object;
 
@@ -159,6 +165,10 @@ export interface CrossdomainQueryGetRootCertificateResponse {
   RootCertificate?: CrossdomainRootCertificate;
 }
 
+export interface CrossdomainQueryGetUpdatePolicyResponse {
+  UpdatePolicy?: CrossdomainUpdatePolicy;
+}
+
 export interface CrossdomainQueryGetValidityResponse {
   Validity?: CrossdomainValidity;
 }
@@ -173,6 +183,13 @@ export interface CrossdomainQueryParamsResponse {
 
 export interface CrossdomainRootCertificate {
   value?: string;
+  creator?: string;
+}
+
+export interface CrossdomainUpdatePolicy {
+  query?: boolean;
+  event?: boolean;
+  periodicalQuery?: boolean;
   creator?: string;
 }
 
@@ -577,6 +594,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryRootCertificate = (params: RequestParams = {}) =>
     this.request<CrossdomainQueryGetRootCertificateResponse, RpcStatus>({
       path: `/crossdomain/crossdomain/root_certificate`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryUpdatePolicy
+   * @summary Queries a UpdatePolicy by index.
+   * @request GET:/crossdomain/crossdomain/update_policy
+   */
+  queryUpdatePolicy = (params: RequestParams = {}) =>
+    this.request<CrossdomainQueryGetUpdatePolicyResponse, RpcStatus>({
+      path: `/crossdomain/crossdomain/update_policy`,
       method: "GET",
       format: "json",
       ...params,

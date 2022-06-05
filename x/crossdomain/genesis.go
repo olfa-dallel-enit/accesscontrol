@@ -44,6 +44,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	if genState.CooperationNetworkFeatures != nil {
 		k.SetCooperationNetworkFeatures(ctx, *genState.CooperationNetworkFeatures)
 	}
+	// Set if defined
+	if genState.UpdatePolicy != nil {
+		k.SetUpdatePolicy(ctx, *genState.UpdatePolicy)
+	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -89,6 +93,11 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	cooperationNetworkFeatures, found := k.GetCooperationNetworkFeatures(ctx)
 	if found {
 		genesis.CooperationNetworkFeatures = &cooperationNetworkFeatures
+	}
+	// Get all updatePolicy
+	updatePolicy, found := k.GetUpdatePolicy(ctx)
+	if found {
+		genesis.UpdatePolicy = &updatePolicy
 	}
 	// this line is used by starport scaffolding # genesis/module/export
 
