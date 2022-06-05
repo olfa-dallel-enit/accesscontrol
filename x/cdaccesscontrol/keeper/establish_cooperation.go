@@ -91,44 +91,37 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.ForwardNewCooperationData(ctx, packet, data)
-					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					k.ForwardCooperationData(ctx, packet, data)
 				}else if k.CheckCostBasedDecisionPolicy(ctx, data.Sender, cast.ToUint64(data.Cost), decisionPolicy) {
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.ForwardNewCooperationData(ctx, packet, data)
-					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					k.ForwardCooperationData(ctx, packet, data)
 				}else if k.CheckLocationBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.ForwardNewCooperationData(ctx, packet, data)
-					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					k.ForwardCooperationData(ctx, packet, data)
 				}else if k.CheckInterestBasedDecisionPolicy(ctx, data.Sender, data.Interest, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.ForwardNewCooperationData(ctx, packet, data)
-				    //k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					k.ForwardCooperationData(ctx, packet, data)
 				}else if k.CheckLastUpdateBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.ForwardNewCooperationData(ctx, packet, data)
-					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					k.ForwardCooperationData(ctx, packet, data)
 				}else if k.CheckValidityBasedDecisionPolicy(ctx, data.Sender, data.NotBefore, data.NotAfter, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.ForwardNewCooperationData(ctx, packet, data)
-					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					k.ForwardCooperationData(ctx, packet, data)
 				}else if k.CheckHybridBasedDecisionPolicy(ctx, cast.ToUint64(data.Cost), data.Sender, data.Interest, data.NotBefore, data.NotAfter, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
-					k.ForwardNewCooperationData(ctx, packet, data)
-					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					k.ForwardCooperationData(ctx, packet, data)
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -151,9 +144,6 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					Decision:    "Not confirmed: decision policy not found",
 				})
 			}
-
-			
-			/***/
 		} else {
 			packetAck.Confirmation = "Not confirmed"
 			packetAck.ConfirmedBy = ctx.ChainID()
@@ -1190,7 +1180,7 @@ func (k Keeper) AddDomainCooperation(ctx sdk.Context, packet channeltypes.Packet
 	})
 }
 
-func (k Keeper) ForwardNewCooperationData(ctx sdk.Context, packet channeltypes.Packet, data types.EstablishCooperationPacketData){
+func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Packet, data types.EstablishCooperationPacketData){
 	var packetToForward types.ForwardCooperationDataPacketData
 	packetToForward.NotBefore = data.NotBefore
 	packetToForward.NotAfter = data.NotAfter
@@ -1231,6 +1221,7 @@ func (k Keeper) ForwardNewCooperationData(ctx sdk.Context, packet channeltypes.P
 					}
 				}
 			}
+			k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 		case "multicast":
 			for _, domainName := range forwardPolicy.DomainList {
 				if domainName != data.Sender {
@@ -1352,7 +1343,7 @@ func (k Keeper) ForwardCooperationsToNewCooperativeDomain(ctx sdk.Context, packe
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
 					Function:    "OnRecvEstablishCooperationPacket",
-					Decision:    "Confirmed: new cooperation data is forwarded to " + domainCooperation.RemoteDomain.Name,
+					Decision:    "Confirmed: new cooperation data is forwarded to " + data.Sender,
 				})
 			}
 		}
