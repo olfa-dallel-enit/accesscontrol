@@ -151,8 +151,8 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 			packetToForward.Domain2Location = remoteDomainLocation
 
 			//forward
-			forwardPolicy, found := k.crossdomainKeeper.GetForwardPolicy(ctx)
-			if found{
+			forwardPolicy, isFound := k.crossdomainKeeper.GetForwardPolicy(ctx)
+			if isFound{
 				switch forwardPolicy.Mode {
 				case "broadcast":
 					for _, domainCooperation := range k.GetAllDirectDomainCooperations(ctx) {
@@ -173,25 +173,22 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 									Timestamp:   cast.ToString(time.Now()),
 									Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
 									Function:    "OnRecvEstablishCooperationPacket",
-									Decision:    "Confirmed: packet is forwarded to " + packetToForward.Domain2Name,
+									Decision:    "Confirmed: cooperation data is forwarded to " + domainCooperation.RemoteDomain.Name + "in broadcast mode",
 								})
 							}
 						}
 					}
-				}
-			}
-			/*
 				case "multicast":
 					for _, domainName := range forwardPolicy.DomainList {
 						if domainName != data.Sender {
-							domainCooperation, found := k.GetDomainCooperationByDomainName(ctx, domainName)
-							if found {
+							domainCooperation, exist := k.GetDomainCooperationByDomainName(ctx, domainName)
+							if exist {
 								if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
 									// Transmit the packet
 									k.TransmitForwardCooperationDataPacket(
 										ctx,
 										packetToForward,
-										"authorization",
+										"cdaccesscontrol",
 										domainCooperation.SourceDomain.IbcConnection.Channel,
 										clienttypes.ZeroHeight(),
 										packet.TimeoutTimestamp,
@@ -202,13 +199,15 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 										Timestamp:   cast.ToString(time.Now()),
 										Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
 										Function:    "OnRecvEstablishCooperationPacket",
-										Decision:    "Confirmed",
-										Recipient:   domainCooperation.RemoteDomain.Name,
+										Decision:    "Confirmed: cooperation data is forwarded to " + domainCooperation.RemoteDomain.Name + "in multicast mode",
 									})
 								}
 							}
 						}
 					}
+				}
+			}
+			/*
 				case "unicast":
 					domainName := forwardPolicy.DomainList[0]
 					if domainName != data.Sender {
