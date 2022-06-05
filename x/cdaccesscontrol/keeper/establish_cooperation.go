@@ -285,6 +285,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 							}
 						}
 					}
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, packetAck.ConfirmedBy)
 				case "multicast":
 					for _, domainName := range forwardPolicy.DomainList {
 						if domainName != packetAck.ConfirmedBy {
@@ -312,6 +313,9 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 							}
 						}
 					}
+					if FindString(packetAck.ConfirmedBy, forwardPolicy.DomainList){
+						k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, packetAck.ConfirmedBy)
+					}
 				case "unicast":
 					domainName := forwardPolicy.DomainList[0]
 					if domainName != packetAck.ConfirmedBy {
@@ -338,6 +342,9 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 							}
 						}
 					}
+					if packetAck.ConfirmedBy == forwardPolicy.DomainList[0]{
+						k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
+					}
 				case "geocast":
 					for _, location := range forwardPolicy.LocationList {
 						for _, domainCooperation := range k.GetAllDomainCooperationsByLocation(ctx, location) {
@@ -363,6 +370,9 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 								}
 							}
 						}
+					}
+					if FindString(remoteDomain.Location, forwardPolicy.LocationList){
+						k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, packetAck.ConfirmedBy)
 					}
 				}
 			}else{
@@ -1221,7 +1231,7 @@ func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Pack
 					}
 				}
 			}
-			k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+			k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
 		case "multicast":
 			for _, domainName := range forwardPolicy.DomainList {
 				if domainName != data.Sender {
@@ -1250,7 +1260,7 @@ func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Pack
 				}
 			}
 			if FindString(data.Sender, forwardPolicy.DomainList){
-				k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+				k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
 			}
 		case "unicast":
 			domainName := forwardPolicy.DomainList[0]
@@ -1278,8 +1288,8 @@ func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Pack
 					}
 				}
 			}
-			if FindString(data.Sender, forwardPolicy.DomainList){
-				k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+			if data.Sender == forwardPolicy.DomainList[0]{
+				k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
 			}
 		case "geocast":
 			for _, location := range forwardPolicy.LocationList {
@@ -1308,7 +1318,7 @@ func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Pack
 				}
 			}
 			if FindString(remoteDomainLocation, forwardPolicy.LocationList){
-				k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+				k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
 			}
 		}
 	}else{
@@ -1323,9 +1333,9 @@ func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Pack
 	}
 }
 
-func (k Keeper) ForwardCooperationsToNewCooperativeDomain(ctx sdk.Context, packet channeltypes.Packet, data types.EstablishCooperationPacketData){
+func (k Keeper) ForwardCooperationsToNewCooperativeDomain(ctx sdk.Context, packet channeltypes.Packet, domainName string){
 	for _, domainCooperation := range k.GetAllDomainCooperation(ctx) {
-		if domainCooperation.RemoteDomain.Name != data.Sender {
+		if domainCooperation.RemoteDomain.Name != domainName {
 			if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
 				var packetToForward types.ForwardCooperationDataPacketData
 
@@ -1352,7 +1362,7 @@ func (k Keeper) ForwardCooperationsToNewCooperativeDomain(ctx sdk.Context, packe
 					Timestamp:   cast.ToString(time.Now()),
 					Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
 					Function:    "OnRecvEstablishCooperationPacket",
-					Decision:    "Confirmed: new cooperation data is forwarded to " + data.Sender,
+					Decision:    "Confirmed: new cooperation data is forwarded to " + domainName,
 				})
 			}
 		}
