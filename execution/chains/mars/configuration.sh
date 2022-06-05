@@ -8,7 +8,7 @@ crossdomaind query crossdomain show-root-certificate --node tcp://localhost:2665
 #####
 #forward policy : [mode] [domain-list] [location-list]
 #####
-crossdomaind tx crossdomain  create-forward-policy "multicast" "earth" "" --from alice --yes --home ~/.mars --chain-id mars --node tcp://localhost:26659 --gas=auto --gas-adjustment=1.15
+crossdomaind tx crossdomain  create-forward-policy "unicast" "earth" "" --from alice --yes --home ~/.mars --chain-id mars --node tcp://localhost:26659 --gas=auto --gas-adjustment=1.15
 crossdomaind query crossdomain show-forward-policy --node tcp://localhost:26659
 
 #####
