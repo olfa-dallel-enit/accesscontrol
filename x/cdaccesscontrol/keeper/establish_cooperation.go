@@ -92,36 +92,43 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckCostBasedDecisionPolicy(ctx, data.Sender, cast.ToUint64(data.Cost), decisionPolicy) {
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckLocationBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckInterestBasedDecisionPolicy(ctx, data.Sender, data.Interest, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckLastUpdateBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckValidityBasedDecisionPolicy(ctx, data.Sender, data.NotBefore, data.NotAfter, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckHybridBasedDecisionPolicy(ctx, cast.ToUint64(data.Cost), data.Sender, data.Interest, data.NotBefore, data.NotAfter, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -1355,5 +1362,33 @@ func (k Keeper) ForwardNewCooperationData(ctx sdk.Context, packet channeltypes.P
 			Function:    "OnRecvEstablishCooperationPacket",
 			Decision:    "Not confirmed: forward policy not found",
 		})
+	}
+}
+
+func (k Keeper) ForwardCooperationsToNewCooperativeDomain(ctx sdk.Context, packet channeltypes.Packet, data types.EstablishCooperationPacketData){
+	for _, domainCooperation := range k.GetAllDomainCooperation(ctx) {
+		if domainCooperation.RemoteDomain.Name != data.Sender {
+			if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
+				var newPacketToForward types.ForwardCooperationDataPacketData
+
+				newPacketToForward.NotBefore = domainCooperation.Validity.NotBefore
+				newPacketToForward.NotAfter = domainCooperation.Validity.NotAfter
+				newPacketToForward.Interest = domainCooperation.Interest
+				newPacketToForward.Cost = cast.ToString(domainCooperation.Cost)
+				newPacketToForward.Domain1Name = domainCooperation.SourceDomain.Name
+				newPacketToForward.Domain2Name = domainCooperation.RemoteDomain.Name
+				newPacketToForward.Domain1Location = domainCooperation.SourceDomain.Location
+				newPacketToForward.Domain2Location = domainCooperation.RemoteDomain.Location
+
+				k.TransmitForwardCooperationDataPacket(
+					ctx,
+					newPacketToForward,
+					"cdaccesscontrol",
+					packet.SourceChannel,
+					clienttypes.ZeroHeight(),
+					packet.TimeoutTimestamp,
+				)
+			}
+		}
 	}
 }
