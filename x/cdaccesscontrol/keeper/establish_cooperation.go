@@ -92,43 +92,43 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
-					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckCostBasedDecisionPolicy(ctx, data.Sender, cast.ToUint64(data.Cost), decisionPolicy) {
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
-					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckLocationBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
-					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckInterestBasedDecisionPolicy(ctx, data.Sender, data.Interest, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
-					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckLastUpdateBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
-					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckValidityBasedDecisionPolicy(ctx, data.Sender, data.NotBefore, data.NotAfter, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
-					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckHybridBasedDecisionPolicy(ctx, cast.ToUint64(data.Cost), data.Sender, data.Interest, data.NotBefore, data.NotAfter, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
-					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else{
 					k.AppendCooperationLog(ctx, types.CooperationLog{
 						Creator:     ctx.ChainID(),
@@ -248,17 +248,16 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 				UpdateTimestamp:   cast.ToString(time.Now().UnixNano()),
 				Status:            "Enabled",
 			})
-
 			k.AppendCooperationLog(ctx, types.CooperationLog{
 				Creator:     ctx.ChainID(),
 				Transaction: "send-establish-cooperation",
 				Function:    "OnAcknowledgementEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
-				Decision:    "Confirmed",
+				Decision:    "Confirmed: cooperation established with " + packetAck.ConfirmedBy,
 			})
-
-			/*var packetToForward types.ForwardCooperationDataPacketData
+			//forward the new cooperation
+			var packetToForward types.ForwardCooperationDataPacketData
 
 			packetToForward.NotBefore = data.NotBefore
 			packetToForward.NotAfter = data.NotAfter
@@ -266,8 +265,59 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 			packetToForward.Cost = data.Cost
 			packetToForward.Domain1Name = ctx.ChainID()
 			packetToForward.Domain2Name = packetAck.ConfirmedBy
-			packetToForward.Domain1Location = localDomainLocation
-			packetToForward.Domain2Location = remoteDomainLocation
+			packetToForward.Domain1Location = localDomain.Location
+			packetToForward.Domain2Location = remoteDomain.Location
+
+			forwardPolicy, found := k.crossdomainKeeper.GetForwardPolicy(ctx)
+			if found{
+				switch forwardPolicy.Mode {
+				case "broadcast":
+					for _, domainCooperation := range k.GetAllDirectDomainCooperations(ctx) {
+						if domainCooperation.RemoteDomain.Name != packetAck.ConfirmedBy {
+							if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
+								// Transmit the packet
+								k.TransmitForwardCooperationDataPacket(
+									ctx,
+									packetToForward,
+									"authorization",
+									domainCooperation.SourceDomain.IbcConnection.Channel,
+									clienttypes.ZeroHeight(),
+									packet.TimeoutTimestamp,
+								)
+								k.AppendCooperationLog(ctx, types.CooperationLog{
+									Creator:     ctx.ChainID(),
+									Transaction: "send-forward-cooperation-data",
+									Timestamp:   cast.ToString(time.Now()),
+									Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
+									Function:    "OnAcknowledgementEstablishCooperationPacket",
+									Decision:    "Confirmed: cooperation data is forwarded to " + domainCooperation.RemoteDomain.Name + " in broadcast mode",
+								})
+							}
+						}
+					}
+				}
+			}
+
+		}else {
+			k.AppendCooperationLog(ctx, types.CooperationLog{
+				Creator:     ctx.ChainID(),
+				Transaction: "send-establish-cooperation",
+				Function:    "OnAcknowledgementEstablishCooperationPacket",
+				Timestamp:   cast.ToString(time.Now()),
+				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
+				Decision:    "Not confirmed: cooperation not established by " + packetAck.ConfirmedBy,
+			})
+		}
+
+
+
+
+		/*******************************************************************************/
+		if packetAck.Confirmation == "Confirmed" {
+			
+			
+
+			/*
 			/*
 				//forward
 				forwardPolicy, found := k.crossdomaindelegationKeeper.GetForwardPolicy(ctx)
@@ -419,24 +469,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 				}
 				//forward other cooperations
 			*/
-		} else {
-			k.AppendCooperationLog(ctx, types.CooperationLog{
-				Creator:     ctx.ChainID(),
-				Transaction: "send-establish-cooperation",
-				Function:    "OnAcknowledgementEstablishCooperationPacket",
-				Timestamp:   cast.ToString(time.Now()),
-				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
-				Decision:    "Not confirmed",
-			})
-			k.AppendCooperationLog(ctx, types.CooperationLog{
-				Creator:     ctx.ChainID(),
-				Transaction: "send-forward-cooperation-data",
-				Function:    "OnAcknowledgementEstablishCooperationPacket",
-				Timestamp:   cast.ToString(time.Now()),
-				Details:     "Cooperation label: " + ctx.ChainID() + "-" + packetAck.ConfirmedBy,
-				Decision:    "Not confirmed",
-			})
-		}
+		} 
 
 		return nil
 	default:
@@ -625,7 +658,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & location) is not verified",
 			})
 		}
 	//cost & interest	
@@ -647,7 +680,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & interest) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & interest) is not verified",
 			})
 		}
 	//cost & lastUpdate
@@ -669,7 +702,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & lastUpdate) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & lastUpdate) is not verified",
 			})
 		}
 	//cost & validity	
@@ -691,7 +724,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & validity) is not verified",
 			})
 		}
 	//location & interest
@@ -713,7 +746,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & interest) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (location & interest) is not verified",
 			})
 		}
 	//location & lastUpdate
@@ -735,7 +768,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & lastUpdate) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (location & lastUpdate) is not verified",
 			})
 		}
 	//location & validity
@@ -757,7 +790,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (location & validity) is not verified",
 			})
 		}
 	//interest & lastUpdate
@@ -779,7 +812,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (interest & lastUpdate) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (interest & lastUpdate) is not verified",
 			})
 		}
 	//interest & validity
@@ -801,7 +834,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (interest & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (interest & validity) is not verified",
 			})
 		}
 	//lastUpdate & validity
@@ -823,7 +856,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (lastUpdate & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (lastUpdate & validity) is not verified",
 			})
 		}
 	//cost & location & interest
@@ -845,7 +878,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & interest) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & location & interest) is not verified",
 			})
 		}
 	//cost & location & lastUpdate
@@ -867,7 +900,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & lastUpdate) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & location & lastUpdate) is not verified",
 			})
 		}
 	//cost & location & validity
@@ -889,7 +922,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & location & validity) is not verified",
 			})
 		}
 	//cost & interest & lastUpdate
@@ -911,7 +944,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate) is not verified",
 			})
 		}
 	//cost & interest & validity
@@ -933,7 +966,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & interest & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & interest & validity) is not verified",
 			})
 		}
 	//cost & lastUpdate & validity
@@ -955,7 +988,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & lastUpdate & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & lastUpdate & validity) is not verified",
 			})
 		}
 	//location & interest & lastUpdate
@@ -977,7 +1010,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & interest & lastUpdate) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (location & interest & lastUpdate) is not verified",
 			})
 		}
 	//location & interest & validity 
@@ -999,7 +1032,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & interest & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (location & interest & validity) is not verified",
 			})
 		}
 	//location & lastUpdate & validity
@@ -1021,7 +1054,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & lastUpdate & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (location & lastUpdate & validity) is not verified",
 			})
 		}
 	//interest & lastUpdate & validity 
@@ -1043,7 +1076,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (interest & lastUpdate & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (interest & lastUpdate & validity) is not verified",
 			})
 		}
 	//cost & location & interest & lastUpdate
@@ -1065,7 +1098,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & interest & lastUpdate) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & location & interest & lastUpdate) is not verified",
 			})
 		}
 	//cost & location & interest & validity
@@ -1087,7 +1120,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & interest & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & location & interest & validity) is not verified",
 			})
 		}
 	//cost & location & lastUpdate & validity 
@@ -1109,7 +1142,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & location & lastUpdate & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & location & lastUpdate & validity) is not verified",
 			})
 		}
 	//cost & interest & lastUpdate & validity
@@ -1131,7 +1164,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (cost & interest & lastUpdate & validity) is not verified",
 			})
 		}
 	//location & lastUpdate & validity & interest
@@ -1153,7 +1186,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria (location & lastUpdate & validity & interest) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria (location & lastUpdate & validity & interest) is not verified",
 			})
 		}
 	//cost & location & interest & lastUpdate & validity
@@ -1175,7 +1208,7 @@ func (k Keeper) CheckHybridBasedDecisionPolicy(ctx sdk.Context, cost uint64, sen
 				Function:    "OnRecvEstablishCooperationPacket",
 				Timestamp:   cast.ToString(time.Now()),
 				Details:     "Cooperation label: " + ctx.ChainID() + "-" + sender,
-				Decision:    "Not onfirmed: decision policy based on hybrid criteria  (cost & location & interest & lastUpdate & validity) is not verified",
+				Decision:    "Not confirmed: decision policy based on hybrid criteria  (cost & location & interest & lastUpdate & validity) is not verified",
 			})
 		}
 	}
@@ -1369,25 +1402,33 @@ func (k Keeper) ForwardCooperationsToNewCooperativeDomain(ctx sdk.Context, packe
 	for _, domainCooperation := range k.GetAllDomainCooperation(ctx) {
 		if domainCooperation.RemoteDomain.Name != data.Sender {
 			if domainCooperation.Status == "Enabled" && cast.ToTime(domainCooperation.Validity.NotBefore).UnixNano() <= time.Now().UnixNano() && cast.ToTime(domainCooperation.Validity.NotAfter).UnixNano() >= time.Now().UnixNano() {
-				var newPacketToForward types.ForwardCooperationDataPacketData
+				var packetToForward types.ForwardCooperationDataPacketData
 
-				newPacketToForward.NotBefore = domainCooperation.Validity.NotBefore
-				newPacketToForward.NotAfter = domainCooperation.Validity.NotAfter
-				newPacketToForward.Interest = domainCooperation.Interest
-				newPacketToForward.Cost = cast.ToString(domainCooperation.Cost)
-				newPacketToForward.Domain1Name = domainCooperation.SourceDomain.Name
-				newPacketToForward.Domain2Name = domainCooperation.RemoteDomain.Name
-				newPacketToForward.Domain1Location = domainCooperation.SourceDomain.Location
-				newPacketToForward.Domain2Location = domainCooperation.RemoteDomain.Location
+				packetToForward.NotBefore = domainCooperation.Validity.NotBefore
+				packetToForward.NotAfter = domainCooperation.Validity.NotAfter
+				packetToForward.Interest = domainCooperation.Interest
+				packetToForward.Cost = cast.ToString(domainCooperation.Cost)
+				packetToForward.Domain1Name = domainCooperation.SourceDomain.Name
+				packetToForward.Domain2Name = domainCooperation.RemoteDomain.Name
+				packetToForward.Domain1Location = domainCooperation.SourceDomain.Location
+				packetToForward.Domain2Location = domainCooperation.RemoteDomain.Location
 
 				k.TransmitForwardCooperationDataPacket(
 					ctx,
-					newPacketToForward,
+					packetToForward,
 					"cdaccesscontrol",
 					packet.SourceChannel,
 					clienttypes.ZeroHeight(),
 					packet.TimeoutTimestamp,
 				)
+				k.AppendCooperationLog(ctx, types.CooperationLog{
+					Creator:     ctx.ChainID(),
+					Transaction: "send-forward-cooperation-data",
+					Timestamp:   cast.ToString(time.Now()),
+					Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
+					Function:    "OnRecvEstablishCooperationPacket",
+					Decision:    "Confirmed: new cooperation data is forwarded to " + domainCooperation.RemoteDomain.Name,
+				})
 			}
 		}
 	}
