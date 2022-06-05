@@ -110,7 +110,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 					packetAck.Confirmation = "Confirmed"
 					packetAck.ConfirmedBy = ctx.ChainID()
 					k.ForwardNewCooperationData(ctx, packet, data)
-					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
+				    //k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data)
 				}else if k.CheckLastUpdateBasedDecisionPolicy(ctx, data.Sender, decisionPolicy){
 					k.AddDomainCooperation(ctx, packet, data)	
 					packetAck.Confirmation = "Confirmed"
@@ -1163,7 +1163,7 @@ func (k Keeper) AddDomainCooperation(ctx sdk.Context, packet channeltypes.Packet
 			IbcConnection: &types.IbcConnection{
 				Creator: ctx.ChainID(),
 				Port:    packet.DestinationPort,
-				Channel: packet.SourceChannel,
+				Channel: packet.DestinationChannel,
 			},
 			Location: localDomain.Location,
 		},
@@ -1342,7 +1342,7 @@ func (k Keeper) ForwardCooperationsToNewCooperativeDomain(ctx sdk.Context, packe
 					ctx,
 					packetToForward,
 					"cdaccesscontrol",
-					packet.SourceChannel,
+					packet.DestinationChannel,
 					clienttypes.ZeroHeight(),
 					packet.TimeoutTimestamp,
 				)
