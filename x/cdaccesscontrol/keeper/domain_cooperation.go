@@ -6,6 +6,8 @@ import (
 	"crossdomain/x/cdaccesscontrol/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"strings"
 )
 
 // GetDomainCooperationCount get the total number of domainCooperation
@@ -167,7 +169,7 @@ func (k Keeper) GetAllDomainCooperationsByLocation(ctx sdk.Context, location str
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		domainLocation, found := k.GetDomainLocationByDomainName(ctx, val.RemoteDomain.Name)
 		if found {
-			if domainLocation == location {
+			if strings.ToUpper(domainLocation) == strings.ToUpper(location) {
 				list = append(list, val)
 			}
 		}
