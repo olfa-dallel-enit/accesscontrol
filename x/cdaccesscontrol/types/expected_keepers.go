@@ -13,6 +13,7 @@ type CrossdomainKeeper interface {
 	GetLocalDomainCertificate(ctx sdk.Context) (val crossdomainTypes.LocalDomainCertificate, found bool)
 	GetLocalDomainLocation(ctx sdk.Context) (location string, found bool)
 	GetDecisionPolicy(ctx sdk.Context) (val crossdomainTypes.DecisionPolicy, found bool)
+	GetForwardPolicy(ctx sdk.Context) (val crossdomainTypes.ForwardPolicy, found bool)
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

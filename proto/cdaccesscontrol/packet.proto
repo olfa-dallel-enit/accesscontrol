@@ -61,7 +61,14 @@ message EstablishCooperationPacketAck {
     
 // ForwardCooperationDataPacketData defines a struct for the packet payload
 message ForwardCooperationDataPacketData {
-
+  string notBefore = 1;
+	string notAfter = 2;
+  string interest = 3;
+	string cost = 4;
+	string domain1Name = 5;
+	string domain2Name = 6;
+	string domain1Location = 7;
+	string domain2Location = 8;
 }
 
 // ForwardCooperationDataPacketAck defines a struct for the packet acknowledgment

@@ -138,23 +138,21 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 				})
 			}
 
-
-			
-
-			/*var packetToForward types.ForwardCooperationDataPacketData
-
+			var packetToForward types.ForwardCooperationDataPacketData
 			packetToForward.NotBefore = data.NotBefore
 			packetToForward.NotAfter = data.NotAfter
 			packetToForward.Interest = data.Interest
 			packetToForward.Cost = data.Cost
 			packetToForward.Domain1Name = ctx.ChainID()
 			packetToForward.Domain2Name = data.Sender
+			localDomainLocation, _ := k.crossdomainKeeper.GetLocalDomainLocation(ctx)
 			packetToForward.Domain1Location = localDomainLocation
+			remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, data.Sender)
 			packetToForward.Domain2Location = remoteDomainLocation
 
 			//forward
-			/*forwardPolicy, found := k.crossdomaindelegationKeeper.GetForwardPolicy(ctx)
-			if found {
+			forwardPolicy, found := k.crossdomainKeeper.GetForwardPolicy(ctx)
+			if found{
 				switch forwardPolicy.Mode {
 				case "broadcast":
 					for _, domainCooperation := range k.GetAllDirectDomainCooperations(ctx) {
@@ -164,7 +162,7 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 								k.TransmitForwardCooperationDataPacket(
 									ctx,
 									packetToForward,
-									"authorization",
+									"cdaccesscontrol",
 									domainCooperation.SourceDomain.IbcConnection.Channel,
 									clienttypes.ZeroHeight(),
 									packet.TimeoutTimestamp,
@@ -175,12 +173,14 @@ func (k Keeper) OnRecvEstablishCooperationPacket(ctx sdk.Context, packet channel
 									Timestamp:   cast.ToString(time.Now()),
 									Details:     "Cooperation label: " + packetToForward.Domain1Name + "-" + packetToForward.Domain2Name,
 									Function:    "OnRecvEstablishCooperationPacket",
-									Decision:    "Confirmed",
-									Recipient:   domainCooperation.RemoteDomain.Name,
+									Decision:    "Confirmed: packet is forwarded to " + packetToForward.Domain2Name,
 								})
 							}
 						}
 					}
+				}
+			}
+			/*
 				case "multicast":
 					for _, domainName := range forwardPolicy.DomainList {
 						if domainName != data.Sender {
