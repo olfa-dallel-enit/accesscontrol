@@ -257,6 +257,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 			packetToForward.Domain2Name = packetAck.ConfirmedBy
 			packetToForward.Domain1Location = localDomain.Location
 			packetToForward.Domain2Location = remoteDomain.Location
+			packetToForward.Sender = ctx.ChainID()
 
 			forwardPolicy, found := k.crossdomainKeeper.GetForwardPolicy(ctx)
 			if found {
@@ -285,7 +286,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 							}
 						}
 					}
-					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, packetAck.ConfirmedBy)
+					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, packetAck.ConfirmedBy)
 				case "multicast":
 					for _, domainName := range forwardPolicy.DomainList {
 						if domainName != packetAck.ConfirmedBy {
@@ -343,7 +344,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 						}
 					}
 					if packetAck.ConfirmedBy == forwardPolicy.DomainList[0] {
-						k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
+						k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, packetAck.ConfirmedBy)
 					}
 				case "geocast":
 					for _, location := range forwardPolicy.LocationList {
@@ -1201,6 +1202,7 @@ func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Pack
 	packetToForward.Domain1Location = localDomainLocation
 	remoteDomainLocation, _ := k.GetDomainLocationByDomainName(ctx, data.Sender)
 	packetToForward.Domain2Location = remoteDomainLocation
+	packetToForward.Sender = ctx.ChainID()
 
 	//forward
 	forwardPolicy, isFound := k.crossdomainKeeper.GetForwardPolicy(ctx)
@@ -1230,7 +1232,7 @@ func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Pack
 					}
 				}
 			}
-			//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
+			k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
 		case "multicast":
 			for _, domainName := range forwardPolicy.DomainList {
 				if domainName != data.Sender {
@@ -1346,6 +1348,7 @@ func (k Keeper) ForwardCooperationsToNewCooperativeDomain(ctx sdk.Context, packe
 				packetToForward.Domain2Name = domainCooperation.RemoteDomain.Name
 				packetToForward.Domain1Location = domainCooperation.SourceDomain.Location
 				packetToForward.Domain2Location = domainCooperation.RemoteDomain.Location
+				packetToForward.Sender = ctx.ChainID()
 
 				k.TransmitForwardCooperationDataPacket(
 					ctx,

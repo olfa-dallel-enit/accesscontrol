@@ -104,6 +104,14 @@ func (k Keeper) OnRecvForwardCooperationDataPacket(ctx sdk.Context, packet chann
 		UpdateTimestamp:   cast.ToString(time.Now()),
 		Status:            "Enabled",
 	})
+	k.AppendCooperationLog(ctx, types.CooperationLog{
+		Creator:     ctx.ChainID(),
+		Transaction: "send-forward-cooperation-data",
+		Timestamp:   cast.ToString(time.Now()),
+		Details:     "Cooperation label: " + data.Domain1Name + "-" + data.Domain2Name,
+		Function:    "OnRecvForwardCooperationDataPacket",
+		Decision:    "Confirmed: cooperation data is appended to the store",
+	})
 	k.ReForwardCooperationData(ctx , packet, data)
 
 	return packetAck, nil
@@ -155,6 +163,7 @@ func (k Keeper) ReForwardCooperationData(ctx sdk.Context, packet channeltypes.Pa
 	packetToForward.Domain2Name = data.Domain2Name
 	packetToForward.Domain1Location = data.Domain1Location
 	packetToForward.Domain2Location = data.Domain2Location
+	packetToForward.Sender = ctx.ChainID()
 
 	//forward
 	forwardPolicy, isFound := k.crossdomainKeeper.GetForwardPolicy(ctx)

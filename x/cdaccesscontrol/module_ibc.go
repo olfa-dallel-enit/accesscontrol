@@ -187,7 +187,9 @@ func (am AppModule) OnRecvPacket(
 			),
 		)
 	case *types.CdaccesscontrolPacketData_ForwardCooperationDataPacket:
-		 am.keeper.OnRecvForwardCooperationDataPacket(ctx, modulePacket, *packet.ForwardCooperationDataPacket)
+		am.keeper.OnRecvForwardCooperationDataPacket(ctx, modulePacket, *packet.ForwardCooperationDataPacket)
+		// packetAckBytes, _ := types.ModuleCdc.MarshalJSON(&packetAck)
+		// ack = channeltypes.NewResultAcknowledgement(sdk.MustSortJSON(packetAckBytes))
 		 ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventTypeForwardCooperationDataPacket,
