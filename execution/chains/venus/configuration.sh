@@ -6,3 +6,6 @@ crossdomaind query crossdomain show-root-certificate --node tcp://localhost:2666
 
 crossdomaind tx crossdomain  create-forward-policy "broadcast" "" "" --from alice --yes --home ~/.venus --chain-id venus --node tcp://localhost:26663 --gas=auto --gas-adjustment=1.15
 crossdomaind query crossdomain show-forward-policy --node tcp://localhost:26663
+
+#constraintless
+crossdomaind tx crossdomain  create-decision-policy 0 '' '' '{}' "" --from alice --yes --home ~/.venus --chain-id venus --node tcp://localhost:26663 --gas=auto --gas-adjustment=1.15

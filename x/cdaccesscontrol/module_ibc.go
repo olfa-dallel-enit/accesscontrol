@@ -187,7 +187,14 @@ func (am AppModule) OnRecvPacket(
 			),
 		)
 	case *types.CdaccesscontrolPacketData_ForwardCooperationDataPacket:
-		packetAck, err := am.keeper.OnRecvForwardCooperationDataPacket(ctx, modulePacket, *packet.ForwardCooperationDataPacket)
+		 am.keeper.OnRecvForwardCooperationDataPacket(ctx, modulePacket, *packet.ForwardCooperationDataPacket)
+		 ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeForwardCooperationDataPacket,
+				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			),
+		)
+		/*packetAck, err := am.keeper.OnRecvForwardCooperationDataPacket(ctx, modulePacket, *packet.ForwardCooperationDataPacket)
 		if err != nil {
 			ack = channeltypes.NewErrorAcknowledgement(err.Error())
 		} else {
@@ -204,7 +211,7 @@ func (am AppModule) OnRecvPacket(
 				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 				sdk.NewAttribute(types.AttributeKeyAckSuccess, fmt.Sprintf("%t", err != nil)),
 			),
-		)
+		)*/
 	case *types.CdaccesscontrolPacketData_DisableCooperationPacket:
 		packetAck, err := am.keeper.OnRecvDisableCooperationPacket(ctx, modulePacket, *packet.DisableCooperationPacket)
 		if err != nil {
@@ -255,6 +262,7 @@ func (am AppModule) OnRecvPacket(
 			}
 			ack = channeltypes.NewResultAcknowledgement(sdk.MustSortJSON(packetAckBytes))
 		}
+		
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventTypeModifyCooperationCostPacket,
@@ -365,10 +373,10 @@ func (am AppModule) OnAcknowledgementPacket(
 		}
 		eventType = types.EventTypeEstablishCooperationPacket
 	case *types.CdaccesscontrolPacketData_ForwardCooperationDataPacket:
-		err := am.keeper.OnAcknowledgementForwardCooperationDataPacket(ctx, modulePacket, *packet.ForwardCooperationDataPacket, ack)
+	/*	err := am.keeper.OnAcknowledgementForwardCooperationDataPacket(ctx, modulePacket, *packet.ForwardCooperationDataPacket, ack)
 		if err != nil {
 			return err
-		}
+		}*/
 		eventType = types.EventTypeForwardCooperationDataPacket
 	case *types.CdaccesscontrolPacketData_DisableCooperationPacket:
 		err := am.keeper.OnAcknowledgementDisableCooperationPacket(ctx, modulePacket, *packet.DisableCooperationPacket, ack)
@@ -428,13 +436,13 @@ func (am AppModule) OnAcknowledgementPacket(
 				sdk.NewAttribute(types.AttributeKeyAckSuccess, string(resp.Result)),
 			),
 		)
-	case *channeltypes.Acknowledgement_Error:
+	/*case *channeltypes.Acknowledgement_Error:
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				eventType,
 				sdk.NewAttribute(types.AttributeKeyAckError, resp.Error),
 			),
-		)
+		)*/
 	}
 
 	return nil

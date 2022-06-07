@@ -285,7 +285,7 @@ func (k Keeper) OnAcknowledgementEstablishCooperationPacket(ctx sdk.Context, pac
 							}
 						}
 					}
-					k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, packetAck.ConfirmedBy)
+					//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, packetAck.ConfirmedBy)
 				case "multicast":
 					for _, domainName := range forwardPolicy.DomainList {
 						if domainName != packetAck.ConfirmedBy {
@@ -1230,7 +1230,7 @@ func (k Keeper) ForwardCooperationData(ctx sdk.Context, packet channeltypes.Pack
 					}
 				}
 			}
-			k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
+			//k.ForwardCooperationsToNewCooperativeDomain(ctx, packet, data.Sender)
 		case "multicast":
 			for _, domainName := range forwardPolicy.DomainList {
 				if domainName != data.Sender {

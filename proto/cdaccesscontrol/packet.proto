@@ -69,6 +69,7 @@ message ForwardCooperationDataPacketData {
 	string domain2Name = 6;
 	string domain1Location = 7;
 	string domain2Location = 8;
+  string sender = 9;
 }
 
 // ForwardCooperationDataPacketAck defines a struct for the packet acknowledgment
